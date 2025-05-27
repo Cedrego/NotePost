@@ -1,0 +1,5 @@
+Contendra el conector a la base de datos
+PHP no necesita dependencias como java con el POM.
+
+Para el mapeo para la base de datos tenemos 2 opciopnes, o mapear usando  
+ORM o hacerlo a mano,

@@ -1,0 +1,84 @@
+Conector entre backend y Frontend.
+1. Flujo básico
+
+    Angular → hace un GET o POST con HttpClient.
+
+    PHP en /backend/interfaz/*.php recibe la petición.
+
+    PHP llama a la lógica (implementacion) y esta a la base de datos.
+
+    PHP responde con JSON.
+
+    Angular lo procesa y lo muestra.
+--------------------------------------
+/NotePost
+├── src/                  # Angular
+│   └── app/
+│       └── servicios/
+│           └── nota.service.ts
+├── backend/
+│   └── interfaz/
+│       └── notas.php     # El "puente"
+---------------------------------------
+// backend/interfaz/notas.php
+
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json");
+
+require_once '../implementacion/ServicioNota.php';
+
+$notas = ServicioNota::obtenerNotas();  // <-- llama a la lógica
+echo json_encode($notas);               // <-- responde al frontend
+---------------------------------------
+// src/app/servicios/nota.service.ts
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface Nota {
+  id: number;
+  titulo: string;
+  contenido: string;
+  fecha: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class NotaService {
+  private apiUrl = 'http://localhost/NotePost/backend/interfaz/notas.php';
+
+  constructor(private http: HttpClient) {}
+
+  obtenerNotas(): Observable<Nota[]> {
+    return this.http.get<Nota[]>(this.apiUrl);
+  }
+}
+----------------------------------------
+TENER EN CUENTA  LOS COMPONENTES
+// src/app/app.component.ts
+
+import { Component, OnInit } from '@angular/core';
+import { NotaService, Nota } from './servicios/nota.service';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <h2>Notas</h2>
+    <ul>
+      <li *ngFor="let nota of notas">{{ nota.titulo }} - {{ nota.fecha }}</li>
+    </ul>
+  `
+})
+export class AppComponent implements OnInit {
+  notas: Nota[] = [];
+
+  constructor(private notaService: NotaService) {}
+
+  ngOnInit() {
+    this.notaService.obtenerNotas().subscribe(data => {
+      this.notas = data;
+    });
+  }
+}

@@ -1,0 +1,1 @@
+Contendra toda la logica de las operaciones definidas en el diagrama.

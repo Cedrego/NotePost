@@ -1,0 +1,1 @@
+Contendra las clases mapeadas (JPA) para la Base de datos
