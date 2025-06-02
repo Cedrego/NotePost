@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../conexion.php';
-require_once __DIR__ . '/TagMap.php';
+require_once __DIR__ . '/../mapeo/TagMap.php';
 
 class TagDAO {
     private $conn;
@@ -21,6 +21,14 @@ class TagDAO {
             ':tag'     => $data['tag']
         ]);
     }
+
+    public function getAllTags(): array {
+        $sql = "SELECT DISTINCT tag FROM tags ORDER BY tag";
+        $stmt = $this->conn->query($sql);
+        /** @var PDOStatement $stmt */
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
 
     // Obtener todos los tags de un post
     public function getTagsByPostId(int $postId): array {
@@ -56,9 +64,40 @@ class TagDAO {
         $tag = new Tag($post, $row['tag']);
 
         $tags[] = $tag;
+        }
+        return $tags;
     }
-    return $tags;
-}
+    public function getPostsByTag(string $tagName): array {
+        $sql = "SELECT p.*, u.*
+                FROM posts p
+                JOIN tags t ON p.id = t.post_id
+                JOIN usuarios u ON p.autor_nick = u.nickname
+                WHERE t.tag = :tag";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([':tag' => $tagName]);
+
+        $posts = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $usuario = new Usuario(
+                $row['nickname'],
+                $row['email'],
+                $row['nombre'],
+                $row['apellido'],
+                $row['contrasena']
+            );
+
+            $post = new Post($usuario, $row['contenido'], (bool)$row['privado']);
+            $post->setId((int)$row['id']);
+            $post->setLikes((int)$row['likes']);
+            $post->setDislikes((int)$row['dislikes']);
+            $post->setFechaPost(new DateTime($row['fechaPost']));
+
+            $posts[] = $post;
+        }
+
+        return $posts;
+    }
 
     // Eliminar un tag específico de un post
     public function delete(Tag $tag): bool {
