@@ -1,47 +1,51 @@
+<div class="container mt-4">
+  <div class="form-container w-100 px-4 py-4">
+    <div class="container contenedor-centrado mt-4">
+      <div class="form-container px-4 py-4 mx-auto">
+        <div *ngIf="showAlert" class="custom-alert mb-3">
+          <p><strong>localhost:4200 dice</strong><br>{{ alertMessage }}</p>
+          <button (click)="showAlert = false">Aceptar</button>
+        </div>
 
-<div class="contenedor-centrado mt-4">
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="mb-3">
+              <label class="form-label label-naranja">Nombre de usuario:</label>
+              <input class="form-control" type="text" formControlName="nick" />
+              <div class="alert alert-danger mt-2" *ngIf="nick?.invalid && nick?.touched">
+                El Nickname es obligatorio
+              </div>
+            </div>
+          </div>    
 
-  <div class="form-container px-4 py-4 mx-auto">
-    <div *ngIf="showAlert" class="custom-alert mb-3">
-      <p><strong>localhost:4200 dice</strong><br>{{ alertMessage }}</p>
-      <button (click)="showAlert = false">Aceptar</button>
+          <div class="row">
+            <div class="mb-3">
+              <label class="form-label label-naranja">Contraseña:</label>
+              <input class="form-control" type="password" formControlName="pass" />
+              <div class="alert alert-danger mt-2" *ngIf="pass?.invalid && pass?.touched">
+                El password es obligatorio
+              </div>
+            </div>
+          </div>
+
+          <div class="row">  
+            <div class="mb-3">
+              <label class="form-label label-naranja">Repite Contraseña:</label>
+              <input class="form-control" type="password" formControlName="repeatpass" />
+              <div class="alert alert-danger mt-2" *ngIf="repeatpass?.invalid && repeatpass?.touched">
+                El password es obligatorio
+              </div>
+              <div class="alert alert-danger mt-2" *ngIf="(userForm.get('pass')?.value != userForm.get('repeatpass')?.value)&&(repeatpass?.touched)">
+                Las contraseñas no coinciden
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <button type="submit" class="btn btn-outline-light fw-bold" [disabled]="!userForm.valid">INICIAR SESIÓN</button>
+          </div>
+        </form>
+      </div>
     </div>
-
-    <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
-      <div class="row">
-        <div class="mb-3">
-          <label class="form-label label-naranja">Nombre de usuario:</label>
-          <input class="form-control" type="text" formControlName="nick" />
-          <div class="alert alert-danger mt-2" *ngIf="nick?.invalid && nick?.touched">
-            El Nickname es obligatorio
-          </div>
-        </div>
-      </div>    
-      <div class="row">
-        <div class="mb-3">
-          <label class="form-label label-naranja">Contraseña:</label>
-          <input class="form-control" type="password" formControlName="pass" />
-          <div class="alert alert-danger mt-2" *ngIf="pass?.invalid && pass?.touched">
-            El password es obligatorio
-          </div>
-        </div>
-      </div>
-      <div class="row">  
-        <div class="mb-3">
-          <label class="form-label label-naranja">Repite Contraseña:</label>
-          <input class="form-control" type="password" formControlName="repeatpass" />
-          <div class="alert alert-danger mt-2" *ngIf="repeatpass?.invalid && repeatpass?.touched">
-            El password es obligatorio
-          </div>
-          <div class="alert alert-danger mt-2" *ngIf="(userForm.get('pass')?.value != userForm.get('repeatpass')?.value)&&(repeatpass?.touched)">
-            Las contraseñas no coinciden
-          </div>
-        </div>
-      </div>
-
-      <div class="text-center mt-4">
-        <button type="submit" class="btn btn-outline-light fw-bold" [disabled]="!userForm.valid">INICIAR SESION</button>
-      </div>
-    </form>
-  </div>
+</div>
 </div>
