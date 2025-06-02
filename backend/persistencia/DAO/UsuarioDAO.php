@@ -14,6 +14,25 @@ class UsuarioDAO {
 
         return $usuarios;
     }
+    public static function obtenerPorNickname(string $nickname): ?Usuario {
+        $conn = Conexion::getConexion();
+        $sql = "SELECT * FROM usuarios WHERE nickname = ?";
+        $stmt = $conn->prepare($sql);
+
+        if (!$stmt) {
+            die("Error al preparar: " . $conn->error);
+        }
+
+        $stmt->bind_param("s", $nickname);
+        $stmt->execute();
+        $res = $stmt->get_result();
+
+        if ($row = $res->fetch_assoc()) {
+            return UsuarioMap::mapRowToUsuario($row);
+        }
+
+        return null;
+    }
 
     public static function guardar(Usuario $usuario): void {
         $conn = Conexion::getConexion();
