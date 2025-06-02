@@ -58,11 +58,33 @@ class Usuario {
     public function addPost(Post $post): void { $this->posts[] = $post; }
 
     //metodos
+
+    //busca al usuario que tenga ese nickname en la base de datos
+    public static function obtenerPorNickname($conn, $nickname) {
+        $stmt = $conn->prepare("SELECT email, nombre, apellido, contrasena FROM usuario WHERE nickname = ?");
+        $stmt->bind_param("s", $nickname);
+        $stmt->execute();
+        $stmt->bind_result($email, $nombre, $apellido, $contrasena);
+    
+        if ($stmt->fetch()) {
+            return new Usuario($nickname, $email, $nombre, $apellido, $contrasena);
+        } else {
+            return null; // No encontrado
+        }
+    }
+
     public function enviarSolicitud(Usuario $dest): SolicitudAmistad {
         $sol = new SolicitudAmistad($this, $dest);
         $this->solicitudEnviada = $sol;
         $dest->setSolicitudRecibida($sol);
         return $sol;
+    }
+
+    public function agregarPostUsuario($post, $conn) {
+        //por ahora es manual, esto en teoria inserta el post_id con el nick del usuario
+        $stmt = $conn->prepare("INSERT INTO usuario_post (nickname, idPost) VALUES (?, ?)");
+        $stmt->bind_param("si", $this->nickname, $post->idPost);
+        $stmt->execute();
     }
 }
 ?>

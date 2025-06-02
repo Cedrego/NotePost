@@ -1,10 +1,10 @@
 <?php
 class Post {
-    private int $id;
+    private int $idPost;
     private Usuario $autor;
     private string $contenido;
-    private int $likes = 0;
-    private int $dislikes = 0;
+    private int $likes;
+    private int $dislikes;
     private DateTime $fechaPost;
     private bool $privado;
 
@@ -18,6 +18,8 @@ class Post {
         $this->contenido = $contenido;
         $this->fechaPost = new DateTime();
         $this->privado   = $privado;
+        $this->likes = 0;
+        $this->dislikes = 0;
     }
 
     // Getters y setters
@@ -50,7 +52,8 @@ class Post {
     public function setTags(array $t): void { $this->tags = $t; }
     public function addTag(Tag $t): void { $this->tags[] = $t; }
 
-    // Votos
+    //metodos
+    
     public function upvote(): void { $this->likes++; }
     public function downvote(): void { $this->dislikes++; }
 }
