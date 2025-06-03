@@ -1,12 +1,11 @@
 <div class="container mt-4">
-  <div class="form-container w-100 px-4 py-4">
-      <div class="form-container px-4 py-4 mx-auto">
-        <div *ngIf="showAlert" class="custom-alert mb-3">
+  <div class="form-container w-100 px-4 py-4 mx-auto">
+      <div *ngIf="showAlert" class="custom-alert mb-3">
           <p><strong>localhost:4200 dice</strong><br>{{ alertMessage }}</p>
           <button (click)="showAlert = false">Aceptar</button>
         </div>
 
-        <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="sesionForm" (ngSubmit)="onSubmit()">
           <div class="row">
             <div class="mb-3">
               <label class="form-label label-naranja">Nombre de usuario:</label>
@@ -34,16 +33,15 @@
               <div class="alert alert-danger mt-2" *ngIf="repeatpass?.invalid && repeatpass?.touched">
                 El password es obligatorio
               </div>
-              <div class="alert alert-danger mt-2" *ngIf="(userForm.get('pass')?.value != userForm.get('repeatpass')?.value)&&(repeatpass?.touched)">
+              <div class="alert alert-danger mt-2" *ngIf="(sesionForm.get('pass')?.value != sesionForm.get('repeatpass')?.value)&&(repeatpass?.touched)">
                 Las contraseñas no coinciden
               </div>
             </div>
           </div>
 
           <div class="text-center mt-4">
-            <button type="submit" class="btn btn-outline-light fw-bold" [disabled]="!userForm.valid">INICIAR SESIÓN</button>
+            <button type="submit" class="btn btn-outline-light fw-bold" [disabled]="!sesionForm.valid">INICIAR SESIÓN</button>
           </div>
         </form>
       </div>
     </div>
-</div>

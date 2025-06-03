@@ -19,4 +19,8 @@ export class NavbarComponent {
   goToIniciarSesion(){
     this.router.navigate(['/iniciar-sesion'])
   }
+  goToCrearPost(){
+    this.router.navigate(['/crear-post'])
+  }
+
 }

@@ -1,10 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
 @use 'bootstrap' as *;
 
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 .form-container {
   background-color: #f7941d; /* Cambia de blanco a naranja */
   border-radius: 12px;
   padding: 20px;
+  height: 100%;
   width: 100%;
 }
 .custom-alert {
