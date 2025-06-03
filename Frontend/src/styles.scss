@@ -1,1 +1,51 @@
 /* You can add global styles to this file, and also import other style files */
+@use 'bootstrap' as *;
+
+.contenedor-centrado {
+    height: 100%;
+    margin-left: 45px;
+    padding-left: 45px;
+    margin-right: 45px;
+    padding-right: 45px;
+  }
+.form-container {
+  background-color: #f7941d; /* Cambia de blanco a naranja */
+  border-radius: 12px;
+  padding: 20px;
+  width: 100%;
+}
+.custom-alert {
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #2c2c2c;
+      color: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      font-family: Arial, sans-serif;
+      width: 300px;
+      text-align: center;
+  }
+    
+.custom-alert p {
+      margin: 0 0 15px 0;
+      font-size: 14px;
+      line-height: 1.5;
+  }
+    
+.custom-alert button {
+      background-color: #f57c00;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+}
+.custom-alert button:hover {
+      background-color: #e66a00;
+}
+        
