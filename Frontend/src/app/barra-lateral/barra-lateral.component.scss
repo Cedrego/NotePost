@@ -1,0 +1,101 @@
+.sidebar {
+  width: 250px;
+  background-color: #e6e6e6;
+  right: 0;
+  padding: 1rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .busqueda {
+    margin-bottom: 1rem;
+
+    input {
+      width: 100%;
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+  }
+
+  .amigos {
+    .amigo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+
+      img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+
+      span {
+        font-weight: 500;
+      }
+    }
+  }
+
+  .solicitudes {
+    margin-top: 1rem;
+  }
+
+  .calendario {
+  padding: 1rem;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+
+  h6 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #343a40;
+  }
+
+  ::ng-deep .fc {
+    max-width: 100%;
+    font-size: 0.9rem;
+  }
+
+  /* 🔁 Reordenar el header del calendario */
+  ::ng-deep .fc-toolbar.fc-header-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  ::ng-deep .fc-toolbar-chunk:first-child {
+    order: 2; /* Año y mes */
+    margin-bottom: 0.5rem;
+  }
+
+  ::ng-deep .fc-toolbar-chunk:last-child {
+    order: 1; /* Botón today */
+    margin-bottom: 0.5rem;
+  }
+
+  /* ✨ Mejorar visibilidad de días de la semana */
+  ::ng-deep .fc-col-header-cell {
+    padding: 6px 0;
+    font-weight: 600;
+    font-size: 0.85rem;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    text-align: center;
+  }
+
+  ::ng-deep .fc-daygrid-day {
+    min-width: 36px;
+    height: 36px;
+    text-align: center;
+  }
+
+  ::ng-deep .fc-scrollgrid {
+    table-layout: auto !important;
+  }
+}
+
+
+}

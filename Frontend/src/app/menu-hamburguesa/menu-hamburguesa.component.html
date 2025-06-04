@@ -1,0 +1,11 @@
+<div class="menu-hamburguesa">
+  <button (click)="toggleMenu()">☰</button>
+
+  <div *ngIf="menuAbierto" class="menu-desplegable">
+    <ul>
+      <li (click)="opcionSeleccionada('filtro')">🔍 Filtro</li>
+      <li (click)="opcionSeleccionada('ranking')">⭐ Ranking</li>
+      <li (click)="opcionSeleccionada('cerrar')">🚪 Cerrar sesión</li>
+    </ul>
+  </div>
+</div>

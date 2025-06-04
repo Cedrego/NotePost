@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { MenuHamburguesaComponent } from '../menu-hamburguesa/menu-hamburguesa.component';
 @Component({
   selector: 'app-navbar',
-  imports: [],
+  imports: [MenuHamburguesaComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
