@@ -27,7 +27,7 @@ export class CrearPostComponent {
       contenido: ['', Validators.required],
       privado: [''],
       recordatorio: [''],
-      fondo: ['']
+      fondo: ['fondo1'] 
     });
   }
 

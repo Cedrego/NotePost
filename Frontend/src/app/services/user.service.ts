@@ -11,4 +11,10 @@ export class UserService {
   enviarPost(data: any): Observable<any> {
     return this.http.post('http://localhost/mi-servidor/archivo.php', data);
   }
+  enviarCrearUsuario(data: any): Observable<any> {
+    return this.http.post('http://localhost/mi-servidor/archivo.php', data);
+  }
+  enviarIniciarSesion(data: any): Observable<any> {
+    return this.http.post('http://localhost/mi-servidor/archivo.php', data);
+  }
 }

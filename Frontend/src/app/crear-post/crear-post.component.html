@@ -25,7 +25,7 @@
                 <option value="fondo2">Fondo 2</option>
             </select><br><br>
             <div class="text-center mt-4">
-                <button type="submit" class="btn btn-outline-light fw-bold" >CREAR  POST</button>
+                <button type="submit" class="btn btn-outline-light fw-bold" [disabled]="!postForm.valid">CREAR  POST</button>
             </div>
 
         </form>
