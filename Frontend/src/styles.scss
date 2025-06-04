@@ -9,10 +9,16 @@
     margin-right: 45px;
     padding-right: 45px;
   }
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 .form-container {
   background-color: #f7941d; /* Cambia de blanco a naranja */
   border-radius: 12px;
   padding: 20px;
+  height: 100%;
   width: 100%;
 }
 .custom-alert {

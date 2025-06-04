@@ -10,7 +10,7 @@ import { UserService } from '../services/user.service';
   styleUrl: './iniciar-sesion.component.scss'
 })
 export class IniciarSesionComponent implements OnInit{
-  userForm: FormGroup;
+  sesionForm: FormGroup;
   fb = inject(FormBuilder);
   userService = inject(UserService);
 
@@ -19,7 +19,7 @@ export class IniciarSesionComponent implements OnInit{
   id = 10;
 
   constructor() {
-    this.userForm = this.fb.group({
+    this.sesionForm = this.fb.group({
       nick: ['', [Validators.required]],
       pass: ['', [Validators.required]],
       repeatpass: ['', Validators.required]
@@ -30,15 +30,15 @@ export class IniciarSesionComponent implements OnInit{
   }
 
   onSubmit(): void {
-    if (this.userForm.invalid) return;
+    if (this.sesionForm.invalid) return;
 
-    const formData = this.userForm.value;
+    const formData = this.sesionForm.value;
   }
 
   // Getters para los campos
-  get nick() { return this.userForm.get('email'); }
-  get pass() { return this.userForm.get('pass'); }
-  get repeatpass() { return this.userForm.get('repeatpass'); }
+  get nick() { return this.sesionForm.get('email'); }
+  get pass() { return this.sesionForm.get('pass'); }
+  get repeatpass() { return this.sesionForm.get('repeatpass'); }
 
 
 }

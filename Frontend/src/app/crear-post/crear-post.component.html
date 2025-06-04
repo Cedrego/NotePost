@@ -1,0 +1,33 @@
+<div class="container mt-4">
+    <div class="form-container w-100  px-4 py-4 mx-auto">   
+        <div *ngIf="showAlert" class="custom-alert mb-3">
+          <p><strong>localhost:4200 dice</strong><br>{{ alertMessage }}</p>
+          <button (click)="showAlert = false">Aceptar</button>
+        </div>
+
+        <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+            <textarea name="contenido"  style="width: 100%; height: 200px;" placeholder="Escribe tu nota..." formControlName="contenido"></textarea><br>
+                <div class="alert alert-danger mt-2" *ngIf="contenido?.invalid && contenido?.touched">
+                    El texto es obligatorio
+                </div>
+
+            <label>
+                Privado: 
+                <input type="checkbox" name="privado" formControlName="privado">
+            </label><br><br>
+            <label>
+                Fecha de Recordatorio (opcional): 
+                <input type="date" name="recordatorio" formControlName="recordatorio">
+            </label><br><br>
+            <label>Fondo:</label>
+            <select name="fondo" formControlName="fondo" >
+                <option value="fondo1">Fondo 1</option>
+                <option value="fondo2">Fondo 2</option>
+            </select><br><br>
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-outline-light fw-bold" >CREAR  POST</button>
+            </div>
+
+        </form>
+    </div>
+</div>    
