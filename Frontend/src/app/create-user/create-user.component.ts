@@ -34,13 +34,30 @@ export class CreateUserComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  
+
   onSubmit(): void {
-    if (this.userForm.invalid) return;
+    if (this.userForm.invalid) {
+      this.alertMessage = 'Formulario inválido';
+      this.showAlert = true;
+      return;
+    }
 
     const formData = this.userForm.value;
 
+    this.userService.enviarCrearUsuario(formData).subscribe({
+      next: (respuesta) => {
+        this.alertMessage = '¡Enviado correctamente!';
+        this.showAlert = true;
+        console.log('Respuesta del servidor:', respuesta);
+      },
+      error: (error) => {
+        this.alertMessage = 'Error al enviar';
+        this.showAlert = true;
+        console.error('Error:', error);
+      }
+    });
   }
-
   // Getters para los campos
   get nick() { return this.userForm.get('nickName'); }
   get nombre() { return this.userForm.get('nombre'); }

@@ -29,12 +29,29 @@ export class IniciarSesionComponent implements OnInit{
   ngOnInit(): void {
   }
 
+
   onSubmit(): void {
-    if (this.sesionForm.invalid) return;
+    if (this.sesionForm.invalid) {
+      this.alertMessage = 'Formulario inválido';
+      this.showAlert = true;
+      return;
+    }
 
     const formData = this.sesionForm.value;
-  }
 
+    this.userService.enviarIniciarSesion(formData).subscribe({
+      next: (respuesta) => {
+        this.alertMessage = '¡Enviado correctamente!';
+        this.showAlert = true;
+        console.log('Respuesta del servidor:', respuesta);
+      },
+      error: (error) => {
+        this.alertMessage = 'Error al enviar';
+        this.showAlert = true;
+        console.error('Error:', error);
+      }
+    });
+  }
   // Getters para los campos
   get nick() { return this.sesionForm.get('email'); }
   get pass() { return this.sesionForm.get('pass'); }
