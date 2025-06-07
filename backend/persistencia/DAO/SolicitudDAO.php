@@ -16,6 +16,22 @@ class SolicitudDAO {
         $conn->query($sql);
     }
 
+    public static function obtenerSolicitudesRecibidas(string $nickname): array {
+        $conn = Conexion::getConexion();
+        $sql = "SELECT * FROM solicitudes WHERE recibidor = ? AND aceptada = FALSE";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $nickname);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $solicitudes = [];
+        while ($row = $result->fetch_assoc()) {
+            $solicitudes[] = SolicitudMap::mapRowToSolicitud($row);
+        }
+        return $solicitudes;
+    }
+
+
     public static function guardar(SolicitudAmistad $s) {
         self::crearTabla(); // siempre crea si no existe
 
@@ -53,4 +69,5 @@ class SolicitudDAO {
         }
         return null;
     }
+
 }

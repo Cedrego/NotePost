@@ -78,9 +78,64 @@ class PostDAO {
         $stmt->execute();
     }
 
-    public function eliminar(int $id): void {
+    public function eliminar(int $id, RecordatorioDAO $recordatorioDAO): void {
+       
+        $post = $this->obtenerPorId($id);
+        if (!$post) return;
+
+        $recordatorioDAO->deleteByPostId($id);
+        
+        $autor = $post->getAutor();
+        $autor->olvidarPost($id);
+
         $stmt = $this->conn->prepare("DELETE FROM posts WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
     }
+
+
+    // Get Ranking (top 10)
+        public function getRanking(): array {
+        $sql = "SELECT p.*, 
+                    u.nickname AS autor_nickname, 
+                    u.email AS autor_email, 
+                    u.nombre AS autor_nombre, 
+                    u.apellido AS autor_apellido, 
+                    u.contrasena AS autor_contrasena
+                FROM posts p
+                JOIN usuarios u ON p.autor_nickname = u.nickname
+                ORDER BY p.likes DESC
+                LIMIT 10";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $topPosts = [];
+        while ($row = $result->fetch_assoc()) {
+            $topPosts[] = PostMap::mapRowToPost($row);
+        }
+
+        return $topPosts;
+    }
+
+    public function getRankingJson(): string {
+        $posts = $this->getRanking();
+        $data = [];
+
+        foreach ($posts as $post) {
+            $data[] = [
+                'id'         => $post->getId(),
+                'autor'      => $post->getAutor()->getNickname(),
+                'contenido'  => $post->getContenido(),
+                'likes'      => $post->getLikes(),
+                'dislikes'   => $post->getDislikes(),
+                'fechaPost'  => $post->getFechaPost()->format('Y-m-d H:i:s'),
+                'privado'    => $post->isPrivado()
+            ];
+        }
+        return json_encode($data, JSON_PRETTY_PRINT);
+    }
+
+    
 }
