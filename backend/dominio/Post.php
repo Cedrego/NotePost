@@ -1,25 +1,27 @@
 <?php
 class Post {
-    private int $idPost;
+    private int $id;
     private Usuario $autor;
     private string $contenido;
     private int $likes;
     private int $dislikes;
     private DateTime $fechaPost;
     private bool $privado;
+    private ?int $fondoId;
 
     /** @var Recordatorio[] */
     private array $recordatorios = [];
     /** @var Tag[] */
     private array $tags = [];
 
-    public function __construct(Usuario $autor, string $contenido, bool $privado = false) {
+    public function __construct(Usuario $autor, string $contenido, bool $privado = false, ?int $fondoId = null) {
         $this->autor     = $autor;
         $this->contenido = $contenido;
         $this->fechaPost = new DateTime();
         $this->privado   = $privado;
         $this->likes = 0;
         $this->dislikes = 0;
+        $this->fondoId = $fondoId;
     }
 
     // Getters y setters
@@ -52,6 +54,8 @@ class Post {
     public function setTags(array $t): void { $this->tags = $t; }
     public function addTag(Tag $t): void { $this->tags[] = $t; }
 
+    public function getFondoId(): ?int { return $this->fondoId;}
+    public function setFondoId(?int $fondoId): void { $this->fondoId = $fondoId;}
     //metodos
     
     public function upvote(): void { $this->likes++; }
