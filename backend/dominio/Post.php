@@ -1,6 +1,10 @@
 <?php
+require_once 'Usuario.php';
+require_once 'Recordatorio.php';
+require_once 'Tag.php';
+
 class Post {
-    private int $id;
+    private int $id = 0;
     private Usuario $autor;
     private string $contenido;
     private int $likes = 0;

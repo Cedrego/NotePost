@@ -1,4 +1,9 @@
 <?php
-include "persistencia/conexion.php";
-echo "¡Conexión exitosa!";
+require_once "persistencia/conexion.php";
+
+$conn = Conexion::getConexion();
+
+if ($conn instanceof mysqli) {
+    echo "¡Conexión exitosa!";
+}
 ?>

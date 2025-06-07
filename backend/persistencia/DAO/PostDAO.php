@@ -1,7 +1,6 @@
 <?php
-require_once __DIR__ . '/../Conexion.php';
+require_once __DIR__ . '/../conexion.php';
 require_once __DIR__ . '/../mapeo/PostMap.php';
-
 class PostDAO {
     private $conn;
 
@@ -27,25 +26,40 @@ class PostDAO {
     }
 
     public function guardar(Post $post): void {
-        $data = PostMap::mapPostToArray($post);
+    $data = PostMap::mapPostToArray($post);
 
-        $sql = "INSERT INTO posts (autor_nickname, contenido, likes, dislikes, fechaPost, privado) 
-                VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param(
-            "ssiisi",
-            $data['autor_nickname'],
-            $data['contenido'],
-            $data['likes'],
-            $data['dislikes'],
-            $data['fechaPost'],
-            $data['privado']
-        );
-        $stmt->execute();
+    $sql = "INSERT INTO posts (autor_nickname, contenido, likes, dislikes, fechaPost, privado) 
+            VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param(
+        "ssiisi",
+        $data['autor_nickname'],
+        $data['contenido'],
+        $data['likes'],
+        $data['dislikes'],
+        $data['fechaPost'],
+        $data['privado']
+    );
+    $stmt->execute();
 
-        // Opcional: asignar el ID insertado al objeto post
-        $post->setId($this->conn->insert_id);
+    $postId = $this->conn->insert_id;
+    $post->setId($postId);
+
+    // Guardar recordatorios
+    foreach ($post->getRecordatorios() as $rec) {
+        $stmtRec = $this->conn->prepare("INSERT INTO recordatorios (post_id, fechaRecordatorio) VALUES (?, ?)");
+        $fechaStr = $rec->getFechaRecordatorio()->format('Y-m-d H:i:s');
+        $stmtRec->bind_param("is", $postId, $fechaStr);
+        $stmtRec->execute();
     }
+
+    // Guardar tags
+    foreach ($post->getTags() as $tag) {
+        $stmtTag = $this->conn->prepare("INSERT INTO tags (post_id, tag) VALUES (?, ?)");
+        $stmtTag->bind_param("is", $postId, $tag->getTag());
+        $stmtTag->execute();
+    }
+}
 
     public function actualizar(Post $post): void {
         $data = PostMap::mapPostToArray($post);
