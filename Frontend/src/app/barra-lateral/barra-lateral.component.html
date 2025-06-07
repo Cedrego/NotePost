@@ -1,0 +1,33 @@
+<div class="sidebar">
+  <!-- Búsqueda de amigos -->
+  <div class="busqueda">
+    <input type="text" [(ngModel)]="busqueda" placeholder="Buscar amigo..." />
+  </div>
+
+  <!-- Lista de amigos -->
+  <div class="amigos">
+    <div *ngFor="let amigo of amigosFiltrados()" class="amigo">
+      <img src="https://img.pikbest.com/png-images/qianku/default-avatar_2406311.png!w700wp" alt="avatar" />
+      <span>{{ amigo }}</span>
+    </div>
+  </div> 
+
+  <!-- ide.component.html -->
+<!-- <div *ngFor="let item of ides">
+  <h3>{{ item.ide }}</h3>
+  <img [src]="item.image" width="200" alt="{{ item.ide }}">
+</div> -->
+
+
+
+  <!-- Solicitudes de amistad -->
+  <div class="solicitudes">
+    <h6>Solicitudes</h6>
+    <p>Aquí podrías mostrar solicitudes pendientes</p>
+  </div>
+
+  <!-- Calendario -->
+  <div class="calendario">
+    <app-calendario></app-calendario>
+  </div>
+</div>

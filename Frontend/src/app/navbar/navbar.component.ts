@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { MenuHamburguesaComponent } from '../menu-hamburguesa/menu-hamburguesa.component';
+import { MenuUsuarioComponent } from "../menu-usuario/menu-usuario.component";
 @Component({
   selector: 'app-navbar',
-  imports: [],
+  standalone: true,
+  imports: [MenuHamburguesaComponent, MenuUsuarioComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
