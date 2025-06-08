@@ -5,29 +5,70 @@
           <button (click)="showAlert = false">Aceptar</button>
         </div>
 
-        <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
-            <textarea name="contenido"  style="width: 100%; height: 200px;" placeholder="Escribe tu nota..." formControlName="contenido"></textarea><br>
-                <div class="alert alert-danger mt-2" *ngIf="contenido?.invalid && contenido?.touched">
-                    El texto es obligatorio
-                </div>
+<form  action="../backend/crearPost.php" method="POST" [formGroup]="postForm" (ngSubmit)="onSubmit()">
+            <h1>Crear un nuevo Post</h1>
 
-            <label>
-                Privado: 
-                <input type="checkbox" name="privado" formControlName="privado">
-            </label><br><br>
-            <label>
-                Fecha de Recordatorio (opcional): 
-                <input type="date" name="recordatorio" formControlName="recordatorio">
-            </label><br><br>
-            <label>Fondo:</label>
-            <select name="fondo" formControlName="fondo" >
-                <option value="fondo1">Fondo 1</option>
-                <option value="fondo2">Fondo 2</option>
-            </select><br><br>
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-outline-light fw-bold" [disabled]="!postForm.valid">CREAR  POST</button>
-            </div>
+  <!-- Formulario para crear un post -->
+ 
+    
+    <!-- Contenido del post -->
+    <label for="contenido"formControlName="contenido">Contenido:</label><br>
+    <textarea 
+      name="contenido" 
+      id="contenido" 
+      rows="5" 
+      cols="40" 
+      placeholder="Escribe tu nota aquí..." 
+      required
+    ></textarea>
+    <br><br>
 
-        </form>
+    <!-- Privacidad -->
+    <label for="privado"formControlName="privado">
+      <input type="checkbox" name="privado" id="privado">
+      Marcar como privado
+    </label>
+    <br><br>
+
+    <!-- Recordatorio opcional -->
+    <label for="recordatorio"formControlName="recordatorio">Fecha de recordatorio (opcional):</label><br>
+    <input 
+      type="datetime-local" 
+      name="recordatorio" 
+      id="recordatorio"
+    >
+    <br><br>
+
+    <!-- Selección de fondo: mostramos 4 opciones limitadas -->
+    <p>Elige un fondo para tu nota:</p>
+    <div class="fondo-option">
+      <input type="radio" name="fondoId" id="fondo1"formControlName="fondo1" value="1">
+      <!-- Ajustar la URL de fondo1.jpg a la ruta real de la imagen -->
+      <label for="fondo1" style="background-image: url('../assets/fondos/fondo1.jpg');"></label>
+      <span>Fondo 1</span>
+    </div>
+    <div class="fondo-option">
+      <input type="radio" name="fondoId" id="fondo2" formControlName="fondo2"value="2">
+      <label for="fondo2" style="background-image: url('../assets/fondos/fondo2.jpg');"></label>
+      <span>Fondo 2</span>
+    </div>
+    <div class="fondo-option">
+      <input type="radio" name="fondoId" id="fondo3" formControlName="fondo3"value="3">
+      <label for="fondo3" style="background-image: url('../assets/fondos/fondo3.jpg');"></label>
+      <span>Fondo 3</span>
+    </div>
+    <div class="fondo-option">
+      <input type="radio" name="fondoId" id="fondo4" formControlName="fondo4"value="4">
+      <label for="fondo4" style="background-image: url('../assets/fondos/fondo4.jpg');"></label>
+      <span>Fondo 4</span>
+    </div>
+    <br><br>
+
+    <!-- Botón de envío -->
+      <div class="text-center mt-4">
+            <button type="submit" class="btn btn-outline-light fw-bold" >CREAR POST</button>
+          </div>
+        
+  </form>  
     </div>
 </div>    

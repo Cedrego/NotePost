@@ -1,0 +1,41 @@
+/* .fondo-option {
+  display: inline-block;
+  margin: 10px;
+}
+
+.fondo-option label {
+  display: block;
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.fondo-option input[type="radio"]:checked + label {
+  border-color: blue;
+}
+ */
+ /* Estilos básicos para la selección de fondos */
+    .fondo-option {
+      display: inline-block;
+      margin: 0 10px;
+      text-align: center;
+    }
+   // .fondo-option input {
+     // display: none; /* ocultamos el radio nativo */
+    //}
+    .fondo-option label {
+      display: block;
+      width: 100px;
+      height: 70px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      background-size: cover;
+      background-position: center;
+      margin-bottom: 5px;
+    }
+    /* Cuando el radio esté seleccionado, resaltamos el label */
+    .fondo-option input:checked + label {
+      border-color: #333;
+    }
