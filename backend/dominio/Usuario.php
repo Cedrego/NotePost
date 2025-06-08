@@ -6,8 +6,6 @@ class Usuario {
     private string $apellido;
     private string $contrasena;
 
-    private ?SolicitudAmistad $solicitudEnviada = null;
-    private ?SolicitudAmistad $solicitudRecibida = null;
     private ?Avatar $avatar = null;
     /** @var Usuario[] */
     private array $amigos = [];
@@ -40,12 +38,6 @@ class Usuario {
         $this->contrasena = password_hash($contrasena, PASSWORD_DEFAULT);
     }
 
-    public function getSolicitudEnviada(): ?SolicitudAmistad { return $this->solicitudEnviada; }
-    public function setSolicitudEnviada(SolicitudAmistad $sol): void { $this->solicitudEnviada = $sol; }
-
-    public function getSolicitudRecibida(): ?SolicitudAmistad { return $this->solicitudRecibida; }
-    public function setSolicitudRecibida(SolicitudAmistad $sol): void { $this->solicitudRecibida = $sol; }
-
     public function getAvatar(): ?Avatar { return $this->avatar; }
     public function setAvatar(Avatar $avatar): void { $this->avatar = $avatar; }
 
@@ -58,11 +50,21 @@ class Usuario {
     public function addPost(Post $post): void { $this->posts[] = $post; }
 
     //metodos
-    public function enviarSolicitud(Usuario $dest): SolicitudAmistad {
-        $sol = new SolicitudAmistad($this, $dest);
-        $this->solicitudEnviada = $sol;
-        $dest->setSolicitudRecibida($sol);
-        return $sol;
+    public function enviarSolicitud(Usuario $dest) {
+        return new SolicitudAmistad($this, $dest);
     }
+
+    public function olvidarPost(int $postId): bool {
+        foreach ($this->posts as $key => $post) {
+            if ($post->getId() === $postId) {
+                unset($this->posts[$key]);
+                // Reindexar el array para evitar "huecos"
+                $this->posts = array_values($this->posts);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 ?>

@@ -62,4 +62,17 @@ class UsuarioDAO {
 
         $stmt->close();
     }
+
+    public function olvidarPost(int $postId): bool {
+        foreach ($this->posts as $key => $post) {
+            if ($post->getId() === $postId) {
+                unset($this->posts[$key]);
+                // Reindexar el array para evitar "huecos"
+                $this->posts = array_values($this->posts);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
