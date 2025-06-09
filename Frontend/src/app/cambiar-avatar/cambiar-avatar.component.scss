@@ -1,0 +1,20 @@
+  /* Estilos básicos para la galería de avatares */
+    .avatar-option {
+      display: inline-block;
+      margin: 0 10px;
+      text-align: center;
+    }
+    .avatar-option label {
+      display: block;
+      width: 80px;
+      height: 80px;
+      border: 2px solid transparent;
+      border-radius: 50%;
+      cursor: pointer;
+      background-size: cover;
+      background-position: center;
+      margin-bottom: 5px;
+    }
+    .avatar-option input:checked + label {
+      border-color: #007BFF;
+    }

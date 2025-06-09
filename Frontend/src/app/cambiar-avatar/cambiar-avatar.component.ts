@@ -7,14 +7,15 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../services/user.service';
 
 @Component({
-  selector: 'app-crear-post',
+  selector: 'app-cambiar-avatar',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  templateUrl: './crear-post.component.html',
-  styleUrl: './crear-post.component.scss'
+  templateUrl: './cambiar-avatar.component.html',
+  styleUrl: './cambiar-avatar.component.scss'
 })
-export class CrearPostComponent {
-  postForm: FormGroup;
+export class CambiarAvatarComponent {
+
+  avatarForm: FormGroup;
   fb = inject(FormBuilder);
   userService = inject(UserService);
 
@@ -23,22 +24,19 @@ export class CrearPostComponent {
   id = 10;
 
   constructor() {
-    this.postForm = this.fb.group({
-      contenido: ['', Validators.required],
-      privado: ['false'],
-      recordatorio: [''],
-      fondo: ['1'] 
+    this.avatarForm = this.fb.group({
+      idAvatar: ['1'] 
     });
   }
 
   onSubmit(): void {
-    if (this.postForm.invalid) {
+    if (this.avatarForm.invalid) {
       this.alertMessage = 'Formulario inválido';
       this.showAlert = true;
       return;
     }
 
-    const formData = this.postForm.value;
+    const formData = this.avatarForm.value;
 
     this.userService.enviarPost(formData).subscribe({
       next: (respuesta) => {
@@ -55,8 +53,5 @@ export class CrearPostComponent {
   }
 
   // Getters para los campos
-  get contenido() { return this.postForm.get('contenido'); }
-  get privado() { return this.postForm.get('privado'); }
-  get recordatorio() { return this.postForm.get('recordatorio'); }
-  get fondo() { return this.postForm.get('fondo'); }
+  get idAvatar() { return this.avatarForm.get('idAvatar'); }
 }

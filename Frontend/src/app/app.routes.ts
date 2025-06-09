@@ -3,11 +3,15 @@ import { CreateUserComponent } from './create-user/create-user.component'; // im
 import { HomeComponent } from './home/home.component'; // importa el componente
 import { IniciarSesionComponent } from './iniciar-sesion/iniciar-sesion.component';
 import { CrearPostComponent } from './crear-post/crear-post.component';
+import { CambiarAvatarComponent } from './cambiar-avatar/cambiar-avatar.component';
 
 export const routes: Routes = [
   { path: '',pathMatch: 'full',redirectTo: 'home' },
   { path: 'create-user', component: CreateUserComponent },
   { path: 'home', component: HomeComponent }, // nueva ruta
   { path: 'iniciar-sesion', component: IniciarSesionComponent },
-  { path: 'crear-post', component: CrearPostComponent }
+  { path: 'crear-post', component: CrearPostComponent },
+  { path: 'app-cambiar-avatar', component: CambiarAvatarComponent }
+  
+
 ];
