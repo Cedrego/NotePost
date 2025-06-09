@@ -25,9 +25,9 @@ export class CrearPostComponent {
   constructor() {
     this.postForm = this.fb.group({
       contenido: ['', Validators.required],
-      privado: [''],
+      privado: ['false'],
       recordatorio: [''],
-      fondo: ['fondo1'] 
+      fondo: [''] 
     });
   }
 
