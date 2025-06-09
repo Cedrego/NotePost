@@ -11,7 +11,7 @@ export interface UsuarioIde {
   providedIn: 'root'
 })
 export class UserService {
-  private baseUrl = 'http://localhost/backend';
+  private baseUrl = 'http://localhost/NotePost/backend';
 
   constructor(private http: HttpClient) {}
   
