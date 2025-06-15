@@ -25,5 +25,7 @@ export class NavbarComponent {
   goToCrearPost(){
     this.router.navigate(['/crear-post'])
   }
-
+   goToCambiarAvatar(){
+    this.router.navigate(['/app-cambiar-avatar'])
+  }
 }
