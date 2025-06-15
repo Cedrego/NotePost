@@ -5,18 +5,20 @@ class Usuario {
     private string $nombre;
     private string $apellido;
     private string $contrasena;
-
-    private ?Avatar $avatar = null;
+    private ?SolicitudAmistad $solicitudEnviada = null;
+    private ?SolicitudAmistad $solicitudRecibida = null;
+    private ?int $avatar;
     /** @var Usuario[] */
     private array $amigos = [];
     /** @var Post[] */
     private array $posts = [];
 
-    public function __construct(string $nickname, string $email, string $nombre, string $apellido, string $contrasena) {
+    public function __construct(string $nickname, string $email, string $nombre, string $apellido, string $contrasena, ?int $avatar = null) {
         $this->nickname   = $nickname;
         $this->email      = $email;
         $this->nombre     = $nombre;
         $this->apellido   = $apellido;
+        $this->avatar     = $avatar;
         $this->contrasena = password_hash($contrasena, PASSWORD_DEFAULT);
     }
 
@@ -37,9 +39,14 @@ class Usuario {
     public function setContrasena(string $contrasena): void { 
         $this->contrasena = password_hash($contrasena, PASSWORD_DEFAULT);
     }
+    public function getSolicitudEnviada(): ?SolicitudAmistad { return $this->solicitudEnviada; }
+    public function setSolicitudEnviada(SolicitudAmistad $sol): void { $this->solicitudEnviada = $sol; }
 
-    public function getAvatar(): ?Avatar { return $this->avatar; }
-    public function setAvatar(Avatar $avatar): void { $this->avatar = $avatar; }
+    public function getSolicitudRecibida(): ?SolicitudAmistad { return $this->solicitudRecibida; }
+    public function setSolicitudRecibida(SolicitudAmistad $sol): void { $this->solicitudRecibida = $sol; }
+
+    public function getAvatar(): ?int { return $this->avatar; }
+    public function setAvatar(?int $avatar): void { $this->avatar = $avatar; }
 
     public function getAmigos(): array { return array_values($this->amigos); }
     public function setAmigos(array $amigos): void { $this->amigos = $amigos; }
@@ -60,11 +67,47 @@ class Usuario {
                 unset($this->posts[$key]);
                 // Reindexar el array para evitar "huecos"
                 $this->posts = array_values($this->posts);
+            }
+        }
+    }
+
+    //busca al usuario que tenga ese nickname en la base de datos
+    public static function obtenerPorNickname($conn, $nickname): ?Usuario {
+        $stmt = $conn->prepare("SELECT email, nombre, apellido, contrasena, avatar FROM usuario WHERE nickname = ?");
+        $stmt->bind_param("s", $nickname);
+        $stmt->execute();
+        $stmt->bind_result($email, $nombre, $apellido, $contrasena, $avatarId);
+
+        if ($stmt->fetch()) {
+            return new Usuario($nickname, $email, $nombre, $apellido, $contrasena, $avatarId);
+        } else {
+            return null; // No encontrado
+        }
+    }
+
+    /*public function enviarSolicitud(Usuario $dest): SolicitudAmistad {
+        $sol = new SolicitudAmistad($this, $dest);
+        $this->solicitudEnviada = $sol;
+        $dest->setSolicitudRecibida($sol);
+        return $sol;
+    }*/
+
+    public function agregarPostUsuario(Post $post, $conn): void {
+        //por ahora es manual, esto en teoria inserta el post_id con el nick del usuario
+        $stmt = $conn->prepare("INSERT INTO usuario_post (nickname, idPost) VALUES (?, ?)");
+        $postId = $post->getId();
+        $stmt->bind_param("si", $this->nickname, $postId);
+        $stmt->execute();
+    }
+
+    public function cambiarFondoPost(int $idPost, int $nuevoFondoId): bool {
+        foreach ($this->posts as $post) {
+            if ($post->getId() === $idPost) {
+                $post->setFondoId($nuevoFondoId);
                 return true;
             }
         }
         return false;
     }
-
 }
 ?>
