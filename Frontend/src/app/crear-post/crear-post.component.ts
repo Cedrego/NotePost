@@ -25,7 +25,7 @@ export class CrearPostComponent {
   constructor() {
     this.postForm = this.fb.group({
       contenido: ['', Validators.required],
-      privado: ['false'],
+      privado: [true],
       recordatorio: [''],
       fondo: ['1'] 
     });
@@ -39,18 +39,23 @@ export class CrearPostComponent {
     }
 
     const formData = this.postForm.value;
+    console.log('FormData enviado:', formData);
 
     this.userService.enviarPost(formData).subscribe({
-      next: (respuesta) => {
+      next: (respuesta:any) => {
         this.alertMessage = '¡Enviado correctamente!';
         this.showAlert = true;
         console.log('Respuesta del servidor:', respuesta);
       },
-      error: (error) => {
+      error: (error: any) => {
         this.alertMessage = 'Error al enviar';
         this.showAlert = true;
-        console.error('Error:', error);
+        console.error('Error completo:', error);
+        if (error.status === 400) {
+          console.error('Error 400 - Bad Request. Probablemente JSON malformado o encabezado incorrecto.');
+        }
       }
+
     });
   }
 

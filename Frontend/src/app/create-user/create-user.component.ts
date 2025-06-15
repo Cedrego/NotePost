@@ -46,12 +46,12 @@ export class CreateUserComponent implements OnInit {
     const formData = this.userForm.value;
 
     this.userService.enviarCrearUsuario(formData).subscribe({
-      next: (respuesta) => {
+      next: (respuesta:any) => {
         this.alertMessage = '¡Enviado correctamente!';
         this.showAlert = true;
         console.log('Respuesta del servidor:', respuesta);
       },
-      error: (error) => {
+      error: (error:any) => {
         this.alertMessage = 'Error al enviar';
         this.showAlert = true;
         console.error('Error:', error);
