@@ -5,16 +5,17 @@
        <app-menu-hamburguesa></app-menu-hamburguesa>
 
       <!-- Nombre de la app -->
-      <a class="navbar-brand text-white fw-bold fs-3" routerLink="/">
-        NotePost
+      <a class="navbar-brand " routerLink="/">
+        <button class="btn fw-bold text-white fs-3" (click)="goToHome()">NotePost</button>
       </a>
 
       <!-- Botones de la derecha -->
       <div class="d-flex">
+        
         <button class="btn btn-outline-light fw-bold me-2" (click)="goToCreateUser()">CREAR USUARIO</button>
-        <button class="btn btn-outline-light fw-bold" (click)="goToIniciarSesion()">INICIAR SESIÓN</button>
-        <button class="btn btn-outline-light fw-bold" (click)="goToCrearPost()">CREAR POST</button>
-        <button class="btn btn-outline-light fw-bold" (click)="goToCambiarAvatar()">CAMBIAR AVATAR</button>
+        <button class="btn btn-outline-light fw-bold me-2" (click)="goToIniciarSesion()">INICIAR SESIÓN</button>
+        <button class="btn btn-outline-light fw-bold me-2" (click)="goToCrearPost()">CREAR POST</button>
+        <button class="btn btn-outline-light fw-bold me-2" (click)="goToCambiarAvatar()">CAMBIAR AVATAR</button>
       
       
       
