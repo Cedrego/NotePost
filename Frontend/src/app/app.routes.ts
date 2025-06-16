@@ -11,7 +11,7 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent }, // nueva ruta
   { path: 'iniciar-sesion', component: IniciarSesionComponent },
   { path: 'crear-post', component: CrearPostComponent },
-  { path: 'app-cambiar-avatar', component: CambiarAvatarComponent }
+  { path: 'cambiar-avatar', component: CambiarAvatarComponent }
   
 
 ];
