@@ -1,6 +1,7 @@
 <?php
 class Tag {
     private string $tag;
+    private Post $post;
 
     public function __construct(Post $post, string $tag) {
         $this->post = $post;

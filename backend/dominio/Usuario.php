@@ -12,14 +12,16 @@ class Usuario {
     private array $amigos = [];
     /** @var Post[] */
     private array $posts = [];
-
-    public function __construct(string $nickname, string $email, string $nombre, string $apellido, string $contrasena, ?int $avatar = null) {
+    //Parametros para el tema del hash de la contraseña
+    private bool $yaHasheada;
+    
+    public function __construct(string $nickname, string $email, string $nombre, string $apellido, string $contrasena, ?int $avatar = null, bool $yaHasheada = false) {
         $this->nickname   = $nickname;
         $this->email      = $email;
         $this->nombre     = $nombre;
         $this->apellido   = $apellido;
         $this->avatar     = $avatar;
-        $this->contrasena = password_hash($contrasena, PASSWORD_DEFAULT);
+        $this->contrasena = $yaHasheada ? $contrasena : password_hash($contrasena, PASSWORD_DEFAULT);
     }
 
     //getters y setters
@@ -67,8 +69,34 @@ class Usuario {
                 unset($this->posts[$key]);
                 // Reindexar el array para evitar "huecos"
                 $this->posts = array_values($this->posts);
+                return true; // Post encontrado y eliminado
             }
         }
+        return false; // Post no encontrado
+    }
+
+    //Retorna un usuario por su nickname y verifica si la contraseña es correcta
+    public static function ConfirmarExistencia($conn, $nickname, $contrasenaIngresada): ?Usuario {
+        $stmt = $conn->prepare("SELECT email, nombre, apellido, contrasena, avatar FROM usuario WHERE nickname = ?");
+        $stmt->bind_param("s", $nickname);
+        $stmt->execute();
+        $email = $nombre = $apellido = $contrasenaHash = null;
+        $avatarId = null;
+        $stmt->bind_result($email, $nombre, $apellido, $contrasenaHash, $avatarId);
+
+        if ($stmt->fetch()) {
+            if (
+                $contrasenaHash !== null && 
+                $email !== null && 
+                $nombre !== null && 
+                $apellido !== null &&
+                password_verify($contrasenaIngresada, $contrasenaHash)
+            ) {
+                // Indica que la contraseña ya está hasheada
+                return new Usuario($nickname, (string)$email, (string)$nombre, (string)$apellido, (string)$contrasenaHash, $avatarId, true);
+            }
+        }
+        return null; // Usuario no encontrado o contraseña incorrecta
     }
 
     //busca al usuario que tenga ese nickname en la base de datos
@@ -76,10 +104,12 @@ class Usuario {
         $stmt = $conn->prepare("SELECT email, nombre, apellido, contrasena, avatar FROM usuario WHERE nickname = ?");
         $stmt->bind_param("s", $nickname);
         $stmt->execute();
+        $email = $nombre = $apellido = $contrasena = null;
+        $avatarId = null;
         $stmt->bind_result($email, $nombre, $apellido, $contrasena, $avatarId);
 
         if ($stmt->fetch()) {
-            return new Usuario($nickname, $email, $nombre, $apellido, $contrasena, $avatarId);
+            return new Usuario($nickname, (string)$email, (string)$nombre, (string)$apellido, (string)$contrasena, $avatarId);
         } else {
             return null; // No encontrado
         }

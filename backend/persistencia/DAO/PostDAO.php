@@ -2,14 +2,12 @@
 require_once __DIR__ . '/../conexion.php';
 require_once __DIR__ . '/../mapeo/PostMap.php';
 class PostDAO {
-    private $conn;
-
     public function __construct() {
-        $this->conn = Conexion::getConexion();
+        // Constructor vacío, no es necesario inicializar nada
     }
-
-    public function obtenerPorId(int $id): ?Post {
-        $stmt = $this->conn->prepare(
+    public static function obtenerPorId(int $id): ?Post {
+        $conn = Conexion::getConexion();
+        $stmt = $conn->prepare(
             "SELECT p.*, u.nickname AS autor_nickname, u.email AS autor_email, u.nombre AS autor_nombre, u.apellido AS autor_apellido, u.contrasena AS autor_contrasena
              FROM posts p
              JOIN usuarios u ON p.autor_nickname = u.nickname
@@ -25,12 +23,14 @@ class PostDAO {
         return null;
     }
 
-    public function guardar(Post $post): void {
+
+public static function guardar(Post $post): void {
     $data = PostMap::mapPostToArray($post);
+    $conn = Conexion::getConexion();
 
     $sql = "INSERT INTO posts (autor_nickname, contenido, likes, dislikes, fechaPost, privado) 
             VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = $this->conn->prepare($sql);
+    $stmt = $conn->prepare($sql);
     $stmt->bind_param(
         "ssiisi",
         $data['autor_nickname'],
@@ -42,30 +42,30 @@ class PostDAO {
     );
     $stmt->execute();
 
-    $postId = $this->conn->insert_id;
+    $postId = $conn->insert_id;
     $post->setId($postId);
 
     // Guardar recordatorios
     foreach ($post->getRecordatorios() as $rec) {
-        $stmtRec = $this->conn->prepare("INSERT INTO recordatorios (post_id, fechaRecordatorio) VALUES (?, ?)");
         $fechaStr = $rec->getFechaRecordatorio()->format('Y-m-d H:i:s');
+        $stmtRec = $conn->prepare("INSERT INTO recordatorios (post_id, fechaRecordatorio) VALUES (?, ?)");
         $stmtRec->bind_param("is", $postId, $fechaStr);
         $stmtRec->execute();
     }
 
     // Guardar tags
     foreach ($post->getTags() as $tag) {
-        $stmtTag = $this->conn->prepare("INSERT INTO tags (post_id, tag) VALUES (?, ?)");
+        $stmtTag = $conn->prepare("INSERT INTO tags (post_id, tag) VALUES (?, ?)");
         $stmtTag->bind_param("is", $postId, $tag->getTag());
         $stmtTag->execute();
     }
 }
 
-    public function actualizar(Post $post): void {
+    public static function actualizar(Post $post): void {
         $data = PostMap::mapPostToArray($post);
-
+        $conn = Conexion::getConexion();
         $sql = "UPDATE posts SET contenido = ?, likes = ?, dislikes = ?, fechaPost = ?, privado = ? WHERE id = ?";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->bind_param(
             "siisii",
             $data['contenido'],
@@ -78,9 +78,9 @@ class PostDAO {
         $stmt->execute();
     }
 
-    public function eliminar(int $id, RecordatorioDAO $recordatorioDAO): void {
-       
-        $post = $this->obtenerPorId($id);
+    public static function eliminar(int $id, RecordatorioDAO $recordatorioDAO): void {
+        $conn = Conexion::getConexion();
+        $post = PostDAO::obtenerPorId($id);
         if (!$post) return;
 
         $recordatorioDAO->deleteByPostId($id);
@@ -88,14 +88,15 @@ class PostDAO {
         $autor = $post->getAutor();
         $autor->olvidarPost($id);
 
-        $stmt = $this->conn->prepare("DELETE FROM posts WHERE id = ?");
+        $stmt =$conn->prepare("DELETE FROM posts WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
     }
 
 
     // Get Ranking (top 10)
-        public function getRanking(): array {
+        public static function getRanking(): array {
+            $conn = Conexion::getConexion();
         $sql = "SELECT p.*, 
                     u.nickname AS autor_nickname, 
                     u.email AS autor_email, 
@@ -107,7 +108,7 @@ class PostDAO {
                 ORDER BY p.likes DESC
                 LIMIT 10";
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -119,8 +120,8 @@ class PostDAO {
         return $topPosts;
     }
 
-    public function getRankingJson(): string {
-        $posts = $this->getRanking();
+    public static function getRankingJson(): string {
+        $posts = PostDAO::getRanking();
         $data = [];
 
         foreach ($posts as $post) {

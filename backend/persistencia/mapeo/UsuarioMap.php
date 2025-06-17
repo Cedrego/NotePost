@@ -9,7 +9,8 @@ class UsuarioMap {
             $row['email'] ,
             $row['nombre'] ,
             $row['apellido'] ,
-            $row['contrasena'] 
+            $row['contrasena'] ,
+            true
         );
     }
     public static function mapUsuarioToArray(Usuario $usuario): array {

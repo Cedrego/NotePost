@@ -3,6 +3,9 @@ require_once __DIR__ . '/../conexion.php';
 require_once __DIR__ . '/../mapeo/UsuarioMap.php';
 
 class UsuarioDAO {
+    // Agregar la propiedad $posts para evitar el error de propiedad indefinida
+    private array $posts = [];
+
     public static function obtenerTodos(): array {
         $conn = Conexion::getConexion();
         $stmt = $conn->query("SELECT * FROM usuarios");

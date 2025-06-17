@@ -4,7 +4,7 @@ require_once 'Recordatorio.php';
 require_once 'Tag.php';
 
 class Post {
-    private int $id;
+    private ?int $id = null;
     private Usuario $autor;
     private string $contenido;
     private int $likes;
@@ -29,7 +29,7 @@ class Post {
     }
 
     // Getters y setters
-    public function getId(): int { return $this->id; }
+    public function getId(): ?int { return $this->id; }
     public function setId(int $id): void { $this->id = $id; }
 
     public function getAutor(): Usuario { return $this->autor; }
