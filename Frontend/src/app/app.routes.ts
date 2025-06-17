@@ -4,6 +4,7 @@ import { HomeComponent } from './home/home.component'; // importa el componente
 import { IniciarSesionComponent } from './iniciar-sesion/iniciar-sesion.component';
 import { CrearPostComponent } from './crear-post/crear-post.component';
 import { CambiarAvatarComponent } from './cambiar-avatar/cambiar-avatar.component';
+import { CambiarPrivacidadComponent } from './cambiar-privacidad/cambiar-privacidad.component';
 
 export const routes: Routes = [
   { path: '',pathMatch: 'full',redirectTo: 'home' },
@@ -11,7 +12,8 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent }, // nueva ruta
   { path: 'iniciar-sesion', component: IniciarSesionComponent },
   { path: 'crear-post', component: CrearPostComponent },
-  { path: 'app-cambiar-avatar', component: CambiarAvatarComponent }
+  { path: 'cambiar-avatar', component: CambiarAvatarComponent },
+  { path: 'cambiar-privacidad', component: CambiarPrivacidadComponent }
   
 
 ];

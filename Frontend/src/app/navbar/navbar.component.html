@@ -1,28 +1,21 @@
 <div class="container">
   <nav class="navbar navbar-expand-lg" style="background-color: #f7941d;">
-    <div class="container-fluid justify-content-between align-items-center">
+    <div class="container-fluid align-items-center">
       <!-- Botón de menú hamburguesa -->
-       <app-menu-hamburguesa></app-menu-hamburguesa>
+      <app-menu-hamburguesa></app-menu-hamburguesa>
 
       <!-- Nombre de la app -->
-      <a class="navbar-brand text-white fw-bold fs-3" routerLink="/">
-        NotePost
+      <a class="navbar-brand ms-2" routerLink="/">
+        <button class="btn fw-bold text-white fs-3" (click)="goToHome()">NotePost</button>
       </a>
 
-      <!-- Botones de la derecha -->
-      <div class="d-flex">
+      <!-- Botones + menú usuario alineados a la derecha -->
+      <div class="d-flex ms-auto align-items-center">
         <button class="btn btn-outline-light fw-bold me-2" (click)="goToCreateUser()">CREAR USUARIO</button>
-        <button class="btn btn-outline-light fw-bold" (click)="goToIniciarSesion()">INICIAR SESIÓN</button>
-        <button class="btn btn-outline-light fw-bold" (click)="goToCrearPost()">CREAR POST</button>
-        <button class="btn btn-outline-light fw-bold" (click)="goToCambiarAvatar()">CAMBIAR AVATAR</button>
-      
-      
-      
-      
+        <button class="btn btn-outline-light fw-bold me-2" (click)="goToIniciarSesion()">INICIAR SESIÓN</button>
+        <!-- Foto de usuario y nombre -->
+        <app-menu-usuario></app-menu-usuario>
       </div>
-      <!--foto usuario y nombre-->
-      <app-menu-usuario></app-menu-usuario>
-      
     </div>
   </nav>
 </div>
