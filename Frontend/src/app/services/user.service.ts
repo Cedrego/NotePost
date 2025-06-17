@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserService {
-  private baseUrl = 'http://localhost/NotePost/backend';
+  private baseUrl = 'http://localhost/backend';
 
   constructor(private http: HttpClient) {}
 
@@ -20,7 +20,7 @@ enviarAvatar(data: any): Observable<any> {
 
 
   enviarCrearUsuario(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/implementacion/crearPost.php`, data);
+    return this.http.post(`${this.baseUrl}/implementacion/crear_usuario.php`, data);
   }
 
   enviarIniciarSesion(data: any): Observable<any> {
