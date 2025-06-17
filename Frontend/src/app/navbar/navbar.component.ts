@@ -22,10 +22,5 @@ export class NavbarComponent {
   goToIniciarSesion(){
     this.router.navigate(['/iniciar-sesion'])
   }
-  goToCrearPost(){
-    this.router.navigate(['/crear-post'])
-  }
-   goToCambiarAvatar(){
-    this.router.navigate(['/app-cambiar-avatar'])
-  }
+  
 }

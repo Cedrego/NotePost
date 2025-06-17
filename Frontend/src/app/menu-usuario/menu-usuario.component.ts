@@ -27,4 +27,7 @@ export class MenuUsuarioComponent {
   goToCambiarAvatar(): void {
     this.router.navigate(['/cambiar-avatar']);
   }
+  goToCambiarPrivacidad(): void {
+    this.router.navigate(['/cambiar-privacidad']);
+  }
 }
