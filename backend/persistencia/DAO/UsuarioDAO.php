@@ -6,6 +6,13 @@ class UsuarioDAO {
     // Agregar la propiedad $posts para evitar el error de propiedad indefinida
     private array $posts = [];
 
+    public static function existeUsuario(string $nickname, string $contrasenaIngresada): ?Usuario {
+        $conn = Conexion::getConexion();
+        // Usamos la función ConfirmarExistencia de Usuario, que ya verifica el hash
+        $usuario = Usuario::ConfirmarExistencia($conn, $nickname, $contrasenaIngresada);
+        return $usuario; // Retorna el objeto Usuario si coincide, o null si no
+    }
+
     public static function obtenerTodos(): array {
         $conn = Conexion::getConexion();
         $stmt = $conn->query("SELECT * FROM usuarios");

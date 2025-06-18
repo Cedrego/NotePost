@@ -77,7 +77,7 @@ class Usuario {
 
     //Retorna un usuario por su nickname y verifica si la contraseña es correcta
     public static function ConfirmarExistencia($conn, $nickname, $contrasenaIngresada): ?Usuario {
-        $stmt = $conn->prepare("SELECT email, nombre, apellido, contrasena, avatar FROM usuario WHERE nickname = ?");
+        $stmt = $conn->prepare("SELECT email, nombre, apellido, contrasena, avatar FROM usuarios WHERE nickname = ?");
         $stmt->bind_param("s", $nickname);
         $stmt->execute();
         $email = $nombre = $apellido = $contrasenaHash = null;

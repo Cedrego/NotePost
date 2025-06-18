@@ -45,15 +45,19 @@ export class IniciarSesionComponent implements OnInit{
         this.showAlert = true;
         console.log('Respuesta del servidor:', respuesta);
       },
-      error: (error) => {
-        this.alertMessage = 'Error al enviar';
+       error: (error: any) => {
+        if (error.status === 401 && error.error && error.error.error) {
+          this.alertMessage = error.error.error; // Mensaje del backend
+        } else {
+          this.alertMessage = 'Error al enviar';
+        }
         this.showAlert = true;
         console.error('Error:', error);
       }
     });
   }
   // Getters para los campos
-  get nick() { return this.sesionForm.get('email'); }
+  get nick() { return this.sesionForm.get('nick'); }
   get pass() { return this.sesionForm.get('pass'); }
   get repeatpass() { return this.sesionForm.get('repeatpass'); }
 

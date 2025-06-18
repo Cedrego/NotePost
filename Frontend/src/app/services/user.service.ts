@@ -24,7 +24,7 @@ enviarAvatar(data: any): Observable<any> {
   }
 
   enviarIniciarSesion(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/implementacion/crearPost.php`, data);
+    return this.http.post(`${this.baseUrl}/implementacion/iniciar_sesion.php`, data);
   }
   enviarPost(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/implementacion/procesarFormulario.php`, data);
