@@ -2,7 +2,7 @@
 require_once 'Usuario.php';
 require_once 'Recordatorio.php';
 require_once 'Tag.php';
-
+date_default_timezone_set('Etc/GMT+3'); 
 class Post {
     private ?int $id = null;
     private Usuario $autor;

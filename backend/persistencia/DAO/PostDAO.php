@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../conexion.php';
 require_once __DIR__ . '/../mapeo/PostMap.php';
+
 class PostDAO {
     public function __construct() {
         // Constructor vacío, no es necesario inicializar nada
@@ -24,42 +25,53 @@ class PostDAO {
     }
 
 
-public static function guardar(Post $post): void {
-    $data = PostMap::mapPostToArray($post);
-    $conn = Conexion::getConexion();
+    public static function guardar(Post $post): void {
+        $data = PostMap::mapPostToArray($post);
+        $conn = Conexion::getConexion();
 
-    $sql = "INSERT INTO posts (autor_nickname, contenido, likes, dislikes, fechaPost, privado) 
-            VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param(
-        "ssiisi",
-        $data['autor_nickname'],
-        $data['contenido'],
-        $data['likes'],
-        $data['dislikes'],
-        $data['fechaPost'],
-        $data['privado']
-    );
-    $stmt->execute();
+        $sql = "INSERT INTO posts (autor_nickname, contenido, likes, dislikes, fechaPost, privado) 
+                VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param(
+            "ssiisi",
+            $data['autor_nickname'],
+            $data['contenido'],
+            $data['likes'],
+            $data['dislikes'],
+            $data['fechaPost'],
+            $data['privado']
+        );
+        $stmt->execute();
 
-    $postId = $conn->insert_id;
-    $post->setId($postId);
+        $postId = $conn->insert_id;
+        $post->setId($postId);
+        /*
+        // Guardar recordatorios
+        foreach ($post->getRecordatorios() as $rec) {
+            $fechaStr = $rec->getFechaRecordatorio()->format('Y-m-d H:i:s');
+            $stmtRec = $conn->prepare("INSERT INTO recordatorios (post_id, fechaRecordatorio) VALUES (?, ?)");
+            $stmtRec->bind_param("is", $postId, $fechaStr);
+            $stmtRec->execute();
+        }
 
-    // Guardar recordatorios
-    foreach ($post->getRecordatorios() as $rec) {
-        $fechaStr = $rec->getFechaRecordatorio()->format('Y-m-d H:i:s');
-        $stmtRec = $conn->prepare("INSERT INTO recordatorios (post_id, fechaRecordatorio) VALUES (?, ?)");
-        $stmtRec->bind_param("is", $postId, $fechaStr);
-        $stmtRec->execute();
+        // Guardar tags y relaciones post_tag
+        foreach ($post->getTags() as $tag) {
+            // 1. Insertar el tag si no existe
+            $stmtTag = $conn->prepare("INSERT IGNORE INTO tags (nombre) VALUES (?)");
+            $nombreTag = $tag->getTag();
+            $stmtTag->bind_param("s", $nombreTag);
+            $stmtTag->execute();
+            $stmtTag->close();
+
+            // 2. Insertar la relación en post_tag
+            $stmtPostTag = $conn->prepare("INSERT INTO post_tag (post_id, tag_id) VALUES (?, ?)");
+            $stmtPostTag->bind_param("is", $postId, $nombreTag);
+            $stmtPostTag->execute();
+            $stmtPostTag->close();
+        }
+
+        */
     }
-
-    // Guardar tags
-    foreach ($post->getTags() as $tag) {
-        $stmtTag = $conn->prepare("INSERT INTO tags (post_id, tag) VALUES (?, ?)");
-        $stmtTag->bind_param("is", $postId, $tag->getTag());
-        $stmtTag->execute();
-    }
-}
 
     public static function actualizar(Post $post): void {
         $data = PostMap::mapPostToArray($post);

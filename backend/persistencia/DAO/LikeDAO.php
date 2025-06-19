@@ -1,53 +1,77 @@
 <?php
-require_once __DIR__ . '/../Conexion.php';
+require_once __DIR__ . '/../conexion.php';
+require_once __DIR__ . '/../mapeo/LikeMap.php';
 
 class LikeDAO {
-    private $conn;
 
-    public function __construct() {
-        $this->conn = Conexion::getConexion();
-        $this->crearTablaSiNoExiste();
+    // Insertar un like/dislike
+    public static function guardar(Like $like): void {
+        $conn = Conexion::getConexion();
+        $sql = "INSERT INTO likes (id_post, usuario, accion) VALUES (?, ?, ?)";
+
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Error al preparar: " . $conn->error);
+        }
+
+        $data = LikeMap::mapLikeToArray($like);
+
+        $stmt->bind_param(
+            "iss",
+            $data['id_post'],
+            $data['usuario'],
+            $data['accion']
+        );
+
+        if (!$stmt->execute()) {
+            die("Error al ejecutar: " . $stmt->error);
+        }
+
+        $stmt->close();
     }
 
-    private function crearTablaSiNoExiste(): void {
-        $sql = "CREATE TABLE IF NOT EXISTS likes (
-            id_post INT NOT NULL,
-            usuario VARCHAR(255) NOT NULL,
-            accion ENUM('like', 'dislike') NOT NULL,
-            PRIMARY KEY (id_post, usuario),
-            FOREIGN KEY (id_post) REFERENCES posts(id) ON DELETE CASCADE,
-            FOREIGN KEY (usuario) REFERENCES usuarios(nickname) ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
-        $this->conn->query($sql);
+    // Obtener todos los likes de un post
+    public static function obtenerPorPost(int $idPost): array {
+        $conn = Conexion::getConexion();
+        $sql = "SELECT * FROM likes WHERE id_post = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $idPost);
+        $stmt->execute();
+        $res = $stmt->get_result();
+
+        $likes = [];
+        while ($row = $res->fetch_assoc()) {
+            $likes[] = LikeMap::mapRowToLike($row);
+        }
+        $stmt->close();
+        return $likes;
     }
 
-    public function obtenerAccion(int $idPost, string $usuario): ?string {
-        $stmt = $this->conn->prepare("SELECT accion FROM likes WHERE id_post = ? AND usuario = ?");
+    // Obtener el like de un usuario en un post (si existe)
+    public static function obtenerPorUsuarioYPost(int $idPost, string $usuario): ?Like {
+        $conn = Conexion::getConexion();
+        $sql = "SELECT * FROM likes WHERE id_post = ? AND usuario = ?";
+        $stmt = $conn->prepare($sql);
         $stmt->bind_param("is", $idPost, $usuario);
         $stmt->execute();
-        $result = $stmt->get_result();
-        if ($row = $result->fetch_assoc()) {
-            return $row['accion'];
+        $res = $stmt->get_result();
+
+        if ($row = $res->fetch_assoc()) {
+            $stmt->close();
+            return LikeMap::mapRowToLike($row);
         }
+        $stmt->close();
         return null;
     }
 
-    public function eliminarVoto(int $idPost, string $usuario): void {
-        $stmt = $this->conn->prepare("DELETE FROM likes WHERE id_post = ? AND usuario = ?");
-        $stmt->bind_param("is", $idPost, $usuario);
+    // Eliminar un like/dislike
+    public static function eliminar(Like $like): void {
+        $conn = Conexion::getConexion();
+        $sql = "DELETE FROM likes WHERE id_post = ? AND usuario = ?";
+        $stmt = $conn->prepare($sql);
+        $data = LikeMap::mapLikeToArray($like);
+        $stmt->bind_param("is", $data['id_post'], $data['usuario']);
         $stmt->execute();
-    }
-
-    public function insertarVoto(int $idPost, string $usuario, string $accion): void {
-        $stmt = $this->conn->prepare("INSERT INTO likes (id_post, usuario, accion) VALUES (?, ?, ?)");
-        $stmt->bind_param("iss", $idPost, $usuario, $accion);
-        $stmt->execute();
-    }
-
-    public function actualizarVoto(int $idPost, string $usuario, string $accion): void {
-        $stmt = $this->conn->prepare("UPDATE likes SET accion = ? WHERE id_post = ? AND usuario = ?");
-        $stmt->bind_param("sis", $accion, $idPost, $usuario);
-        $stmt->execute();
+        $stmt->close();
     }
 }
-?>

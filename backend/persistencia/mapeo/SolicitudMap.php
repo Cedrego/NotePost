@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../dominio/SolicitudAmistad.php';
-require_once __DIR__ . '/../dominio/Usuario.php';
-require_once __DIR__ . '/../dao/UsuarioDAO.php';
+require_once __DIR__ . '/../../dominio/SolicitudDeAmistad.php';
+require_once __DIR__ . '/../../dominio/Usuario.php';
+require_once __DIR__ . '/../DAO/UsuarioDAO.php';
 
 class SolicitudMap {
     public static function mapRowToSolicitud($row): SolicitudAmistad {
