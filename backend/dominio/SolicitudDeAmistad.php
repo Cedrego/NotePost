@@ -19,6 +19,9 @@ class SolicitudAmistad {
     public function isAceptada(): bool { return $this->aceptada; }
     public function setAceptada(bool $aceptada): void { $this->aceptada = $aceptada; }
 
+    public function getAceptada() {
+       return $this->aceptada;
+    }
     public function aceptar(): void {
         $this->aceptada = true;
         $this->solicitante->addAmigo($this->recibidor);

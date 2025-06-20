@@ -18,7 +18,17 @@ export class UserService {
    const nick = this.session.getUsuario();
     return this.http.get(`${this.baseUrl}/implementacion/obtenerAmigos.php?usuario=${encodeURIComponent(nick ?? '')}`);
   }
+  getSolicitudesDeAmistad(): Observable<any> {
+   const nick = this.session.getUsuario();
+    return this.http.get(`${this.baseUrl}/implementacion/obtenerSolicitudesPendites.php?usuario=${encodeURIComponent(nick ?? '')}`);
+  }
+  aceptarSolicitud(solicitud: { solicitante: string, recibidor: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/implementacion/aceptarSolicitud.php`, solicitud);
+  }
 
+  rechazarSolicitud(solicitud: { solicitante: string, recibidor: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/implementacion/rechazarSolicitud.php`, solicitud);
+  }
   enviarAvatar(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/implementacion/crearPost.php`, data);
   }

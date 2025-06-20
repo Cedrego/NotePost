@@ -20,10 +20,14 @@
 
 
 
-  <!-- Solicitudes de amistad -->
+  <!-- Solicitudes de amistad (no muestra logo)-->
   <div class="solicitudes">
     <h6>Solicitudes</h6>
-    <p>Aquí podrías mostrar solicitudes pendientes</p>
+    <li *ngFor="let solicitud of solicitudes">
+      {{ solicitud.solicitante }}
+        <button class="btn btn-success btn-sm ms-2" (click)="aceptarSolicitud(solicitud)">✔</button>
+        <button class="btn btn-danger btn-sm ms-1" (click)="rechazarSolicitud(solicitud)">✖</button>
+    </li>
   </div>
 
   <!-- Calendario -->

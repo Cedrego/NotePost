@@ -13,11 +13,12 @@ class SolicitudMap {
         return $solicitud;
     }
 
-    public static function mapSolicitudToArray(SolicitudAmistad $solicitud): array {
+    // Convierte un objeto SolicitudAmistad a array (si lo necesitas para guardar)
+    public static function mapSolicitudToArray($solicitud): array {
         return [
             'solicitante' => $solicitud->getSolicitante()->getNickname(),
             'recibidor'   => $solicitud->getRecibidor()->getNickname(),
-            'aceptada'    => $solicitud->isAceptada() ? 1 : 0
+            'aceptada'    => $solicitud->getAceptada()
         ];
     }
 }

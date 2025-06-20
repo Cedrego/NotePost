@@ -32,13 +32,7 @@ if (!$solicitud) {
     echo json_encode(['error' => 'Solicitud no encontrada']);
     exit;
 }
-
-// Marcar como aceptada
-$solicitud->aceptar();
-
-// Agregar como amigos
-UsuarioDAO::addAmigo($solicitante, $recibidor);
-
+//ACA  ES LO MISMO QUE ACEPTAR SOLICITUD SOLO QUE EN VEZ DE AGREGAR BORRAMOS
 // Eliminar la solicitud
 SolicitudDAO::eliminar($solicitud);
 

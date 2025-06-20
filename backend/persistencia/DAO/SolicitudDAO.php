@@ -56,5 +56,4 @@ class SolicitudDAO {
         }
         return null;
     }
-
 }
