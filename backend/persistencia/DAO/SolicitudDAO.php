@@ -7,7 +7,7 @@ class SolicitudDAO {
 
     public static function obtenerSolicitudesRecibidas(string $nickname): array {
         $conn = Conexion::getConexion();
-        $sql = "SELECT * FROM solicitudes WHERE recibidor = ? AND aceptada = FALSE";
+        $sql = "SELECT * FROM solicitudes WHERE recibidor = ? AND aceptada = 0";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $nickname);
         $stmt->execute();
@@ -19,7 +19,6 @@ class SolicitudDAO {
         }
         return $solicitudes;
     }
-
 
     public static function guardar(SolicitudAmistad $s) {
 

@@ -50,19 +50,18 @@ class TagDAO {
     }
 
     // Buscar tags por nombre (búsqueda parcial)
-    public static function searchTags(string $busqueda): array {
+    public static function searchTag(string $busqueda): ?Tag {
         $conn = Conexion::getConexion();
-        $sql = "SELECT nombre FROM tags WHERE nombre LIKE ?";
+        $sql = "SELECT nombre FROM tags WHERE nombre LIKE ? LIMIT 1";
         $like = "%$busqueda%";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $like);
         $stmt->execute();
         $result = $stmt->get_result();
-        $tags = [];
-        while ($row = $result->fetch_assoc()) {
-            $tags[] = TagMap::mapRowToTag($row);
+        if ($row = $result->fetch_assoc()) {
+            return TagMap::mapRowToTag($row);
         }
-        return $tags;
+        return null;
     }
 }
 

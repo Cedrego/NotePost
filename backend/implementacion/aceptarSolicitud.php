@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../dao/UsuarioDAO.php';
-require_once __DIR__ . '/../dao/SolicitudDAO.php';
+require_once __DIR__ . '../persistencia/DAO/UsuarioDAO.php';
+require_once __DIR__ . '../persistencia/DAO/SolicitudDAO.php';
 
 function AceptarSolicitud(string $UsuarioSolicitante, string $UsuarioRecibidor): void {
     $solicitud = SolicitudDAO::obtener($UsuarioSolicitante, $UsuarioRecibidor);
@@ -12,9 +12,10 @@ function AceptarSolicitud(string $UsuarioSolicitante, string $UsuarioRecibidor):
     $solicitud->aceptar();
 
     // Guardar cambios de amistad
-    UsuarioDAO::guardar($solicitud->getSolicitante());
-    UsuarioDAO::guardar($solicitud->getRecibidor());
+    UsuarioDAO::addAmigo($solicitud->getSolicitante()->getNickname(), $solicitud->getRecibidor()->getNickname());
 
     // Eliminar solicitud una vez aceptada
     SolicitudDAO::eliminar($solicitud);
+
+   
 }

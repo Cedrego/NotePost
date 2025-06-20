@@ -24,6 +24,49 @@ class UsuarioDAO {
 
         return $usuarios;
     }
+    public static function obtenerAmigos(string $nickname): array {
+        $conn = Conexion::getConexion();
+        $sql = "SELECT  CASE  WHEN usuario1 = ? THEN usuario2  ELSE usuario1  END AS amigo FROM amigos
+                WHERE usuario1 = ? OR usuario2 = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sss", $nickname, $nickname, $nickname);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $amigos = [];
+        while ($row = $result->fetch_assoc()) {
+            $amigos[] = $row['amigo'];
+        }
+        $stmt->close();
+        return $amigos;
+    }
+    public static function addAmigo(string $usuario1, string $usuario2): bool {
+        $conn = Conexion::getConexion();
+
+        // Evitar duplicados: siempre guardar el par ordenado alfabéticamente
+        $u1 = $usuario1 < $usuario2 ? $usuario1 : $usuario2;
+        $u2 = $usuario1 < $usuario2 ? $usuario2 : $usuario1;
+
+        // Verificar si ya existe la amistad
+        $check = $conn->prepare("SELECT 1 FROM amigos WHERE usuario1 = ? AND usuario2 = ?");
+        $check->bind_param("ss", $u1, $u2);
+        $check->execute();
+        $check->store_result();
+        if ($check->num_rows > 0) {
+            $check->close();
+            return false; // Ya son amigos
+        }
+        $check->close();
+
+        // Insertar la amistad
+        $stmt = $conn->prepare("INSERT INTO amigos (usuario1, usuario2) VALUES (?, ?)");
+        $stmt->bind_param("ss", $u1, $u2);
+        $ok = $stmt->execute();
+        $stmt->close();
+
+        return $ok;
+    }
+
     public static function obtenerPorNickname(string $nickname): ?Usuario {
         $conn = Conexion::getConexion();
         $sql = "SELECT * FROM usuarios WHERE nickname = ?";

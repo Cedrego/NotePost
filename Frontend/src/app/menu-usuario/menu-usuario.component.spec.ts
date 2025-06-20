@@ -1,32 +1,23 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { NgIf } from '@angular/common';
-import { Router } from '@angular/router';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-@Component({
-  selector: 'app-menu-usuario',
-  standalone: true,
-  imports: [CommonModule, NgIf],
-  templateUrl: './menu-usuario.component.html',
-  styleUrl: './menu-usuario.component.scss'
-})
-export class MenuUsuarioComponent {
-  nombre:string="pepe";
-  menuAbierto = false;
-  constructor(private router: Router) {}
-  
-  toggleMenu() {
-    this.menuAbierto = !this.menuAbierto;
-  }
+import { MenuUsuarioComponent } from './menu-usuario.component';
 
-  opcionSeleccionada(opcion: string) {
-    console.log('Opción seleccionada:', opcion);
-    this.menuAbierto = false;
-  }
-  goToCrearPost(){
-    this.router.navigate(['/crear-post'])
-  }
-   goToCambiarAvatar(){
-    this.router.navigate(['/app-cambiar-avatar'])
-  }
-}
+describe('MenuUsuarioComponent', () => {
+  let component: MenuUsuarioComponent;
+  let fixture: ComponentFixture<MenuUsuarioComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MenuUsuarioComponent]
+    })
+    .compileComponents();
+
+    fixture = TestBed.createComponent(MenuUsuarioComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

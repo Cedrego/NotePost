@@ -11,10 +11,16 @@
 
       <!-- Botones + menú usuario alineados a la derecha -->
       <div class="d-flex ms-auto align-items-center">
-        <button class="btn btn-outline-light fw-bold me-2" (click)="goToCreateUser()">CREAR USUARIO</button>
-        <button class="btn btn-outline-light fw-bold me-2" (click)="goToIniciarSesion()">INICIAR SESIÓN</button>
-        <!-- Foto de usuario y nombre -->
-        <app-menu-usuario></app-menu-usuario>
+        <!-- Si NO está logueado -->
+        <ng-container *ngIf="!isLoggedIn; else usuarioMenu">
+          <button class="btn btn-outline-light fw-bold me-2" (click)="goToCreateUser()">CREAR USUARIO</button>
+          <button class="btn btn-outline-light fw-bold me-2" (click)="goToIniciarSesion()">INICIAR SESIÓN</button>
+        </ng-container>
+        <!-- Si está logueado -->
+        <ng-template #usuarioMenu>
+            <!-- Foto de usuario y nombre -->
+          <app-menu-usuario></app-menu-usuario>
+        </ng-template>
       </div>
     </div>
   </nav>

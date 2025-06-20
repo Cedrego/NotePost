@@ -2,7 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../services/user.service';
-
+import { SessionService } from '../services/session.service';// <-- importando servicio de sesión
+import { Router } from '@angular/router';// <-- Importando Router para redirección a Menu-Usuario despues de login exitoso
 @Component({
   selector: 'app-iniciar-sesion',
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
@@ -13,6 +14,8 @@ export class IniciarSesionComponent implements OnInit{
   sesionForm: FormGroup;
   fb = inject(FormBuilder);
   userService = inject(UserService);
+  sessionService = inject(SessionService); // <-- Agregadondo servicio de sesión
+  router = inject(Router); // <-- Inyectando Router para redirección
 
   showAlert = false;
   alertMessage = '';
@@ -41,9 +44,13 @@ export class IniciarSesionComponent implements OnInit{
 
     this.userService.enviarIniciarSesion(formData).subscribe({
       next: (respuesta) => {
+        this.sessionService.setUsuario(formData.nick); // <-- Guardar usuario en sesión
         this.alertMessage = '¡Enviado correctamente!';
         this.showAlert = true;
         console.log('Respuesta del servidor:', respuesta);
+        setTimeout(() => {
+          this.router.navigate(['/home']); // Redirigir a la página de inicio después de iniciar sesión
+        }, 1000); // Espera 1 segundo antes de redirigir (opcional)
       },
        error: (error: any) => {
         if (error.status === 401 && error.error && error.error.error) {

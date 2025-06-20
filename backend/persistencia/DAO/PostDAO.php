@@ -45,32 +45,6 @@ class PostDAO {
 
         $postId = $conn->insert_id;
         $post->setId($postId);
-        /*
-        // Guardar recordatorios
-        foreach ($post->getRecordatorios() as $rec) {
-            $fechaStr = $rec->getFechaRecordatorio()->format('Y-m-d H:i:s');
-            $stmtRec = $conn->prepare("INSERT INTO recordatorios (post_id, fechaRecordatorio) VALUES (?, ?)");
-            $stmtRec->bind_param("is", $postId, $fechaStr);
-            $stmtRec->execute();
-        }
-
-        // Guardar tags y relaciones post_tag
-        foreach ($post->getTags() as $tag) {
-            // 1. Insertar el tag si no existe
-            $stmtTag = $conn->prepare("INSERT IGNORE INTO tags (nombre) VALUES (?)");
-            $nombreTag = $tag->getTag();
-            $stmtTag->bind_param("s", $nombreTag);
-            $stmtTag->execute();
-            $stmtTag->close();
-
-            // 2. Insertar la relación en post_tag
-            $stmtPostTag = $conn->prepare("INSERT INTO post_tag (post_id, tag_id) VALUES (?, ?)");
-            $stmtPostTag->bind_param("is", $postId, $nombreTag);
-            $stmtPostTag->execute();
-            $stmtPostTag->close();
-        }
-
-        */
     }
 
     public static function actualizar(Post $post): void {

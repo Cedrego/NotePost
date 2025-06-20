@@ -61,6 +61,14 @@ CREATE TABLE solicitudes (
     FOREIGN KEY (recibidor) REFERENCES usuarios(nickname)
  );
 
+CREATE TABLE amigos (
+    usuario1 VARCHAR(255) NOT NULL,
+    usuario2 VARCHAR(255) NOT NULL,
+    PRIMARY KEY (usuario1, usuario2),
+    FOREIGN KEY (usuario1) REFERENCES usuarios(nickname) ON DELETE CASCADE,
+    FOREIGN KEY (usuario2) REFERENCES usuarios(nickname) ON DELETE CASCADE
+);
+
 CREATE TABLE likes (
     id_post INT NOT NULL,
     usuario VARCHAR(255) NOT NULL,

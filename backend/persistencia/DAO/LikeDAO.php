@@ -74,4 +74,38 @@ class LikeDAO {
         $stmt->execute();
         $stmt->close();
     }
+
+     public function obtenerAccion(int $idPost, string $usuario): ?string {
+        $conn = Conexion::getConexion();
+        $stmt = $conn->prepare("SELECT accion FROM likes WHERE id_post = ? AND usuario = ?");
+        $stmt->bind_param("is", $idPost, $usuario);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($row = $result->fetch_assoc()) {
+            return $row['accion'];
+        }
+        return null;
+    }
+
+    public function eliminarVoto(int $idPost, string $usuario): void {
+        $conn = Conexion::getConexion();
+        $stmt = $conn->prepare("DELETE FROM likes WHERE id_post = ? AND usuario = ?");
+        $stmt->bind_param("is", $idPost, $usuario);
+        $stmt->execute();
+    }
+
+    public function insertarVoto(int $idPost, string $usuario, string $accion): void {
+        $conn = Conexion::getConexion();
+        $stmt = $conn->prepare("INSERT INTO likes (id_post, usuario, accion) VALUES (?, ?, ?)");
+        $stmt->bind_param("iss", $idPost, $usuario, $accion);
+        $stmt->execute();
+    }
+
+    public function actualizarVoto(int $idPost, string $usuario, string $accion): void {
+        $conn = Conexion::getConexion();
+        $stmt = $conn->prepare("UPDATE likes SET accion = ? WHERE id_post = ? AND usuario = ?");
+        $stmt->bind_param("sis", $accion, $idPost, $usuario);
+        $stmt->execute();
+    }
+
 }

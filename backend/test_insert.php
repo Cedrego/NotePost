@@ -77,6 +77,12 @@ try {
     SolicitudDAO::guardar($solicitud);
     echo "Solicitud de amistad insertada correctamente<br>";
 
+    //Agregar amigo
+    $usuario3 = new Usuario("Test3", "Test2@dominio.com", "Test2", "Perez2", "1234562");
+    UsuarioDAO::guardar($usuario3);
+    UsuarioDAO::addAmigo($usuario->getNickname(), $usuario3->getNickname());
+    UsuarioDAO::addAmigo($usuario->getNickname(), $usuario2->getNickname());
+    echo "Amigo agregado correctamente<br>";
     //Gardar Like
     $like = new Like($post->getId(), $usuario, 'like');
     LikeDAO::guardar($like);
