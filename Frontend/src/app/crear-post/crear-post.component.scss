@@ -1,41 +1,91 @@
 /* .fondo-option {
+display: inline-block;
+margin: 10px;
+}
+
+.fondo-option label {
+display: block;
+width: 100px;
+height: 100px;
+background-size: cover;
+border: 2px solid transparent;
+cursor: pointer;
+}
+
+.fondo-option input[type="radio"]:checked + label {
+border-color: blue;
+}
+*/
+/* Estilos básicos para la selección de fondos */
+.form-container{
+  margin-top: 9rem;
+  text-align: center;
+}
+.nota-contenido{
+  border-color: #f7941d;
+  border-width: 3px;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  resize: vertical;
+}
+
+.crearPost{
+  background-color: #f7941d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button[type="submit"] {
+  background-color: #f7941d; // naranja
+  color: white; // texto blanco
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(247, 148, 29, 0.4);
+
+  &:hover:enabled {
+    box-shadow: 0 0 15px rgba(247, 148, 29, 0.8); // más brillo al hover
+    transform: scale(1.02); // leve zoom
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.fondo-option {
   display: inline-block;
-  margin: 10px;
+  margin: 0 10px;
+  text-align: center;
+}
+
+.fondo-option input[type="radio"] {
+  display: none; /* ocultamos el radio button */
 }
 
 .fondo-option label {
   display: block;
   width: 100px;
-  height: 100px;
-  background-size: cover;
+  height: 70px;
   border: 2px solid transparent;
   cursor: pointer;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 5px;
 }
-
-.fondo-option input[type="radio"]:checked + label {
-  border-color: blue;
+/* Cuando el radio esté seleccionado, resaltamos el label */
+.fondo-option input:checked + label {
+  border-color: #007BFF;
 }
- */
- /* Estilos básicos para la selección de fondos */
-    .fondo-option {
-      display: inline-block;
-      margin: 0 10px;
-      text-align: center;
-    }
-   // .fondo-option input {
-     // display: none; /* ocultamos el radio nativo */
-    //}
-    .fondo-option label {
-      display: block;
-      width: 100px;
-      height: 70px;
-      border: 2px solid transparent;
-      cursor: pointer;
-      background-size: cover;
-      background-position: center;
-      margin-bottom: 5px;
-    }
-    /* Cuando el radio esté seleccionado, resaltamos el label */
-    .fondo-option input:checked + label {
-      border-color: #333;
-    }

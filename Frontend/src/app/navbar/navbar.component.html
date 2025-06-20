@@ -1,12 +1,12 @@
-<div class="container">
-  <nav class="navbar navbar-expand-lg" style="background-color: #f7941d;">
+<div class="container-fluid">
+  <nav class="navbar navbar-expand-lg fixed-top w-100">
     <div class="container-fluid align-items-center">
       <!-- Botón de menú hamburguesa -->
       <app-menu-hamburguesa></app-menu-hamburguesa>
 
       <!-- Nombre de la app -->
-      <a class="navbar-brand ms-2" routerLink="/">
-        <button class="btn fw-bold text-white fs-3" (click)="goToHome()">NotePost</button>
+      <a class="navbar-brand" routerLink="/">
+        <button class="navbar-brand button" (click)="goToHome()">NotePost</button>
       </a>
 
       <!-- Botones + menú usuario alineados a la derecha -->

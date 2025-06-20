@@ -1,41 +1,20 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
   <div class="form-container w-100 px-4 py-4 mx-auto">     
   <!-- Formulario para actualizar avatar -->
   <form [formGroup]="avatarForm" (ngSubmit)="onSubmit()">  
-    <h1>Elige tu nuevo avatar:</h1>
+    <h1>Elige tu nuevo avatar</h1>
 
     <!-- Avatar 1 -->
-    <div class="avatar-option">
-      <input type="radio" name="idAvatar" id="avatar1" value="1" formControlName="idAvatar">
-      <label for="avatar1" style="background-image: url('http://localhost/NotePost/Frontend/src/assets/avatars/avatar1.jpg');"></label>
-      <span>Avatar 1</span>
-    </div>
-
-    <!-- Avatar 2 -->
-    <div class="avatar-option">
-      <input type="radio" name="idAvatar" id="avatar2" value="2"formControlName="idAvatar" >
-      <label for="avatar2" style="background-image: url('http://localhost/NotePost/Frontend/src/assets/avatars/avatar2.jpg');"></label>
-      <span>Avatar 2</span>
-    </div>
-
-    <!-- Avatar 3 -->
-    <div class="avatar-option">
-      <input type="radio" name="idAvatar" id="avatar3" value="3" formControlName="idAvatar">
-      <label for="avatar3" style="background-image: url('http://localhost/NotePost/Frontend/src/assets/avatars/avatar3.jpg');"></label>
-      <span>Avatar 3</span>
-    </div>
-
-    <!-- Avatar 4 -->
-    <div class="avatar-option">
-      <input type="radio" name="idAvatar" id="avatar4" value="4"formControlName="idAvatar">
-      <label for="avatar4" style="background-image: url('http://localhost/NotePost/Frontend/src//assets/avatars/avatar4.jpg');"></label>
-      <span>Avatar 4</span>
+    <div *ngFor="let avatar of avatars" class="avatar-option">
+      <input type="radio" name="idAvatar" [id]="'avatar' + avatar.id" [value]="avatar.id" formControlName="idAvatar">
+      <label [for]="'avatar' + avatar.id" [style.background-image]="'url(/assets/avatars/' + avatar.filename + ')'"></label>
+      <span>{{ avatar.name }}</span>
     </div>
     
     <br><br>
     <!-- Botón de envío -->
     <div class="text-center mt-4">
-        <button type="submit" class="btn btn-outline-light fw-bold">Actualizar Avatar</button>
+        <button type="submit" class="actualizarAvatar">Actualizar Avatar</button>
       </div>
   </form>
 
