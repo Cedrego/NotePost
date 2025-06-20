@@ -22,6 +22,20 @@ export class CrearPostComponent {
   alertMessage = '';
   id = 10;
 
+  coloresFondo = [
+    { id: 1, name: 'Rojo', color: '#FFBFC0' },
+    { id: 2, name: 'Naranja', color: '#FFD5BF' },
+    { id: 3, name: 'Amarillo', color: '#FFFABF' },
+    { id: 4, name: 'Lima', color: '#EBFFBF' },
+    { id: 5, name: 'Verde', color: '#E0FFBF' },
+    { id: 6, name: 'Turquesa', color: '#BFFFDB' },
+    { id: 7, name: 'Cyan', color: '#BFFFFD' },
+    { id: 8, name: 'Azul', color: '#BFD1FF' },
+    { id: 9, name: 'Purpura', color: '#D0BFFF' },
+    { id: 10, name: 'Magenta', color: '#FFBFD7' },
+    { id: 11, name: 'Rosa', color: '#FCBFFF' },
+  ];
+
   constructor() {
     this.postForm = this.fb.group({
       contenido: ['', Validators.required],

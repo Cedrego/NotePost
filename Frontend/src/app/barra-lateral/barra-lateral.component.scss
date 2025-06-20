@@ -48,6 +48,7 @@
   border-radius: 8px;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
   font-family: 'Segoe UI', sans-serif;
+  color: rgb(0, 0, 0);
 
   h6 {
     font-weight: 600;
@@ -81,8 +82,8 @@
     padding: 6px 0;
     font-weight: 600;
     font-size: 0.85rem;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
+    background-color: #ffffff;
+    border-bottom: 1px solid #000000;
     text-align: center;
   }
 
@@ -96,6 +97,5 @@
     table-layout: auto !important;
   }
 }
-
 
 }

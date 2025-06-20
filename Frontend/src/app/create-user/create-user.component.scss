@@ -1,0 +1,83 @@
+.form-container {
+  margin-top: 9.5rem;
+  background-color: #ffffff; //fondo
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  font-family: 'Segoe UI', sans-serif;
+
+  .form-label {
+    font-weight: bold;
+    color: #f7941d; // color naranja para los labels
+    margin-bottom: 0.8rem;
+  }
+
+  .form-control {
+    background-color: #FFD9AB;
+    color: black;
+    border: 1px solid #f7941d;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+    &:focus {
+      border-color: #f7941d;
+      box-shadow: 0 0 0 0.2rem rgba(247, 148, 29, 0.25);
+      outline: none;
+    }
+  }
+
+  .alert-danger {
+    background-color: rgba(255, 0, 0, 0.1);
+    color: #ff5e5e;
+    border: 1px solid #ff5e5e;
+    border-radius: 6px;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .custom-alert {
+    background-color: rgba(20, 20, 20);
+    color: white;
+    border-radius: 6px;
+    padding: 1rem;
+    text-align: center;
+
+    p {
+      margin: 0 0 1rem 0;
+    }
+
+    button {
+      background-color: #f7941d;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+
+      &:hover {
+        background-color: darken(#f7941d, 10%);
+      }
+    }
+  }
+
+  button[type="submit"] {
+  background-color: #f7941d; // naranja
+  color: white; // texto blanco
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(247, 148, 29, 0.4);
+
+  &:hover:enabled {
+    box-shadow: 0 0 15px rgba(247, 148, 29, 0.8); // más brillo al hover
+    transform: scale(1.02); // leve zoom
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+ }
+}

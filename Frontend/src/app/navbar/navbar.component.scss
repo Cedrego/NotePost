@@ -1,4 +1,29 @@
-.navbar-left {
+.navbar {
+  background-color: #f7941d;
+  color: black;
+  padding: 1rem 1rem; // espacio arriba/abajo y a los lados
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); // sombra del header
+}
+
+.navbar-brand button {
+  color: #FFD9AB;
+  padding-left: 1rem;
+  background-color: #f7941d;
+  border: #f7941d;
+  font-size: 2.5rem;
   font-weight: bold;
-  cursor: pointer;
+}
+
+.navbar .btn {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.navbar .btn-outline-light {
+  border-color: #f7941d;
+  color: white;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 }

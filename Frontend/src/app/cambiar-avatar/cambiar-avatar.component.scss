@@ -1,20 +1,64 @@
-  /* Estilos básicos para la galería de avatares */
-    .avatar-option {
-      display: inline-block;
-      margin: 0 10px;
-      text-align: center;
-    }
-    .avatar-option label {
-      display: block;
-      width: 80px;
-      height: 80px;
-      border: 2px solid transparent;
-      border-radius: 50%;
-      cursor: pointer;
-      background-size: cover;
-      background-position: center;
-      margin-bottom: 5px;
-    }
-    .avatar-option input:checked + label {
-      border-color: #007BFF;
-    }
+/* Estilos básicos para la galería de avatares */
+.form-container {
+  margin-top: 11rem;
+  text-align: center;
+}
+
+.avatar-option {
+  display: inline-block;
+  margin: 0 10px;
+  text-align: center;
+}
+
+.avatar-option input[type="radio"] {
+  display: none; /* ocultamos el radio button */
+}
+
+.avatar-option label {
+  display: block;
+  width: 80px;
+  height: 80px;
+  border: 2px solid black;
+  border-radius: 50%;
+  cursor: pointer;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 5px;
+}
+
+.avatar-option input:checked + label {
+  border-color: #007BFF;
+}
+
+.actualizarAvatar{
+  background-color: #f7941d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button[type="submit"] {
+  background-color: #f7941d; // naranja
+  color: white; // texto blanco
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(247, 148, 29, 0.4);
+
+  &:hover:enabled {
+    box-shadow: 0 0 15px rgba(247, 148, 29, 0.8); // más brillo al hover
+    transform: scale(1.02); // leve zoom
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

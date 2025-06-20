@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
   <div class="form-container w-100 px-4 py-4 mx-auto">   
     <div *ngIf="showAlert" class="custom-alert mb-3">
       <p><strong>localhost:4200 dice</strong><br>{{ alertMessage }}</p>
@@ -13,10 +13,11 @@
       <textarea 
         id="contenido" 
         rows="5" 
-        cols="40" 
+        cols="150" 
         placeholder="Escribe tu nota aquí..." 
         formControlName="contenido"
         name="contenido"
+        class="nota-contenido"
       ></textarea>
       <div class="alert alert-danger mt-2" *ngIf="contenido?.invalid && contenido?.touched">
                 El texto es obligatorio
@@ -45,31 +46,18 @@
 
       <!-- Selección de fondo -->
       <p>Elige un fondo para tu nota:</p>
-      <div class="fondo-option">
-        <input type="radio" id="fondo1" value="1" formControlName="fondo">
-        <label for="fondo1" style="background-image: url('http://localhost/NotePost/Frontend/src/assets/fondos/fondo1.jpg');"></label>
-        <span>Fondo 1</span>
+      <div *ngFor="let color of coloresFondo" class="fondo-option">
+      <input type="radio" [id]="'fondo' + color.id" [value]="color.color" formControlName="fondo">
+      <label 
+        [for]="'fondo' + color.id" 
+        [style.background-color]="color.color">
+      </label>
+      <span>{{ color.name }}</span>
       </div>
-      <div class="fondo-option">
-        <input type="radio" id="fondo2" value="2" formControlName="fondo">
-        <label for="fondo2" style="background-image: url('http://localhost/NotePost/Frontend/src/assets/fondos/fondo2.jpg');"></label>
-        <span>Fondo 2</span>
-      </div>
-      <div class="fondo-option">
-        <input type="radio" id="fondo3" value="3" formControlName="fondo">
-        <label for="fondo3" style="background-image: url('http://localhost/NotePost/Frontend/src/assets/fondos/fondo3.jpg');"></label>
-        <span>Fondo 3</span>
-      </div>
-      <div class="fondo-option">
-        <input type="radio" id="fondo4" value="4" formControlName="fondo">
-        <label for="fondo4" style="background-image: url('http://localhost/NotePost/Frontend/src/assets/fondos/fondo4.jpg');"></label>
-        <span>Fondo 4</span>
-      </div>
-      <br><br>
 
       <!-- Botón de envío -->
       <div class="text-center mt-4">
-        <button type="submit" class="btn btn-outline-light fw-bold">CREAR POST</button>
+        <button type="submit" class="crearPost">CREAR POST</button>
       </div>
     </form>
   </div>

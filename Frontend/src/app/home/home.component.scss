@@ -1,4 +1,11 @@
  .contenedor-derecha {
     display: flex;
     justify-content: flex-end;
+    border-radius: 12px; /* borde redondeado */
+    overflow: hidden; /* para que el contenido respete los bordes redondeados */
   }
+
+  .container-fluid {
+    margin-top: 9rem;
+}
+
