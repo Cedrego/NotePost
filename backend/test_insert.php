@@ -26,6 +26,11 @@ require_once './persistencia/DAO/SolicitudDAO.php';
 require_once './persistencia/mapeo/LikeMap.php';  
 require_once './persistencia/DAO/LikeDAO.php';
 
+require_once './persistencia/mapeo/AvatarMap.php';  
+require_once './persistencia/DAO/AvatarDAO.php';
+
+require_once './persistencia/mapeo/FondoMap.php';  
+require_once './persistencia/DAO/FondoDAO.php';
 // 1. Ejecutar el script SQL para recrear la base de datos
 $sql = file_get_contents(__DIR__ . '/notepost_schema.sql');
 $conn = Conexion::getConexion(false); // false para no seleccionar la BD aún
@@ -42,6 +47,37 @@ if ($conn->multi_query($sql)) {
 $conn->select_db('NotePost');
 
 try {
+//Gaurdo los avatars
+    AvatarDAO::guardar(new Avatar(1, 'assets/avatars/avatar1.jpg'));
+    AvatarDAO::guardar(new Avatar(2, 'assets/avatars/avatar2.jpg'));
+    AvatarDAO::guardar(new Avatar(3, 'assets/avatars/avatar3.jpg'));
+    AvatarDAO::guardar(new Avatar(4, 'assets/avatars/avatar4.jpg'));
+    AvatarDAO::guardar(new Avatar(5, 'assets/avatars/B-Amarillo.png'));
+    AvatarDAO::guardar(new Avatar(6, 'assets/avatars/B-Azul.png'));
+    AvatarDAO::guardar(new Avatar(7, 'assets/avatars/B-Blanco.png'));
+    AvatarDAO::guardar(new Avatar(8, 'assets/avatars/B-Cyan.png'));
+    AvatarDAO::guardar(new Avatar(9, 'assets/avatars/B-Lima.png'));
+    AvatarDAO::guardar(new Avatar(10, 'assets/avatars/B-Magenta.png'));
+    AvatarDAO::guardar(new Avatar(11, 'assets/avatars/B-Naranja.png'));
+    AvatarDAO::guardar(new Avatar(12, 'assets/avatars/B-Purpura.png'));
+    AvatarDAO::guardar(new Avatar(13, 'assets/avatars/B-Rojo.png'));
+    AvatarDAO::guardar(new Avatar(14, 'assets/avatars/B-Rosa.png'));
+    AvatarDAO::guardar(new Avatar(15, 'assets/avatars/B-Turquesa.png'));
+    AvatarDAO::guardar(new Avatar(16, 'assets/avatars/B-Verde.png'));
+    AvatarDAO::guardar(new Avatar(17, 'assets/avatars/W-Amarillo.png'));
+    AvatarDAO::guardar(new Avatar(18, 'assets/avatars/W-Azul.png'));
+    AvatarDAO::guardar(new Avatar(19, 'assets/avatars/W-Cyan.png'));
+    AvatarDAO::guardar(new Avatar(20, 'assets/avatars/W-Lima.png'));
+    AvatarDAO::guardar(new Avatar(21, 'assets/avatars/W-Magenta.png'));
+    AvatarDAO::guardar(new Avatar(22, 'assets/avatars/W-Naranja.png'));
+    AvatarDAO::guardar(new Avatar(23, 'assets/avatars/W-Negro.png'));
+    AvatarDAO::guardar(new Avatar(24, 'assets/avatars/W-Purpura.png'));
+    AvatarDAO::guardar(new Avatar(25, 'assets/avatars/W-Rojo.png'));
+    AvatarDAO::guardar(new Avatar(26, 'assets/avatars/W-Rosa.png'));
+    AvatarDAO::guardar(new Avatar(27, 'assets/avatares/W-Turquesa.png'));
+    AvatarDAO::guardar(new Avatar(28, 'assets/avatares/W-Verde.png'));
+    echo "Avatares insertados correctamente<br>";
+
     //Crear usuario
     $usuario = new Usuario("Test", "Test@dominio.com", "Test", "Perez", "123456");
     UsuarioDAO::guardar($usuario);
@@ -87,6 +123,20 @@ try {
     $like = new Like($post->getId(), $usuario, 'like');
     LikeDAO::guardar($like);
     echo "Like insertado correctamente<br>";
+
+    UsuarioDAO::actualizarAvatar($usuario->getNickname(), 1);
+    UsuarioDAO::actualizarAvatar($usuario2->getNickname(), 2);
+    UsuarioDAO::actualizarAvatar($usuario3->getNickname(), 3);
+    echo "Avatares de usuario actualizados correctamente<br>";
+
+    FondoDAO::guardar(new Fondo(1, 'assets/fondos/fondo1.jpg'));
+    FondoDAO::guardar(new Fondo(2, 'assets/fondos/fondo2.jpg'));
+    FondoDAO::guardar(new Fondo(3, 'assets/fondos/fondo3.jpg'));
+    FondoDAO::guardar(new Fondo(4, 'assets/fondos/fondo4.jpg'));
+    echo "Fondos insertados correctamente<br>";
+
+    PostDAO::actualizarFondo($post->getId(), 1); // Asignar fondo al post
+    echo "Fondo asignado al post correctamente<br>";
 
 } catch (Exception $e) {
     echo "Error al insertar : " . $e->getMessage();

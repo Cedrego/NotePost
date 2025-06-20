@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../conexion.php';
 require_once __DIR__ . '/../mapeo/UsuarioMap.php';
+require_once __DIR__ . '/AvatarDAO.php';
+
 
 class UsuarioDAO {
     // Agregar la propiedad $posts para evitar el error de propiedad indefinida
@@ -127,5 +129,33 @@ class UsuarioDAO {
         }
         return false;
     }
-
+    public static function actualizarAvatar(string $nickname, int $avatarId): bool {
+        $conn = Conexion::getConexion();
+        $sql = "UPDATE usuarios SET avatar = ? WHERE nickname = ?";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Error al preparar: " . $conn->error);
+        }
+        $stmt->bind_param("is", $avatarId, $nickname);
+        $ok = $stmt->execute();
+        $stmt->close();
+        return $ok;
+    }
+    public static function getAvatar(string $nickname): ?Avatar {
+        $conn = Conexion::getConexion();
+        $sql = "SELECT avatar FROM usuarios WHERE nickname = ?";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Error al preparar: " . $conn->error);
+        }
+        $stmt->bind_param("s", $nickname);
+        $stmt->execute();
+        $stmt->bind_result($avatarId);
+        if ($stmt->fetch() && $avatarId) {
+            $stmt->close();
+            return AvatarDAO::obtenerPorId($avatarId);
+        }
+        $stmt->close();
+        return null;
+    }
 }

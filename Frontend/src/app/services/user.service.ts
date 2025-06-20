@@ -26,6 +26,11 @@ export class UserService {
     return this.http.post(`${this.baseUrl}/implementacion/aceptarSolicitud.php`, solicitud);
   }
 
+  getRutaAvatar(nick: string): Observable<{ ruta: string }> {
+    return this.http.get<{ ruta: string }>(
+      `${this.baseUrl}/implementacion/obtenerRutaAvatar.php?usuario=${encodeURIComponent(nick)}`
+    );
+  }
   rechazarSolicitud(solicitud: { solicitante: string, recibidor: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/implementacion/rechazarSolicitud.php`, solicitud);
   }

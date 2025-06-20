@@ -124,5 +124,16 @@ class PostDAO {
         return json_encode($data, JSON_PRETTY_PRINT);
     }
 
-    
+    public static function actualizarFondo(int $idpos, int $idFondo): bool {
+        $conn = Conexion::getConexion();
+        $sql = "UPDATE posts SET fondoid = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Error al preparar: " . $conn->error);
+        }
+        $stmt->bind_param("is", $idFondo, $idpos);
+        $ok = $stmt->execute();
+        $stmt->close();
+        return $ok;
+    }
 }
