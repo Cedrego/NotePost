@@ -4,13 +4,13 @@ session_start();
 require_once '../dominio/Post.php';
 require_once '../dominio/Usuario.php';
 require_once '../persistencia/conexion.php'; //$conn = conexión MySQLi
-
+require_once '  ./procesarFormulario' 
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
 
-$idPost = $_POST['id']; //id del post a modificar
-$nick = $_SESSION['usuario'] ?? null; //nick del usuario loggeado
+$idPost = $data['id']; //id del post a modificar
+$nick = $data['usuario'] ?? null; //nick del usuario loggeado
 
 if (!$nick) {
     die("No estás loggeado.");

@@ -9,22 +9,22 @@ export class UserService {
   private baseUrl = 'http://localhost/NotePost/backend';
 
   constructor(private http: HttpClient) {}
-
-  getIdesAvatars(): Observable<{ ide: string, image: string }[]> {
-    return this.http.get<{ ide: string, image: string }[]>(`${this.baseUrl}/implementacion/crearPost.php`);
+/*
+  getIdesAvatars(): Observable<{ avatares: number[] }> {
+    return this.http.get<{ avatares: number[] }>(`${this.baseUrl}/procesarFormulario.php`);
   }
-  
-enviarAvatar(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/implementacion/crearPost.php`, data);
+*/
+  enviarCambiarAvatar(data: any): Observable<any> {
+      return this.http.post(`${this.baseUrl}/implementacion/procesarFormulario.php`, data);
   }
 
 
   enviarCrearUsuario(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/implementacion/crearPost.php`, data);
+      return this.http.post(`${this.baseUrl}/implementacion/procesarFormulario.php`, data);
   }
 
   enviarIniciarSesion(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/implementacion/crearPost.php`, data);
+      return this.http.post(`${this.baseUrl}/implementacion/procesarFormulario.php`, data);
   }
   enviarPost(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/implementacion/procesarFormulario.php`, data);

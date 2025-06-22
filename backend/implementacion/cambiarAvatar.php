@@ -3,6 +3,7 @@ session_start();
 require_once '../dominio/Usuario.php';
 require_once '../dominio/Avatar.php';
 require_once '../persistencia/conexion.php';
+require_once 'procesarFormulario.php';
 
 //verifica la conexión a la base de datos
 if ($conn->connect_error) die("Conexión fallida: " . $conn->connect_error);
@@ -11,7 +12,8 @@ if ($conn->connect_error) die("Conexión fallida: " . $conn->connect_error);
 $nickUsu = $_SESSION['usuario'];
 
 //obtener el id del avatar seleccionado desde el formulario
-$idAvatar = isset($_POST['idAvatar']) ? (int)$_POST['idAvatar'] : null;
+$idAvatar = isset($data['idAvatar']) ? (int)$data['idAvatar'] : null;
+echo $idAvatar;
 if (!$idAvatar) {
     echo "Error: avatar no especificado.";
     exit;
