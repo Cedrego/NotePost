@@ -51,8 +51,12 @@ export class CreateUserComponent implements OnInit {
         this.showAlert = true;
         console.log('Respuesta del servidor:', respuesta);
       },
-      error: (error:any) => {
-        this.alertMessage = 'Error al enviar';
+      error: (error: any) => {
+        if (error.status === 409 && error.error && error.error.error) {
+          this.alertMessage = error.error.error; // Mensaje del backend: "El nick ya existe"
+        } else {
+          this.alertMessage = 'Error al enviar';
+        }
         this.showAlert = true;
         console.error('Error:', error);
       }

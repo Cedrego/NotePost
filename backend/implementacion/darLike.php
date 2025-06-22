@@ -1,20 +1,20 @@
 <?php
-session_start();
 
-require_once __DIR__ . '/../dao/LikeDAO.php';
-require_once __DIR__ . '/../dao/PostDAO.php';
+require_once __DIR__ . '../persistencia/DAO/LikeDAO.php';
+require_once __DIR__ . '../persistencia/DAO/PostDAO.php';
 
-if (!isset($_SESSION['usuario'])) {
-    die("Usuario no autenticado.");
-}
-
-$nickUsu = $_SESSION['usuario'];
 $idPost = isset($_POST['idPost']) ? intval($_POST['idPost']) : 0;
 
+//obtener el nickname desde el POST (enviado por Angular)
+$nickUsu = isset($_POST['usuario']) ? $_POST['usuario'] : null;
+if (!$nickUsu) {
+    echo "Error: usuario no especificado.";
+    exit;
+}
 if ($idPost <= 0) {
     die("ID de post inválido.");
 }
-
+$conn = Conexion::getConexion();
 $likeDAO = new LikeDAO();
 $postDAO = new PostDAO();
 

@@ -1,22 +1,32 @@
 <?php
-session_start();
+
 require_once '../dominio/Post.php';
 require_once '../dominio/Usuario.php';
 require_once "../dominio/Recordatorio.php";
 require_once '../persistencia/conexion.php';
+require_once '../persistencia/DAO/UsuarioDAO.php';
+require_once '../persistencia/DAO/RecordatorioDAO.php';
+require_once '../persistencia/DAO/PostDAO.php';
+require_once '../persistencia/DAO/TagDAO.php';
+require_once '../persistencia/DAO/post_tagDAO.php';
 require_once 'procesarFormulario.php';
 
-
+//FALTA TAG PARA SABER QUE TAGS TIENE EL POST. RELACION POST-TAG
 $contenido = $data['contenido'];
 $privado = isset($data['privado']) && $data['privado'] === 'true';
 $fechaRecordatorio = !empty($data['recordatorio']) ? $data['recordatorio'] : null;
 $fondoId = isset($data['fondo']) ? (int) $data['fondo'] : null;
 
+$conn = Conexion::getConexion();
 //verifica la conexión a la base de datos
 if ($conn->connect_error) die("Conexión fallida: " . $conn->connect_error);
 
-//el usuario ya debe estar loggeado si está usando esta función
-$nickUsu = $_SESSION['usuario']; // nickname del usuario
+//obtener el nickname desde el POST (enviado por Angular)
+$nickUsu = isset($_POST['usuario']) ? $_POST['usuario'] : null;
+if (!$nickUsu) {
+    echo "Error: usuario no especificado.";
+    exit;
+}
 
 /*//obtener datos del formulario
 $contenido = $_POST['contenido'];
@@ -27,7 +37,7 @@ $fondoId = isset($_POST['fondoId']) ? (int)$_POST['fondoId'] : null;
 
 
 //obtener el objeto usuario desde la base de datos
-$usuario = Usuario::obtenerPorNickname($conn, $nickUsu);
+$usuario = UsuarioDAO::obtenerPorNickname($nickUsu);
 if (!$usuario) {
     echo "Error: usuario no encontrado en la base de datos.";
     exit;
@@ -38,30 +48,33 @@ $post = new Post($usuario, $contenido, $privado, $fondoId);
 
 //si hay recordatorio, lo agregamos al post
 if ($fechaRecordatorio) {
-    $recordatorio = new Recordatorio($fechaRecordatorio);
+    $recordatorio = new Recordatorio($post ,$fechaRecordatorio);
+    RecordatorioDAO::insert($recordatorio); // Guardar el recordatorio asociado al post
+    // Agregar el recordatorio al post
     $post->addRecordatorio($recordatorio);
 }
 
 //se obtiene la fecha del post en formato compatible con MySQL
-$fechaActual = $post->getFechaPost()->format('Y-m-d H:i:s');
+//$fechaActual = $post->getFechaPost()->format('Y-m-d H:i:s');  No neseario cuando creas el tipo post ya maneja la fecha
 
-//prepara la consulta para insertar el post en la base de datos
-$stmt = $conn->prepare("INSERT INTO post (contenido, likes, dislikes, fechaPost, privado, fondoId, fechaRecordatorio) VALUES (?, 0, 0, ?, ?, ?, ?)");
-$privadoInt = $privado ? 1 : 0;
-$fondoIdDb = $fondoId !== null ? $fondoId : null;
-$fechaRecordatorioDb = $fechaRecordatorio !== null ? $fechaRecordatorio : null;
+//insertar el post en la base de datos
+PostDAO::guardar($post);
 
-//vincula los valores reales a los signos de pregunta del prepare de arriba
-$stmt->bind_param("ssiiis", $contenido, $fechaActual, $privadoInt, $fondoIdDb, $fechaRecordatorioDb);
+//si hay tags, los agregamos al post
+if (isset($data['tags']) && is_array($data['tags'])) {
+    foreach ($data['tags'] as $tagNombre) {
+        // Verificar si el tag ya existe
+        $tag = TagDAO::searchTag($tagNombre);
+        if (!$tag) {
+            // Si no existe, crearlo
+            $tag = new Tag($tagNombre);
+            TagDAO::guardar($tag);
+        }
+        // Asociar el tag al post
+        $postTag = new post_tag($post->getId(), $tag->getTag());
+        post_tagDAO::guardar($postTag);
+    }
+}
 
-//ejecuta la sentencia con los valores que se le pasaron
-$stmt->execute();
-
-//guarda el id que se le asignó automáticamente al post insertado
-$post->setId($conn->insert_id);
-
-//linkea el post al usuario en la tabla usuario_post
-$usuario->agregarPostUsuario($post, $conn);
-
-//echo "Post creado correctamente.";
+echo "Post creado correctamente.";
 ?>
