@@ -15,7 +15,8 @@ if (!$nickUsu) {
     exit;
 }
 //obtener el id del avatar seleccionado desde el formulario
-$idAvatar = isset($_POST['idAvatar']) ? (int)$_POST['idAvatar'] : null;
+$idAvatar = isset($data['idAvatar']) ? (int)$data['idAvatar'] : null;
+echo $idAvatar;
 if (!$idAvatar) {
     echo "Error: avatar no especificado.";
     exit;

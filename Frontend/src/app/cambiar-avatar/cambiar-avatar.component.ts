@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder, FormGroup, Validators,
   ReactiveFormsModule, FormsModule
@@ -13,17 +13,20 @@ import { UserService } from '../services/user.service';
   templateUrl: './cambiar-avatar.component.html',
   styleUrl: './cambiar-avatar.component.scss'
 })
-export class CambiarAvatarComponent {
-
-  avatarForm: FormGroup;
-  fb = inject(FormBuilder);
-  userService = inject(UserService);
-
-  showAlert = false;
+export class CambiarAvatarComponent implements OnInit{
+  
+  avatarForm!: FormGroup;
   alertMessage = '';
-  id = 10;
+  showAlert = false;
 
-  // Array de avatares
+  constructor(private fb: FormBuilder, private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.avatarForm = this.fb.group({
+      idAvatar: ['', Validators.required]
+    });
+  }
+    // Array de avatares
   avatars = [
     { id: 1, filename: 'B-Rojo.png', name: 'Avatar 1' },
     { id: 2, filename: 'W-Rojo.png', name: 'Avatar 2' },
@@ -51,12 +54,6 @@ export class CambiarAvatarComponent {
     { id: 24, filename: 'W-Negro.png', name: 'Avatar 24' },
   ];
 
-  constructor() {
-    this.avatarForm = this.fb.group({
-      idAvatar: ['1'] 
-    });
-  }
-
   onSubmit(): void {
     if (this.avatarForm.invalid) {
       this.alertMessage = 'Formulario inválido';
@@ -65,14 +62,13 @@ export class CambiarAvatarComponent {
     }
 
     const formData = this.avatarForm.value;
-
-    this.userService.enviarAvatar(formData).subscribe({
-      next: (respuesta:any) => {
+    this.userService.enviarCambiarAvatar(formData).subscribe({
+      next: (respuesta) => {
         this.alertMessage = '¡Enviado correctamente!';
         this.showAlert = true;
         console.log('Respuesta del servidor:', respuesta);
       },
-      error: (error:any) => {
+      error: (error) => {
         this.alertMessage = 'Error al enviar';
         this.showAlert = true;
         console.error('Error:', error);
@@ -80,6 +76,8 @@ export class CambiarAvatarComponent {
     });
   }
 
-  // Getters para los campos
-  get idAvatar() { return this.avatarForm.get('idAvatar'); }
+  get idAvatar() {
+    return this.avatarForm.get('idAvatar');
+  }
 }
+
