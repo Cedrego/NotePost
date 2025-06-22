@@ -6,7 +6,6 @@ require_once "../dominio/Recordatorio.php";
 require_once '../persistencia/conexion.php';
 require_once 'procesarFormulario.php';
 
-
 $contenido = $data['contenido'];
 $privado = isset($data['privado']) && $data['privado'] === 'true';
 $fechaRecordatorio = !empty($data['recordatorio']) ? $data['recordatorio'] : null;
