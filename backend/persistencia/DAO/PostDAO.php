@@ -149,7 +149,7 @@ class PostDAO {
                        u.nickname AS autor_nickname
                 FROM posts p
                 JOIN usuarios u ON p.autor_nickname = u.nickname
-                WHERE p.privado = false -- Excluir posts privados
+                WHERE p.privado = 0 -- Excluir posts privados
                 ORDER BY p.fechaPost DESC"; // Ordenar por fecha de publicación, más reciente primero
     
         $stmt = $conn->prepare($sql);
