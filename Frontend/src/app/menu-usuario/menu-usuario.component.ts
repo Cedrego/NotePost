@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 @Component({
@@ -22,12 +22,25 @@ export class MenuUsuarioComponent {
   }
   goToCrearPost(): void {
     this.router.navigate(['/crear-post']);
+    this.menuAbierto = false;
   }
 
   goToCambiarAvatar(): void {
     this.router.navigate(['/cambiar-avatar']);
+    this.menuAbierto = false;
   }
   goToCambiarPrivacidad(): void {
     this.router.navigate(['/cambiar-privacidad']);
+    this.menuAbierto = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickFuera(event: MouseEvent) {
+    const targetElement = event.target as HTMLElement;
+    const clickedInside = targetElement.closest('.menu-hamburguesa');
+
+    if (!clickedInside && this.menuAbierto) {
+      this.menuAbierto = false;
+    }
   }
 }
