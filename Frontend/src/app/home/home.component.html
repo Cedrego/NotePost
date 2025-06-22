@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
   <div class="form-container w-100 px-0 py-0">   
     <!-- Si NO está logueado -->
     <ng-container *ngIf="!isLoggedIn; else usuarioMenu">
@@ -7,7 +7,7 @@
     <!-- Si está logueado -->
     <ng-template #usuarioMenu>
       <div class="container-fluid">
-        <div class="form-container px-0 py-0">   
+        <div class="form-container-fluid px-0 py-0">   
           <div class="contenedor-derecha">
             <app-barra-lateral></app-barra-lateral>
           </div>
