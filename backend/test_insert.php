@@ -74,8 +74,8 @@ try {
     AvatarDAO::guardar(new Avatar(24, 'assets/avatars/W-Purpura.png'));
     AvatarDAO::guardar(new Avatar(25, 'assets/avatars/W-Rojo.png'));
     AvatarDAO::guardar(new Avatar(26, 'assets/avatars/W-Rosa.png'));
-    AvatarDAO::guardar(new Avatar(27, 'assets/avatares/W-Turquesa.png'));
-    AvatarDAO::guardar(new Avatar(28, 'assets/avatares/W-Verde.png'));
+    AvatarDAO::guardar(new Avatar(27, 'assets/avatars/W-Turquesa.png'));
+    AvatarDAO::guardar(new Avatar(28, 'assets/avatars/W-Verde.png'));
     echo "Avatares insertados correctamente<br>";
 
     //Crear usuario

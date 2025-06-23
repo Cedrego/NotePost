@@ -13,7 +13,10 @@ export class UserService {
   getIdesAvatars(): Observable<{ ide: string, image: string }[]> {
     return this.http.get<{ ide: string, image: string }[]>(`${this.baseUrl}/implementacion/crearPost.php`);
   }
-    
+
+  getTodosAvatares(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/implementacion/obtenerTodosAvatares.php`);
+  }  
   getAmigos(): Observable<any> {
    const nick = this.session.getUsuario();
     return this.http.get(`${this.baseUrl}/implementacion/obtenerAmigos.php?usuario=${encodeURIComponent(nick ?? '')}`);
@@ -35,7 +38,7 @@ export class UserService {
     return this.http.post(`${this.baseUrl}/implementacion/rechazarSolicitud.php`, solicitud);
   }
   enviarAvatar(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/implementacion/crearPost.php`, data);
+    return this.http.post(`${this.baseUrl}/implementacion/cambiarAvatar.php`, data);
   }
 
   enviarCrearUsuario(data: any): Observable<any> {
