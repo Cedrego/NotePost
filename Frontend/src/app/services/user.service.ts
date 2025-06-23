@@ -6,6 +6,7 @@ import { SessionService } from './session.service'; // importa el servicio
   providedIn: 'root'
 })
 export class UserService {
+  [x: string]: any;
   private baseUrl = 'http://localhost/backend';
 
   constructor(private http: HttpClient, private session: SessionService) {}
