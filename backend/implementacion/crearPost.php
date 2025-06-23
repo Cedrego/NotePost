@@ -1,50 +1,56 @@
 <?php
-
+header('Access-Control-Allow-Origin: *'); // Permite todas las fuentes (solo para pruebas)
+header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 require_once '../dominio/Post.php';
 require_once '../dominio/Usuario.php';
 require_once "../dominio/Recordatorio.php";
+
 require_once '../persistencia/conexion.php';
 require_once '../persistencia/DAO/UsuarioDAO.php';
 require_once '../persistencia/DAO/RecordatorioDAO.php';
 require_once '../persistencia/DAO/PostDAO.php';
 require_once '../persistencia/DAO/TagDAO.php';
 require_once '../persistencia/DAO/post_tagDAO.php';
+//Me parece inecesario.
 require_once 'procesarFormulario.php';
 
-//FALTA TAG PARA SABER QUE TAGS TIENE EL POST. RELACION POST-TAG
+// Procesar el formulario enviado por Angular
+$data = json_decode(file_get_contents('php://input'), true);
+$nickUsu = isset($data['usuario']) ? $data['usuario'] : null;
 $contenido = $data['contenido'];
-$privado = isset($data['privado']) && $data['privado'] === 'true';
+$privado = isset($data['privado']) && $data['privado'] === true;
 $fechaRecordatorio = !empty($data['recordatorio']) ? $data['recordatorio'] : null;
 $fondoId = isset($data['fondo']) ? (int) $data['fondo'] : null;
 
 $conn = Conexion::getConexion();
-//verifica la conexión a la base de datos
-if ($conn->connect_error) die("Conexión fallida: " . $conn->connect_error);
-
-//obtener el nickname desde el POST (enviado por Angular)
-$nickUsu = isset($_POST['usuario']) ? $_POST['usuario'] : null;
-if (!$nickUsu) {
-    echo "Error: usuario no especificado.";
+if ($conn->connect_error) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Error de conexión']);
     exit;
 }
 
-/*//obtener datos del formulario
-$contenido = $_POST['contenido'];
-$privado = isset($_POST['privado']) ? true : false;
-$fechaRecordatorio = !empty($_POST['recordatorio']) ? $_POST['recordatorio'] : null;
-$fondoId = isset($_POST['fondoId']) ? (int)$_POST['fondoId'] : null;
-*/
-
+//obtener el nickname desde el POST (enviado por Angular)
+if (!$nickUsu) {
+    http_response_code(400);
+    echo json_encode(['error' => 'usuario no especificado.']);
+    exit;
+}
 
 //obtener el objeto usuario desde la base de datos
 $usuario = UsuarioDAO::obtenerPorNickname($nickUsu);
 if (!$usuario) {
-    echo "Error: usuario no encontrado en la base de datos.";
+    http_response_code(400);
+    echo json_encode(['error' => 'usuario no encontrado en la base de datos.']);
     exit;
 }
 
 //crear el post con los datos obtenidos
-$post = new Post($usuario, $contenido, $privado, $fondoId);
+$post = new Post($usuario, $contenido, $privado,$fondoId );
 
 //si hay recordatorio, lo agregamos al post
 if ($fechaRecordatorio) {
@@ -59,22 +65,27 @@ if ($fechaRecordatorio) {
 
 //insertar el post en la base de datos
 PostDAO::guardar($post);
-
-//si hay tags, los agregamos al post
-if (isset($data['tags']) && is_array($data['tags'])) {
-    foreach ($data['tags'] as $tagNombre) {
-        // Verificar si el tag ya existe
+PostDAO::actualizarFondo($post->getId(), $fondoId); // Asignar fondo al post
+// Procesar los tags
+$tags = [];
+if (isset($data['tags'])) {
+    if (is_array($data['tags'])) {
+        $tags = $data['tags'];
+    } else {
+        $tags = array_map('trim', explode(',', $data['tags']));
+    }
+}
+if (!empty($tags)) {
+    foreach ($tags as $tagNombre) {
         $tag = TagDAO::searchTag($tagNombre);
         if (!$tag) {
-            // Si no existe, crearlo
             $tag = new Tag($tagNombre);
             TagDAO::guardar($tag);
         }
-        // Asociar el tag al post
         $postTag = new post_tag($post->getId(), $tag->getTag());
         post_tagDAO::guardar($postTag);
     }
 }
 
-echo "Post creado correctamente.";
+
 ?>

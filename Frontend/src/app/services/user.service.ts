@@ -17,6 +17,9 @@ export class UserService {
   getTodosAvatares(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/implementacion/obtenerTodosAvatares.php`);
   }  
+  getTodosFondos(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/implementacion/obtenerTodosFondos.php`);
+  }  
   getAmigos(): Observable<any> {
    const nick = this.session.getUsuario();
     return this.http.get(`${this.baseUrl}/implementacion/obtenerAmigos.php?usuario=${encodeURIComponent(nick ?? '')}`);
@@ -50,7 +53,7 @@ export class UserService {
   }
 
   enviarPost(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/implementacion/procesarFormulario.php`, data);
+    return this.http.post(`${this.baseUrl}/implementacion/crearPost.php`, data);
   }
 
 
