@@ -54,6 +54,9 @@
         id="recordatorio" 
         formControlName="recordatorio"
       >
+      <div class="alert alert-danger mt-2" *ngIf="recordatorio?.invalid && recordatorio?.touched">
+        La fecha Y hora de recordatorio es obligatoria
+      </div>
       <br><br>
 
       <!-- Selección de fondo -->

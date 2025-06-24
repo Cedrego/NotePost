@@ -51,21 +51,32 @@ if (!$usuario) {
 
 //crear el post con los datos obtenidos
 $post = new Post($usuario, $contenido, $privado,$fondoId );
-
+//insertar el post en la base de datos
+PostDAO::guardar($post);
+PostDAO::actualizarFondo($post->getId(), $fondoId); // Asignar fondo al post
 //si hay recordatorio, lo agregamos al post
 if ($fechaRecordatorio) {
-    $recordatorio = new Recordatorio($post ,$fechaRecordatorio);
+     // Convierte "YYYY-MM-DDTHH:MM" a "YYYY-MM-DD HH:MM:SS"
+    $fechaRecordatorio = str_replace('T', ' ', $fechaRecordatorio);
+    if (strlen($fechaRecordatorio) === 16) {
+        $fechaRecordatorio .= ':00';
+    }
+    try {
+        $fechaRecordatorioDT = new DateTime($fechaRecordatorio);
+    } catch (Exception $e) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Formato de fecha inválido', 'detalle' => $e->getMessage(), 'valor' => $fechaRecordatorio]);
+        exit;
+    }
+    $recordatorio = new Recordatorio($post ,$fechaRecordatorioDT);
     RecordatorioDAO::insert($recordatorio); // Guardar el recordatorio asociado al post
-    // Agregar el recordatorio al post
-    $post->addRecordatorio($recordatorio);
+
 }
 
 //se obtiene la fecha del post en formato compatible con MySQL
 //$fechaActual = $post->getFechaPost()->format('Y-m-d H:i:s');  No neseario cuando creas el tipo post ya maneja la fecha
 
-//insertar el post en la base de datos
-PostDAO::guardar($post);
-PostDAO::actualizarFondo($post->getId(), $fondoId); // Asignar fondo al post
+
 // Procesar los tags
 $tags = [];
 if (isset($data['tags'])) {

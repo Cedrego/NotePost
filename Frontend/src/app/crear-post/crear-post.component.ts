@@ -29,7 +29,7 @@ export class CrearPostComponent {
       contenido: ['', Validators.required],
       privado: [true],
       tags: ['', Validators.required],
-      recordatorio: [''],
+      recordatorio: ['', Validators.required],
       fondo: ['1'] 
     });
   }
@@ -52,9 +52,10 @@ export class CrearPostComponent {
       this.showAlert = true;
       return;
     }
+    let formValue = this.postForm.value;
 
     const formData = {
-    ...this.postForm.value,
+     ...formValue,
     usuario: this.sessionService.getUsuario() // o como obtengas el usuario logueado
   };
     console.log('FormData enviado:', formData);
