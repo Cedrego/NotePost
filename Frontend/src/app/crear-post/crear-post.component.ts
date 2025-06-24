@@ -29,7 +29,8 @@ export class CrearPostComponent {
       contenido: ['', Validators.required],
       privado: [true],
       tags: ['', Validators.required],
-      recordatorio: ['', Validators.required],
+      usarRecordatorio: [false], // <-- nuevo control
+      recordatorio: [''],
       fondo: ['1'] 
     });
   }
@@ -53,11 +54,16 @@ export class CrearPostComponent {
       return;
     }
     let formValue = this.postForm.value;
-
+    // Si no quiere recordatorio, envía el campo vacío
+      if (!formValue.usarRecordatorio) {
+        formValue.recordatorio = '';
+      }
     const formData = {
      ...formValue,
     usuario: this.sessionService.getUsuario() // o como obtengas el usuario logueado
-  };
+    };
+    // Eliminar usarRecordatorio no lo necesitas en el backend
+    delete formData.usarRecordatorio;
     console.log('FormData enviado:', formData);
 
     this.userService.enviarPost(formData).subscribe({
