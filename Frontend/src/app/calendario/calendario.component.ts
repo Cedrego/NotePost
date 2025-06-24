@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
+import { CalendarOptions, DateSelectArg } from '@fullcalendar/core';
+import { RecordatorioService } from '../services/recordatorio.service';
+import esLocale from '@fullcalendar/core/locales/es';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { CalendarOptions, DateSelectArg } from '@fullcalendar/core';
-import esLocale from '@fullcalendar/core/locales/es';
 
 @Component({
   selector: 'app-calendario',
@@ -13,6 +14,8 @@ import esLocale from '@fullcalendar/core/locales/es';
   styleUrls: ['./calendario.component.scss']
 })
 export class CalendarioComponent {
+  constructor(private recordatorioService: RecordatorioService) {}
+
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, interactionPlugin],
     initialView: 'dayGridMonth',
@@ -20,16 +23,30 @@ export class CalendarioComponent {
     editable: true,
     locale: esLocale,
     select: (info: DateSelectArg) => {
-      const title = prompt('Título del evento');
-      if (title) {
-        info.view.calendar.addEvent({
-          title,
-          start: info.start,
-          end: info.end,
-          allDay: info.allDay
-        });
+      const tituloEvento = prompt('Título del evento');
+      if (tituloEvento) {
+        const usuario = localStorage.getItem('usuario'); // Obtener el usuario logueado desde el almacenamiento local
+        if (!usuario) {
+          alert('Debes iniciar sesión para crear un recordatorio.');
+          return;
+        }
+
+        this.recordatorioService.guardarRecordatorio(usuario, tituloEvento, info.start.toISOString()).subscribe(
+          (response) => {
+            alert('Post y recordatorio creados exitosamente');
+            info.view.calendar.addEvent({
+              title: tituloEvento,
+              start: info.start,
+              end: info.end,
+              allDay: info.allDay
+            });
+          },
+          (error) => {
+            console.error('Error al crear el post y recordatorio:', error);
+          }
+        );
+        info.view.calendar.unselect();
       }
-      info.view.calendar.unselect();
     }
   };
 }
