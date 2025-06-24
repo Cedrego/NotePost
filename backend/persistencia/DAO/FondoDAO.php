@@ -22,7 +22,27 @@ class FondoDAO {
         }
         return null;
     }
+    public static function obtenerRutaPorId(int $id): string {
+        $conn = Conexion::getConexion();
+        $sql = "SELECT * FROM fondo WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Error en prepare: " . $conn->error);
+        }
 
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        $stmt->close();
+
+        if ($row) {
+            $fondo = FondoMap::mapRowToFondo($row);
+            return $fondo->getRutaImagen(); // ← acceso correcto a través del objeto
+        }
+
+        return ''; // ruta por defecto si no se encontró
+    }
     public static function guardar(Fondo $fondo): void {
         $conn = Conexion::getConexion();
         $sql = "INSERT INTO fondo (id, rutaImagen) VALUES (?, ?)
