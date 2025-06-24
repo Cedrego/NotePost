@@ -2,7 +2,7 @@
   <button (click)="toggleMenu()">
 
     <div *ngIf="nombre != null">
-        <img *ngIf="rutaAvatar" [src]="rutaAvatar" alt="avatar" />
+        <img *ngIf="rutaAvatar" [src]="rutaAvatar" alt="avatar" class="avatar-img"/>
         <span>{{nombre}}</span>
     </div>
     </button>

@@ -1,11 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { PostService } from '../services/post.service';
 import { Post } from '../models/post.model'; //importa el modelo Post
+<<<<<<< HEAD
+=======
+import { CommonModule } from '@angular/common';
+>>>>>>> origin/Enzo
 
 @Component({
   selector: 'app-post-list',
+  standalone: true,
+  imports: [CommonModule], // <-- Agrega esto
   templateUrl: './post-list.component.html',
-  styleUrls: ['./post-list.component.css']
+  styleUrls: ['./post-list.component.scss']
 })
 export class PostListComponent implements OnInit {
   posts: Post[] = []; //usa el modelo Post para tipar los posts
