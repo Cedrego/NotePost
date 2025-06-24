@@ -34,6 +34,6 @@ $usuario = new Usuario(
 );
 
 UsuarioDAO::guardar($usuario);
-
+$ok = UsuarioDAO::actualizarAvatar($input['nick'], 1);
 echo json_encode(['success' => true]);
 ?>
