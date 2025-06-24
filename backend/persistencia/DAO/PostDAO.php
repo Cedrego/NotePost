@@ -1,15 +1,14 @@
 <?php
 require_once __DIR__ . '/../conexion.php';
 require_once __DIR__ . '/../mapeo/PostMap.php';
+
 class PostDAO {
-    private $conn;
-
     public function __construct() {
-        $this->conn = Conexion::getConexion();
+        // Constructor vacío, no es necesario inicializar nada
     }
-
-    public function obtenerPorId(int $id): ?Post {
-        $stmt = $this->conn->prepare(
+    public static function obtenerPorId(int $id): ?Post {
+        $conn = Conexion::getConexion();
+        $stmt = $conn->prepare(
             "SELECT p.*, u.nickname AS autor_nickname, u.email AS autor_email, u.nombre AS autor_nombre, u.apellido AS autor_apellido, u.contrasena AS autor_contrasena
              FROM posts p
              JOIN usuarios u ON p.autor_nickname = u.nickname
@@ -25,47 +24,34 @@ class PostDAO {
         return null;
     }
 
-    public function guardar(Post $post): void {
-    $data = PostMap::mapPostToArray($post);
 
-    $sql = "INSERT INTO posts (autor_nickname, contenido, likes, dislikes, fechaPost, privado) 
-            VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param(
-        "ssiisi",
-        $data['autor_nickname'],
-        $data['contenido'],
-        $data['likes'],
-        $data['dislikes'],
-        $data['fechaPost'],
-        $data['privado']
-    );
-    $stmt->execute();
-
-    $postId = $this->conn->insert_id;
-    $post->setId($postId);
-
-    // Guardar recordatorios
-    foreach ($post->getRecordatorios() as $rec) {
-        $stmtRec = $this->conn->prepare("INSERT INTO recordatorios (post_id, fechaRecordatorio) VALUES (?, ?)");
-        $fechaStr = $rec->getFechaRecordatorio()->format('Y-m-d H:i:s');
-        $stmtRec->bind_param("is", $postId, $fechaStr);
-        $stmtRec->execute();
-    }
-
-    // Guardar tags
-    foreach ($post->getTags() as $tag) {
-        $stmtTag = $this->conn->prepare("INSERT INTO tags (post_id, tag) VALUES (?, ?)");
-        $stmtTag->bind_param("is", $postId, $tag->getTag());
-        $stmtTag->execute();
-    }
-}
-
-    public function actualizar(Post $post): void {
+    public static function guardar(Post $post): void {
         $data = PostMap::mapPostToArray($post);
+        $conn = Conexion::getConexion();
 
+        $sql = "INSERT INTO posts (autor_nickname, contenido, likes, dislikes, fechaPost, privado) 
+                VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param(
+            "ssiisi",
+            $data['autor_nickname'],
+            $data['contenido'],
+            $data['likes'],
+            $data['dislikes'],
+            $data['fechaPost'],
+            $data['privado']
+        );
+        $stmt->execute();
+
+        $postId = $conn->insert_id;
+        $post->setId($postId);
+    }
+
+    public static function actualizar(Post $post): void {
+        $data = PostMap::mapPostToArray($post);
+        $conn = Conexion::getConexion();
         $sql = "UPDATE posts SET contenido = ?, likes = ?, dislikes = ?, fechaPost = ?, privado = ? WHERE id = ?";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->bind_param(
             "siisii",
             $data['contenido'],
@@ -78,9 +64,9 @@ class PostDAO {
         $stmt->execute();
     }
 
-    public function eliminar(int $id, RecordatorioDAO $recordatorioDAO): void {
-       
-        $post = $this->obtenerPorId($id);
+    public static function eliminar(int $id, RecordatorioDAO $recordatorioDAO): void {
+        $conn = Conexion::getConexion();
+        $post = PostDAO::obtenerPorId($id);
         if (!$post) return;
 
         $recordatorioDAO->deleteByPostId($id);
@@ -88,14 +74,15 @@ class PostDAO {
         $autor = $post->getAutor();
         $autor->olvidarPost($id);
 
-        $stmt = $this->conn->prepare("DELETE FROM posts WHERE id = ?");
+        $stmt =$conn->prepare("DELETE FROM posts WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
     }
 
 
     // Get Ranking (top 10)
-        public function getRanking(): array {
+        public static function getRanking(): array {
+            $conn = Conexion::getConexion();
         $sql = "SELECT p.*, 
                     u.nickname AS autor_nickname, 
                     u.email AS autor_email, 
@@ -107,7 +94,7 @@ class PostDAO {
                 ORDER BY p.likes DESC
                 LIMIT 10";
 
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -119,8 +106,8 @@ class PostDAO {
         return $topPosts;
     }
 
-    public function getRankingJson(): string {
-        $posts = $this->getRanking();
+    public static function getRankingJson(): string {
+        $posts = PostDAO::getRanking();
         $data = [];
 
         foreach ($posts as $post) {
@@ -137,5 +124,66 @@ class PostDAO {
         return json_encode($data, JSON_PRETTY_PRINT);
     }
 
-    
+    public static function actualizarFondo(int $idpos, int $idFondo): bool {
+        $conn = Conexion::getConexion();
+        $sql = "UPDATE posts SET fondoid = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Error al preparar: " . $conn->error);
+        }
+        $stmt->bind_param("ii", $idFondo, $idpos);
+        $ok = $stmt->execute();
+        $stmt->close();
+        return $ok;
+    }
+
+    public static function obtenerTodos(): array {
+        $conn = Conexion::getConexion();
+        $sql = "SELECT p.id AS post_id, 
+                    p.contenido AS post_contenido, 
+                    p.likes AS post_likes, 
+                    p.dislikes AS post_dislikes, 
+                    p.fechaPost AS post_fechaPost, 
+                    p.privado AS post_privado, 
+                    p.fondoid AS post_fondoId, 
+                    u.nickname AS autor_nickname,
+                    u.email AS autor_email,
+                    u.nombre AS autor_nombre,
+                    u.apellido AS autor_apellido,
+                    u.contrasena AS autor_contrasena
+                FROM posts p
+                JOIN usuarios u ON p.autor_nickname = u.nickname
+                WHERE p.privado = 0
+                ORDER BY p.fechaPost DESC";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $posts = [];
+        while ($row = $result->fetch_assoc()) {
+            // Mapear cada fila a un objeto Post
+            $usuario = new Usuario(
+                $row['autor_nickname'],
+                $row['autor_email'],
+                $row['autor_nombre'],
+                $row['autor_apellido'],
+                $row['autor_contrasena']
+            );
+            $post = new Post(
+                $usuario,
+                $row['post_contenido'],
+                (bool) $row['post_privado'],
+                $row['post_fondoId'] ? (int) $row['post_fondoId'] : null
+            );
+            $post->setId((int) $row['post_id']);
+            $post->setLikes((int) $row['post_likes']);
+            $post->setDislikes((int) $row['post_dislikes']);
+            $post->setFechaPost(new DateTime($row['post_fechaPost']));
+
+            $posts[] = $post;
+        }
+
+        return $posts;
+    }
 }

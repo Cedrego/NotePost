@@ -5,20 +5,18 @@ class Usuario {
     private string $nombre;
     private string $apellido;
     private string $contrasena;
-    private ?SolicitudAmistad $solicitudEnviada = null;
-    private ?SolicitudAmistad $solicitudRecibida = null;
-    private ?int $avatar;
+
+    private ?Avatar $avatar = null;
     /** @var Usuario[] */
     private array $amigos = [];
     /** @var Post[] */
     private array $posts = [];
 
-    public function __construct(string $nickname, string $email, string $nombre, string $apellido, string $contrasena, ?int $avatar = null) {
+    public function __construct(string $nickname, string $email, string $nombre, string $apellido, string $contrasena) {
         $this->nickname   = $nickname;
         $this->email      = $email;
         $this->nombre     = $nombre;
         $this->apellido   = $apellido;
-        $this->avatar     = $avatar;
         $this->contrasena = password_hash($contrasena, PASSWORD_DEFAULT);
     }
 
@@ -39,14 +37,9 @@ class Usuario {
     public function setContrasena(string $contrasena): void { 
         $this->contrasena = password_hash($contrasena, PASSWORD_DEFAULT);
     }
-    public function getSolicitudEnviada(): ?SolicitudAmistad { return $this->solicitudEnviada; }
-    public function setSolicitudEnviada(SolicitudAmistad $sol): void { $this->solicitudEnviada = $sol; }
 
-    public function getSolicitudRecibida(): ?SolicitudAmistad { return $this->solicitudRecibida; }
-    public function setSolicitudRecibida(SolicitudAmistad $sol): void { $this->solicitudRecibida = $sol; }
-
-    public function getAvatar(): ?int { return $this->avatar; }
-    public function setAvatar(?int $avatar): void { $this->avatar = $avatar; }
+    public function getAvatar(): ?Avatar { return $this->avatar; }
+    public function setAvatar(Avatar $avatar): void { $this->avatar = $avatar; }
 
     public function getAmigos(): array { return array_values($this->amigos); }
     public function setAmigos(array $amigos): void { $this->amigos = $amigos; }
@@ -55,7 +48,7 @@ class Usuario {
     public function getPosts(): array { return $this->posts; }
     public function setPosts(array $posts): void { $this->posts = $posts; }
     public function addPost(Post $post): void { $this->posts[] = $post; }
-
+    
     //metodos
     public function enviarSolicitud(Usuario $dest) {
         return new SolicitudAmistad($this, $dest);
@@ -67,8 +60,34 @@ class Usuario {
                 unset($this->posts[$key]);
                 // Reindexar el array para evitar "huecos"
                 $this->posts = array_values($this->posts);
+                return true; // Post encontrado y eliminado
             }
         }
+        return false; // Post no encontrado
+    }
+
+    //Retorna un usuario por su nickname y verifica si la contraseña es correcta
+    public static function ConfirmarExistencia($conn, $nickname, $contrasenaIngresada): ?Usuario {
+        $stmt = $conn->prepare("SELECT email, nombre, apellido, contrasena, avatar FROM usuarios WHERE nickname = ?");
+        $stmt->bind_param("s", $nickname);
+        $stmt->execute();
+        $email = $nombre = $apellido = $contrasenaHash = null;
+        $avatarId = null;
+        $stmt->bind_result($email, $nombre, $apellido, $contrasenaHash, $avatarId);
+
+        if ($stmt->fetch()) {
+            if (
+                $contrasenaHash !== null && 
+                $email !== null && 
+                $nombre !== null && 
+                $apellido !== null &&
+                password_verify($contrasenaIngresada, $contrasenaHash)
+            ) {
+                // Indica que la contraseña ya está hasheada
+                return new Usuario($nickname, (string)$email, (string)$nombre, (string)$apellido, (string)$contrasenaHash, $avatarId, true);
+            }
+        }
+        return null; // Usuario no encontrado o contraseña incorrecta
     }
 
     //busca al usuario que tenga ese nickname en la base de datos
@@ -76,10 +95,12 @@ class Usuario {
         $stmt = $conn->prepare("SELECT email, nombre, apellido, contrasena, avatar FROM usuario WHERE nickname = ?");
         $stmt->bind_param("s", $nickname);
         $stmt->execute();
+        $email = $nombre = $apellido = $contrasena = null;
+        $avatarId = null;
         $stmt->bind_result($email, $nombre, $apellido, $contrasena, $avatarId);
 
         if ($stmt->fetch()) {
-            return new Usuario($nickname, $email, $nombre, $apellido, $contrasena, $avatarId);
+            return new Usuario($nickname, (string)$email, (string)$nombre, (string)$apellido, (string)$contrasena, $avatarId);
         } else {
             return null; // No encontrado
         }

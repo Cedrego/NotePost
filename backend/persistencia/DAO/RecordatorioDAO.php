@@ -3,23 +3,25 @@ require_once __DIR__ . '/../conexion.php';
 require_once __DIR__ . '/../mapeo/RecordatorioMap.php';
 
 class RecordatorioDAO {
-    private $conn;
 
-    public function __construct() {
-       $this->conn = Conexion::getConexion();
-    }
 
     // Insertar un recordatorio asociado a un post
-    public function insert(Recordatorio $recordatorio): bool {
-        $sql = "INSERT INTO recordatorios (post_id, fechaRecordatorio) VALUES (:post_id, :fecha)";
-        $stmt = $this->conn->prepare($sql);
+    public static function insert(Recordatorio $recordatorio): bool {
+        $conn = Conexion::getConexion();
+        $sql = "INSERT INTO recordatorios (post_id, fechaRecordatorio) VALUES (?, ?)";
+        $stmt = $conn->prepare($sql);
 
         $data = RecordatorioMap::mapRecordatorioToArray($recordatorio);
 
-        return $stmt->execute([
-            ':post_id' => $data['post_id'],
-            ':fecha'   => $data['fechaRecordatorio'],
-        ]);
+        $stmt->bind_param(
+            "is", // post_id INT, fechaRecordatorio STRING
+            $data['post_id'],
+            $data['fechaRecordatorio']
+        );
+
+        $ok = $stmt->execute();
+        $stmt->close();
+        return $ok;
     }
 
    public function getRecordatoriosByPostId(int $postId): array {
@@ -29,8 +31,8 @@ class RecordatorioDAO {
                 JOIN posts p ON r.post_id = p.id
                 JOIN usuarios u ON p.autor_nick = u.nickname
                 WHERE r.post_id = :post_id";
-
-        $stmt = $this->conn->prepare($sql);
+        $conn = Conexion::getConexion();
+        $stmt = $conn->prepare($sql);
         $stmt->execute([':post_id' => $postId]);
 
         $recordatorios = [];
@@ -46,8 +48,9 @@ class RecordatorioDAO {
 
     // Eliminar un recordatorio específico
     public function delete(Recordatorio $recordatorio): bool {
+        $conn = Conexion::getConexion();
         $sql = "DELETE FROM recordatorios WHERE post_id = :post_id AND fechaRecordatorio = :fecha";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
 
         $data = RecordatorioMap::mapRecordatorioToArray($recordatorio);
 
@@ -59,8 +62,9 @@ class RecordatorioDAO {
 
     // Eliminar todos los recordatorios de un post
     public function deleteByPostId(int $postId): bool {
+        $conn = Conexion::getConexion();
         $sql = "DELETE FROM recordatorios WHERE post_id = :post_id";
-        $stmt = $this->conn->prepare($sql);
+        $stmt = $conn->prepare($sql);
         return $stmt->execute([':post_id' => $postId]);
     }
 }

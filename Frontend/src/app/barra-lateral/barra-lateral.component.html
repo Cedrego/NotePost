@@ -6,11 +6,11 @@
 
   <!-- Lista de amigos -->
   <div class="amigos">
-    <div *ngFor="let amigo of amigosFiltrados()" class="amigo">
-      <img src="https://img.pikbest.com/png-images/qianku/default-avatar_2406311.png!w700wp" alt="avatar" />
-      <span>{{ amigo }}</span>
-    </div>
-  </div> 
+  <div *ngFor="let amigo of amigosFiltrados()" class="amigo">
+    <img [src]="amigo.rutaAvatar" alt="avatar" class="avatar-img" />
+    <span>{{ amigo.nick }}</span>
+  </div>
+</div>
 
   <!-- ide.component.html -->
 <!-- <div *ngFor="let item of ides">
@@ -18,12 +18,14 @@
   <img [src]="item.image" width="200" alt="{{ item.ide }}">
 </div> -->
 
-
-
-  <!-- Solicitudes de amistad -->
+  <!-- Solicitudes de amistad (no muestra logo)-->
   <div class="solicitudes">
     <h6>Solicitudes</h6>
-    <p>Aquí podrías mostrar solicitudes pendientes</p>
+    <li *ngFor="let solicitud of solicitudes">
+      {{ solicitud.solicitante }}
+        <button class="btn btn-success btn-sm ms-2" (click)="aceptarSolicitud(solicitud)">✔</button>
+        <button class="btn btn-danger btn-sm ms-1" (click)="rechazarSolicitud(solicitud)">✖</button>
+    </li>
   </div>
 
   <!-- Calendario -->

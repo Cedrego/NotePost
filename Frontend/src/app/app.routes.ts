@@ -5,6 +5,7 @@ import { IniciarSesionComponent } from './iniciar-sesion/iniciar-sesion.componen
 import { CrearPostComponent } from './crear-post/crear-post.component';
 import { CambiarAvatarComponent } from './cambiar-avatar/cambiar-avatar.component';
 import { CambiarPrivacidadComponent } from './cambiar-privacidad/cambiar-privacidad.component';
+import { MenuUsuarioComponent } from './menu-usuario/menu-usuario.component';
 
 export const routes: Routes = [
   { path: '',pathMatch: 'full',redirectTo: 'home' },
@@ -13,7 +14,7 @@ export const routes: Routes = [
   { path: 'iniciar-sesion', component: IniciarSesionComponent },
   { path: 'crear-post', component: CrearPostComponent },
   { path: 'cambiar-avatar', component: CambiarAvatarComponent },
-  { path: 'cambiar-privacidad', component: CambiarPrivacidadComponent }
-  
+  { path: 'cambiar-privacidad', component: CambiarPrivacidadComponent },
+  { path: 'menu-usuario', component: MenuUsuarioComponent } // nueva ruta para el menú de usuario
 
 ];

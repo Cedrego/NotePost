@@ -1,7 +1,21 @@
-<div class="container-fluid">
-    <div class="form-container px-0 py-0 ">   
-        <div class="contenedor-derecha">
-          <app-barra-lateral></app-barra-lateral>
+<div class="container mt-4">
+  <div class="form-container w-100 px-0 py-0">   
+    <!-- Si NO está logueado -->
+    <ng-container *ngIf="!isLoggedIn; else usuarioMenu">
+      <!-- Mostraria los Post sin poder interactuar -->
+    </ng-container>
+    <!-- Si está logueado -->
+    <ng-template #usuarioMenu>
+      <div class="container-fluid">
+        <div class="form-container px-0 py-0">   
+          <div class="contenedor-derecha">
+            <app-barra-lateral></app-barra-lateral>
+          </div>
+          <div class="contenedor-principal">
+            <app-post-list></app-post-list> <!-- Aquí se muestra el componente PostList -->
+          </div>
         </div>
-    </div>
+      </div>
+    </ng-template>
+  </div>
 </div>
