@@ -56,6 +56,12 @@ export class UserService {
     return this.http.post(`${this.baseUrl}/implementacion/crearPost.php`, data);
   }
 
+  darLike(postId: number) {
+    return this.http.post(`${this.baseUrl}/implementacion/darLike.php`, { postId });
+  }
 
+  darDislike(postId: number) {
+    return this.http.post(`${this.baseUrl}/implementacion/darDislike.php`, { postId });
+  }
 
 }
