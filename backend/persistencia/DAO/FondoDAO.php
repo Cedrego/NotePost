@@ -65,15 +65,4 @@ class FondoDAO {
 
         return true;
     }
-     public static function obtenerTodos(): array {
-        $conn = Conexion::getConexion();
-        $sql = "SELECT * FROM fondo";
-        $result = $conn->query($sql);
-
-        $Fondos = [];
-        while ($row = $result->fetch_assoc()) {
-            $Fondos[] = FondoMap::mapRowToFondo($row);
-        }
-        return $Fondos;
-    }
 }

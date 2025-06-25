@@ -1,51 +1,58 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-header('Access-Control-Allow-Origin: *'); // Permite todas las fuentes (solo para pruebas)
-header('Access-Control-Allow-Headers: Content-Type');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Content-Type: application/json; charset=utf-8');
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
-require_once '../persistencia/conexion.php';
 require_once '../dominio/Usuario.php';
 require_once '../dominio/Avatar.php';
+require_once '../persistencia/conexion.php';
 require_once '../persistencia/DAO/UsuarioDAO.php';
 
 $conn = Conexion::getConexion();
-if ($conn->connect_error) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Error de conexión']);
-    exit;
-}
-// Obtener los datos del POST (Angular envía JSON)
-$input = json_decode(file_get_contents('php://input'), true);
+//verifica la conexión a la base de datos
+if ($conn->connect_error) die("Conexión fallida: " . $conn->connect_error);
 
 //obtener el nickname desde el POST (enviado por Angular)
-$nickUsu = isset($input['usuario']) ? $input['usuario'] : null;
-$idAvatar = isset($input['idAvatar']) ? (int)$input['idAvatar'] : null;
-
+$nickUsu = isset($_POST['usuario']) ? $_POST['usuario'] : null;
 if (!$nickUsu) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Usuario no especificado.']);
+    echo "Error: usuario no especificado.";
     exit;
 }
+//obtener el id del avatar seleccionado desde el formulario
+$idAvatar = isset($data['idAvatar']) ? (int)$data['idAvatar'] : null;
+echo $idAvatar;
 if (!$idAvatar) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Avatar no especificado.']);
+    echo "Error: avatar no especificado.";
     exit;
 }
 
-$ok = UsuarioDAO::actualizarAvatar($nickUsu, $idAvatar);
+//buscar el avatar en la base de datos
+$stmt = $conn->prepare("SELECT id, rutaImagen FROM avatar WHERE id = ?");
+$stmt->bind_param("i", $idAvatar);
+$stmt->execute();
+$stmt->bind_result($avatarId, $rutaImagen);
 
-if ($ok) {
-    echo json_encode(['success' => true, 'message' => 'Avatar actualizado correctamente.']);
+if (!$stmt->fetch()) {
+    echo "Error: avatar no encontrado.";
+    exit;
+}
+$stmt->close();
+
+//obtener el usuario desde la base de datos
+$usuario = UsuarioDAO::obtenerPorNickname($nickUsu);
+if (!$usuario) {
+    echo "Error: usuario no encontrado.";
+    exit;
+}
+
+//cambiar el avatar en el objeto usuario
+$avatar = new Avatar($avatarId, $rutaImagen);
+$usuario->setAvatar($avatar);
+
+//actualizar el avatar en la base de datos
+$stmt2 = $conn->prepare("UPDATE usuarios SET avatar = ? WHERE nickname = ?");
+$stmt2->bind_param("is", $idAvatar, $nickUsu);
+$stmt2->execute();
+$stmt2->close();
+if ($stmt2->affected_rows > 0) {
+    echo "Avatar actualizado correctamente.";
 } else {
-    http_response_code(500);
-    echo json_encode(['error' => 'No se pudo actualizar el avatar.']);
+    echo "No se pudo actualizar el avatar.";
 }
 ?>

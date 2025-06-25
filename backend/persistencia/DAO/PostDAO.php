@@ -131,7 +131,7 @@ class PostDAO {
         if (!$stmt) {
             die("Error al preparar: " . $conn->error);
         }
-        $stmt->bind_param("ii", $idFondo, $idpos);
+        $stmt->bind_param("is", $idFondo, $idpos);
         $ok = $stmt->execute();
         $stmt->close();
         return $ok;
@@ -140,50 +140,39 @@ class PostDAO {
     public static function obtenerTodos(): array {
         $conn = Conexion::getConexion();
         $sql = "SELECT p.id AS post_id, 
-                    p.contenido AS post_contenido, 
-                    p.likes AS post_likes, 
-                    p.dislikes AS post_dislikes, 
-                    p.fechaPost AS post_fechaPost, 
-                    p.privado AS post_privado, 
-                    p.fondoid AS post_fondoId, 
-                    u.nickname AS autor_nickname,
-                    u.email AS autor_email,
-                    u.nombre AS autor_nombre,
-                    u.apellido AS autor_apellido,
-                    u.contrasena AS autor_contrasena
+                       p.contenido AS post_contenido, 
+                       p.likes AS post_likes, 
+                       p.dislikes AS post_dislikes, 
+                       p.fechaPost AS post_fechaPost, 
+                       p.privado AS post_privado, 
+                       p.fondoid AS post_fondoId, 
+                       u.nickname AS autor_nickname
                 FROM posts p
                 JOIN usuarios u ON p.autor_nickname = u.nickname
-                WHERE p.privado = 0
-                ORDER BY p.fechaPost DESC";
-
+                WHERE p.privado = 0 -- Excluir posts privados
+                ORDER BY p.fechaPost DESC"; // Ordenar por fecha de publicación, más reciente primero
+    
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
-
+    
         $posts = [];
         while ($row = $result->fetch_assoc()) {
             // Mapear cada fila a un objeto Post
-            $usuario = new Usuario(
-                $row['autor_nickname'],
-                $row['autor_email'],
-                $row['autor_nombre'],
-                $row['autor_apellido'],
-                $row['autor_contrasena']
-            );
             $post = new Post(
-                $usuario,
-                $row['post_contenido'],
-                (bool) $row['post_privado'],
-                $row['post_fondoId'] ? (int) $row['post_fondoId'] : null
+                new Usuario($row['autor_nickname']), // Crear el objeto Usuario con el nickname
+                $row['post_contenido'],              // Contenido del post
+                (bool) $row['post_privado'],         // Privacidad del post
+                $row['post_fondoId'] ? (int) $row['post_fondoId'] : null // Fondo ID (puede ser null)
             );
-            $post->setId((int) $row['post_id']);
-            $post->setLikes((int) $row['post_likes']);
-            $post->setDislikes((int) $row['post_dislikes']);
-            $post->setFechaPost(new DateTime($row['post_fechaPost']));
-
+            $post->setId((int) $row['post_id']);    // ID del post
+            $post->setLikes((int) $row['post_likes']); // Likes
+            $post->setDislikes((int) $row['post_dislikes']); // Dislikes
+            $post->setFechaPost(new DateTime($row['post_fechaPost'])); // Fecha de publicación
+    
             $posts[] = $post;
         }
-
+    
         return $posts;
     }
 }

@@ -16,7 +16,7 @@ export class BarraLateralComponent implements OnInit {
   private userService = inject(UserService); // ✅ usando inject()
   sessionService = inject(SessionService);
   busqueda = '';
-  amigos: { nick: string, rutaAvatar: string }[] = [];
+  amigos: string[] = []; 
   solicitudes: { solicitante: string, recibidor: string, aceptada: number }[] = [];
 
   ides: { ide: string, image: string }[] = []; // Para mostrar los IDEs con imagen
@@ -29,13 +29,7 @@ export class BarraLateralComponent implements OnInit {
       console.log('Solicitudes:', this.solicitudes);
     });
      this.userService.getAmigos().subscribe(res => {
-      const nicks: string[] = res.amigos ?? [];
-      this.amigos = [];
-      nicks.forEach((nick: string) => {
-        this.userService.getRutaAvatar(nick).subscribe(avatarRes => {
-          this.amigos.push({ nick, rutaAvatar: avatarRes.ruta });
-        });
-      });
+      this.amigos = res.amigos ?? [];
     });
     this.userService.getIdesAvatars().subscribe(data => {
       this.ides = data;
@@ -84,7 +78,7 @@ export class BarraLateralComponent implements OnInit {
   }
   amigosFiltrados() {
     return this.amigos.filter(a =>
-      a.nick.toLowerCase().includes(this.busqueda.toLowerCase())
+      a.toLowerCase().includes(this.busqueda.toLowerCase())
     );
   }
 }
