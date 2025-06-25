@@ -6,9 +6,12 @@
     <h2>{{ post.autor }}</h2>
     <p>{{ post.contenido }}</p>
     <p class="meta">
-      <strong>{{ post.fechaPost | date:'short' }}</strong> —
-      👍 {{ post.likes }} | 👎 {{ post.dislikes }}
-    </p>
+     <strong>{{ post.fechaPost | date:'short' }}</strong> —
+    <button class="btn btn-outline-success btn-sm me-1"
+            (click)="darLike(post.id)">👍</button> {{ post.likes }}
+    <button class="btn btn-outline-danger btn-sm ms-2"
+            (click)="darDislike(post.id)">👎</button> {{ post.dislikes }}
+  </p>
     <div class="tags">
       <span class="tag" *ngFor="let tag of post.tags">{{ tag }}</span>
     </div>

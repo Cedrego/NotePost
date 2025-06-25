@@ -59,6 +59,12 @@ export class UserService {
 
 enviarCambiarAvatar(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/implementacion/procesarFormulario.php`, data);
+  }  darLike(postId: number) {
+    return this.http.post(`${this.baseUrl}/implementacion/darLike.php`, { postId });
+  }
+
+  darDislike(postId: number) {
+    return this.http.post(`${this.baseUrl}/implementacion/darDislike.php`, { postId });
   }
 
 }
