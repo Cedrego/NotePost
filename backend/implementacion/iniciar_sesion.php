@@ -39,6 +39,7 @@ if ($usuario) {
             'apellido' => $usuario->getApellido()
         ]
     ]);
+
     exit;
 } else {
     // Usuario o contraseña incorrectos
