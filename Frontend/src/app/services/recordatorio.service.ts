@@ -6,12 +6,18 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class RecordatorioService {
-  private apiUrl = 'http://localhost/backend/implementacion/guardarRecordatorio.php';
+  private guardarRecordatorioUrl = 'http://localhost/backend/implementacion/guardarRecordatorio.php';
+  private obtenerRecordatoriosUrl = 'http://localhost/backend/implementacion/obtenerRecordatoriosPendientes.php';
 
   constructor(private http: HttpClient) {}
 
   guardarRecordatorio(usuario: string, tituloEvento: string, fechaRecordatorio: string): Observable<any> {
     const payload = { usuario, tituloEvento, fechaRecordatorio };
-    return this.http.post<any>(this.apiUrl, payload);
+    return this.http.post<any>(this.guardarRecordatorioUrl, payload);
+  }
+
+  obtenerRecordatoriosPorUsuario(usuario: string): Observable<any[]> {
+    const payload = { usuario };
+    return this.http.post<any[]>(this.obtenerRecordatoriosUrl, payload);
   }
 }

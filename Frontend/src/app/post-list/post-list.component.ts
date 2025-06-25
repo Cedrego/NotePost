@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PostService } from '../services/post.service';
 import { Post } from '../models/post.model'; //importa el modelo Post
-<<<<<<< HEAD
-=======
 import { CommonModule } from '@angular/common';
->>>>>>> origin/Enzo
 
 @Component({
   selector: 'app-post-list',

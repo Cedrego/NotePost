@@ -2,20 +2,23 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../services/user.service';
-import { SessionService } from '../services/session.service';// <-- importando servicio de sesión
-import { Router } from '@angular/router';// <-- Importando Router para redirección a Menu-Usuario despues de login exitoso
+import { SessionService } from '../services/session.service'; // <-- importando servicio de sesión
+import { Router } from '@angular/router'; // <-- Importando Router para redirección a Menu-Usuario despues de login exitoso
+import { RecordatorioService } from '../services/recordatorio.service'; // <-- Importando servicio de recordatorios
+
 @Component({
   selector: 'app-iniciar-sesion',
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './iniciar-sesion.component.html',
   styleUrl: './iniciar-sesion.component.scss'
 })
-export class IniciarSesionComponent implements OnInit{
+export class IniciarSesionComponent implements OnInit {
   sesionForm: FormGroup;
   fb = inject(FormBuilder);
   userService = inject(UserService);
   sessionService = inject(SessionService); // <-- Agregadondo servicio de sesión
   router = inject(Router); // <-- Inyectando Router para redirección
+  recordatorioService = inject(RecordatorioService); // <-- Inyectando servicio de recordatorios
 
   showAlert = false;
   alertMessage = '';
@@ -26,12 +29,10 @@ export class IniciarSesionComponent implements OnInit{
       nick: ['', [Validators.required]],
       pass: ['', [Validators.required]],
       repeatpass: ['', Validators.required]
-     });
+    });
   }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 
   onSubmit(): void {
     if (this.sesionForm.invalid) {
@@ -48,11 +49,27 @@ export class IniciarSesionComponent implements OnInit{
         this.alertMessage = '¡Enviado correctamente!';
         this.showAlert = true;
         console.log('Respuesta del servidor:', respuesta);
+
+        // Obtener recordatorios pendientes
+        this.recordatorioService.obtenerRecordatoriosPorUsuario(formData.nick).subscribe(
+          (recordatorios) => {
+            if (recordatorios.length > 0) {
+              const recordatoriosPendientes = recordatorios.map(r => `- ${r.contenido} (${r.fechaRecordatorio})`).join('\n');
+              alert(`Recordatorios pendientes:\n${recordatoriosPendientes}`);
+            } else {
+              console.log('No hay recordatorios pendientes.');
+            }
+          },
+          (error) => {
+            console.error('Error al obtener los recordatorios:', error);
+          }
+        );
+
         setTimeout(() => {
           this.router.navigate(['/home']); // Redirigir a la página de inicio después de iniciar sesión
         }, 1000); // Espera 1 segundo antes de redirigir (opcional)
       },
-       error: (error: any) => {
+      error: (error: any) => {
         if (error.status === 401 && error.error && error.error.error) {
           this.alertMessage = error.error.error; // Mensaje del backend
         } else {
@@ -63,10 +80,9 @@ export class IniciarSesionComponent implements OnInit{
       }
     });
   }
+
   // Getters para los campos
   get nick() { return this.sesionForm.get('nick'); }
   get pass() { return this.sesionForm.get('pass'); }
   get repeatpass() { return this.sesionForm.get('repeatpass'); }
-
-
 }
