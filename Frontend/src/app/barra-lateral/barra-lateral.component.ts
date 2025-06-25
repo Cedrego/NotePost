@@ -31,9 +31,7 @@ export class BarraLateralComponent implements OnInit {
      this.userService.getAmigos().subscribe(res => {
       this.amigos = res.amigos ?? [];
     });
-    this.userService.getIdesAvatars().subscribe(data => {
-      this.ides = data;
-    });
+
   }
   aceptarSolicitud(solicitud: any) {
     const recibidor = this.sessionService.getUsuario();

@@ -10,11 +10,17 @@ export class UserService {
   private baseUrl = 'http://localhost/backend';
 
   constructor(private http: HttpClient, private session: SessionService) {}
-
+/*
   getIdesAvatars(): Observable<{ ide: string, image: string }[]> {
     return this.http.get<{ ide: string, image: string }[]>(`${this.baseUrl}/implementacion/crearPost.php`);
-  }
-    
+  }*/
+
+  getTodosAvatares(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/implementacion/obtenerTodosAvatares.php`);
+  }  
+  getTodosFondos(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/implementacion/obtenerTodosFondos.php`);
+  }  
   getAmigos(): Observable<any> {
    const nick = this.session.getUsuario();
     return this.http.get(`${this.baseUrl}/implementacion/obtenerAmigos.php?usuario=${encodeURIComponent(nick ?? '')}`);

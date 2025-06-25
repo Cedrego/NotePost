@@ -32,8 +32,8 @@ $usuario = new Usuario(
     $input['apellido'],
     $input['pass']
 );
-
+$numero = rand(1, 28); // Número aleatorio entre 1 y 28
 UsuarioDAO::guardar($usuario);
-
+$ok = UsuarioDAO::actualizarAvatar($input['nick'], $numero);
 echo json_encode(['success' => true]);
 ?>

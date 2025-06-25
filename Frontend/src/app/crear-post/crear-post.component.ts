@@ -40,6 +40,8 @@ export class CrearPostComponent {
     this.postForm = this.fb.group({
       contenido: ['', Validators.required],
       privado: [true],
+      tags: ['', Validators.required],
+      usarRecordatorio: [false], // <-- nuevo control
       recordatorio: [''],
       fondo: ['1'] 
     });
@@ -51,8 +53,17 @@ export class CrearPostComponent {
       this.showAlert = true;
       return;
     }
-
-    const formData = this.postForm.value;
+    let formValue = this.postForm.value;
+    // Si no quiere recordatorio, envía el campo vacío
+      if (!formValue.usarRecordatorio) {
+        formValue.recordatorio = '';
+      }
+    const formData = {
+     ...formValue,
+    usuario: this.sessionService.getUsuario() // o como obtengas el usuario logueado
+    };
+    // Eliminar usarRecordatorio no lo necesitas en el backend
+    delete formData.usarRecordatorio;
     console.log('FormData enviado:', formData);
 
     this.userService.enviarPost(formData).subscribe({
