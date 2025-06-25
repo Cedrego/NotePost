@@ -6,7 +6,7 @@ import { SessionService } from './session.service'; // importa el servicio
   providedIn: 'root'
 })
 export class UserService {
-  private baseUrl = 'http://localhost/backend';
+  private baseUrl = 'http://localhost/NotePost/backend';
 
   constructor(private http: HttpClient, private session: SessionService) {}
 
@@ -50,6 +50,8 @@ export class UserService {
     return this.http.post(`${this.baseUrl}/implementacion/procesarFormulario.php`, data);
   }
 
-
+enviarCambiarAvatar(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/implementacion/procesarFormulario.php`, data);
+  }
 
 }

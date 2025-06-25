@@ -15,6 +15,7 @@ export class MenuUsuarioComponent {
   nombre:string | null;
   rutaAvatar: string = '';
   menuAbierto = false;
+  
   constructor(private router: Router,
         public sessionService: SessionService
         , private userService: UserService
@@ -35,6 +36,9 @@ export class MenuUsuarioComponent {
   opcionSeleccionada(opcion: string) {
     console.log('Opción seleccionada:', opcion);
     this.menuAbierto = false;
+    this.sessionService.logout();
+    localStorage.clear();
+    this.router.navigate(['/login']);
   }
   goToCrearPost(): void {
     this.router.navigate(['/crear-post']);
