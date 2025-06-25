@@ -34,25 +34,54 @@
         Marcar como privado
       </label>
       <br><br>
-
-      <!-- Recordatorio opcional -->
-      <label for="recordatorio">Fecha de recordatorio (opcional):</label><br>
+      <!-- Tags-->
+      <label for="tags">Tags (separados por comas):</label><br>
       <input 
-        type="datetime-local" 
-        id="recordatorio" 
-        formControlName="recordatorio"
+        type="text" 
+        id="tags" 
+        formControlName="tags"
+        placeholder="Ejemplo: trabajo, personal, urgente"
       >
+      <div class="alert alert-danger mt-2" *ngIf="tags?.invalid && tags?.touched">
+        Los tags son obligatorios
+      </div>
       <br><br>
+
+     <!-- Checkbox para activar recordatorio -->
+      <label>
+        <input type="checkbox" formControlName="usarRecordatorio">
+        ¿Agregar recordatorio?
+      </label>
+      <br><br>
+
+      <!-- Solo muestra el input si usarRecordatorio es true -->
+      <div *ngIf="postForm.get('usarRecordatorio')?.value">
+        <label for="recordatorio">Fecha de recordatorio:</label><br>
+        <input 
+          type="datetime-local" 
+          id="recordatorio" 
+          formControlName="recordatorio"
+          [required]="postForm.get('usarRecordatorio')?.value"
+        >
+        <div class="alert alert-danger mt-2" *ngIf="recordatorio?.invalid && recordatorio?.touched">
+          La fecha y hora de recordatorio es obligatoria
+        </div>
+        <br><br>
+      </div>
 
       <!-- Selección de fondo -->
       <p>Elige un fondo para tu nota:</p>
-      <div *ngFor="let color of coloresFondo" class="fondo-option">
-      <input type="radio" [id]="'fondo' + color.id" [value]="color.color" formControlName="fondo">
-      <label 
-        [for]="'fondo' + color.id" 
-        [style.background-color]="color.color">
-      </label>
-      <span>{{ color.name }}</span>
+      <div *ngFor="let color of ColorFondo" class="fondo-option">
+        <input 
+          type="radio" 
+          [id]="'fondo' + color.id" 
+          [value]="color.id" 
+          formControlName="fondo"
+        >
+        <label [for]="'fondo' + color.id" style="display: flex; align-items: center; gap: 8px;">
+          <img [src]="color.rutaImagen" alt="fondo" style="width: 100px; height: 100px; border-radius: 4px;">
+          Fondo {{ color.id }}
+        </label>
       </div>
 
       <!-- Botón de envío -->
