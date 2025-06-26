@@ -1,6 +1,6 @@
 /* Estilos básicos para la galería de avatares */
 .form-container {
-  margin-top: 11rem;
+  margin-top: 10rem;
   text-align: center;
 }
 
@@ -15,15 +15,12 @@
 }
 
 .avatar-option label {
-  display: block;
-  width: 80px;
-  height: 80px;
   border: 2px solid black;
   border-radius: 50%;
   cursor: pointer;
   background-size: cover;
   background-position: center;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .avatar-option input:checked + label {

@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -12,13 +12,16 @@ import { Router } from '@angular/router';
 export class MenuHamburguesaComponent {
   menuAbierto = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private elRef: ElementRef,
+    private router: Router // <-- Inyectar Router acá
+  ) {}
 
   toggleMenu() {
     this.menuAbierto = !this.menuAbierto;
   }
 
-  goToHome(): void {
+  goToHome() {
     this.router.navigate(['/home']);
     this.menuAbierto = false;
   }
@@ -28,12 +31,11 @@ export class MenuHamburguesaComponent {
     this.menuAbierto = false;
   }
 
-  @HostListener('document:click', ['$event'])
-  clickFuera(event: MouseEvent) {
-    const targetElement = event.target as HTMLElement;
-    const clickedInside = targetElement.closest('.menu-hamburguesa');
-
-    if (!clickedInside && this.menuAbierto) {
+  // Cierra el menú si el clic ocurre fuera del componente
+  @HostListener('document:click', ['$event.target'])
+  onClickFuera(target: HTMLElement) {
+    const clicDentro = this.elRef.nativeElement.contains(target);
+    if (!clicDentro && this.menuAbierto) {
       this.menuAbierto = false;
     }
   }

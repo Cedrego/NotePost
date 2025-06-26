@@ -1,45 +1,85 @@
-/* .fondo-option {
-display: inline-block;
-margin: 10px;
-}
-
-.fondo-option label {
-display: block;
-width: 100px;
-height: 100px;
-background-size: cover;
-border: 2px solid transparent;
-cursor: pointer;
-}
-
-.fondo-option input[type="radio"]:checked + label {
-border-color: blue;
-}
-*/
-/* Estilos básicos para la selección de fondos */
-.form-container{
+/* Estilo general para el contenedor */
+.container-fluid {
   margin-top: 9rem;
+  justify-content: center;
   text-align: center;
 }
-.nota-contenido{
-  border-color: #f7941d;
-  border-width: 3px;
+
+/* Estilo para el formulario */
+.form-container {
+  background-color: #ffffff;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
   width: 100%;
-  max-width: 100%;
-  padding: 0.75rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  resize: vertical;
 }
 
-.crearPost{
-  background-color: #f7941d;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
+/* Estilo del textarea */
+textarea.nota-contenido {
+  border: 2px solid #f7941d;
+  border-radius: 8px;
+  padding: 10px;
+  width: 100%;
+  resize: vertical;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none; // <- quita el borde negro por defecto
+}
+
+textarea.nota-contenido:focus {
+  border-color: #f7941d;     // mantiene el borde naranja
+  box-shadow: 0 0 15px #f7941d; // opcional: da un suave resplandor
+}
+
+/* Input de tags y recordatorio */
+input[type="text"],
+input[type="datetime-local"] {
+  width: 100%;
+  padding: 8px;
   border-radius: 6px;
-  cursor: pointer;
+  border: 1.5px solid #ccc;
+  font-size: 1rem;
+  margin-top: 4px;
+}
+
+/* Enmarcado para la selección de fondos */
+.fondo-option {
+  display: inline-block;
+  text-align: center;
+  margin: 0 10px;
+}
+
+.fondo-option input[type="radio"] {
+  display: none; // ocultamos el botón de selección
+}
+
+.fondo-option input:checked + label {
+  border-color: #f7941d;
+  box-shadow: 0 0 8px #f7941d;
+  transform: scale(1.05);
+}
+
+/* Botón de enviar */
+.crearPost {
+  background-color: #f7941d;
+  border: none;
+  color: white;
   font-weight: bold;
+  padding: 10px 24px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.crearPost:hover {
+  background-color: #f7941d;
+}
+
+/* Alerta personalizada */
+.custom-alert {
+  background-color: #fff3cd;
+  border-left: 5px solid #f7941d;
+  padding: 10px;
+  border-radius: 8px;
 }
 
 button[type="submit"] {
@@ -63,29 +103,4 @@ button[type="submit"] {
     opacity: 0.5;
     cursor: not-allowed;
   }
-}
-
-.fondo-option {
-  display: inline-block;
-  margin: 0 10px;
-  text-align: center;
-}
-
-.fondo-option input[type="radio"] {
-  display: none; /* ocultamos el radio button */
-}
-
-.fondo-option label {
-  display: block;
-  width: 100px;
-  height: 70px;
-  border: 2px solid transparent;
-  cursor: pointer;
-  background-size: cover;
-  background-position: center;
-  margin-bottom: 5px;
-}
-/* Cuando el radio esté seleccionado, resaltamos el label */
-.fondo-option input:checked + label {
-  border-color: #007BFF;
 }

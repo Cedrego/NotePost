@@ -1,22 +1,19 @@
-<div class="container-fluid mt-4">
-  <div class="form-container w-100 px-4 py-4 mx-auto">     
-  <!-- Formulario para actualizar avatar -->
-  <form [formGroup]="avatarForm" (ngSubmit)="onSubmit()">  
-    <h1>Elige tu nuevo avatar</h1>
+<div class="container-fluid">
+  <div class="form-container">     
+    <form [formGroup]="avatarForm" (ngSubmit)="onSubmit()">  
+      <h1>Elige tu nuevo avatar</h1>
 
-    <!-- Avatar 1 -->
-    <div *ngFor="let avatar of avatars" class="avatar-option">
-      <input type="radio" name="idAvatar" [id]="'avatar' + avatar.id" [value]="avatar.id" formControlName="idAvatar">
-      <label [for]="'avatar' + avatar.id" [style.background-image]="'url(/assets/avatars/' + avatar.filename + ')'"></label>
-      <span>{{ avatar.name }}</span>
-    </div>
-    
-    <br><br>
-    <!-- Botón de envío -->
-    <div class="text-center mt-4">
+      <div *ngFor="let avatar of avatars" class="avatar-option">
+        <input type="radio" name="idAvatar" [id]="'avatar' + avatar.id" [value]="avatar.id" formControlName="idAvatar">
+        <label [for]="'avatar' + avatar.id">
+          <img [src]="avatar.rutaImagen" alt="avatar" class="avatar-img" />
+        </label>
+      </div>
+      
+      <br><br>
+      <div class="text-center mt-4">
         <button type="submit" class="actualizarAvatar">Actualizar Avatar</button>
       </div>
-  </form>
-
+    </form>
   </div>
 </div>

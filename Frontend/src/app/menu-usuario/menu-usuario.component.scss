@@ -6,6 +6,19 @@
     background: none;
     border: none;
     cursor: pointer;
+    font-size: 2rem;
+    background: none;
+    border: none;
+    font-weight: bold;  // ← agregamos esto
+    font-size: 40px;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: #FFD9AB;
+      transform: scale(1.1);
+    }
   }
   .nombreUsuario{
     color: white;
