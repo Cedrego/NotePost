@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-user',
@@ -20,7 +21,7 @@ export class CreateUserComponent implements OnInit {
   alertMessage = '';
   id = 10;
 
-  constructor() {
+  constructor(private router: Router,) {
     this.userForm = this.fb.group({
       nick: ['', Validators.required],
       nombre: ['', Validators.required],
@@ -50,6 +51,10 @@ export class CreateUserComponent implements OnInit {
         this.alertMessage = '¡Enviado correctamente!';
         this.showAlert = true;
         console.log('Respuesta del servidor:', respuesta);
+        setTimeout(() => {
+          this.router.navigate(['/iniciar-sesion']);
+        }, 1000);
+
       },
       error: (error: any) => {
         if (error.status === 409 && error.error && error.error.error) {

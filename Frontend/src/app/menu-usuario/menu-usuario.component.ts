@@ -44,6 +44,13 @@ export class MenuUsuarioComponent {
     this.menuAbierto = false;
   }
 
+  cerrarSesion(): void {
+    localStorage.removeItem('usuario'); // o la clave que uses
+    this.router.navigate(['/home']);
+    this.menuAbierto = false;
+  }
+
+
   goToCrearPost(): void {
     this.router.navigate(['/crear-post']);
     this.menuAbierto = false;

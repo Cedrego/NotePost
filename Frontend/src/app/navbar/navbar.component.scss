@@ -31,8 +31,11 @@
 .navbar .btn-outline-light {
   border-color: #f7941d;
   color: white;
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    color: #f7941d;
+    background-color: #FFD9AB;
+    transform: scale(1.1);
   }
 }
