@@ -3,54 +3,64 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-header('Access-Control-Allow-Origin: *'); // Permite todas las fuentes (solo para pruebas)
+header('Access-Control-Allow-Origin: *'); 
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
-header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Content-Type: application/json; charset=utf-8');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
-require_once __DIR__ . '../persistencia/DAO/LikeDAO.php';
-require_once __DIR__ . '../persistencia/DAO/PostDAO.php';
 
+require_once '../persistencia/conexion.php';
+require_once '../persistencia/DAO/LikeDAO.php';
+require_once '../persistencia/DAO/PostDAO.php';
 
-$idPost = isset($_POST['idPost']) ? intval($_POST['idPost']) : 0;
+// Obtener los datos del POST (Angular envía JSON)
+$input = json_decode(file_get_contents('php://input'), true);
+$idPost = isset($input['postId']) ? ($input['postId']) : 0;
 
 //obtener el nickname desde el POST (enviado por Angular)
-$nickUsu = isset($_POST['usuario']) ? $_POST['usuario'] : null;
+$nickUsu = isset($input['usuario']) ? $input['usuario'] : null;
 if (!$nickUsu) {
-    echo "Error: usuario no especificado.";
+    echo json_encode(['error' => ' usuario no especificado.']);
     exit;
 }
-if ($idPost <= 0) {
-    die("ID de post inválido.");
+if (!$idPost || $idPost <= 0) {
+    http_response_code(400);
+    echo json_encode(['error' => 'IdPost no valido.']);
+    exit;
 }
 $conn = Conexion::getConexion();
+if ($conn->connect_error) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Error de conexión']);
+    exit;
+}
 $likeDAO = new LikeDAO();
 $postDAO = new PostDAO();
 
 $post = $postDAO->obtenerPorId($idPost);
 if ($post === null) {
-    die("Post no encontrado.");
+    echo json_encode(['error' => 'Post no encontrado.']);
+    exit;
 }
 
 $accionExistente = $likeDAO->obtenerAccion($idPost, $nickUsu);
 
-if ($accionExistente === 'dislike') {
-    // Ya le dio dislike, no hacer nada
-    exit;
-} elseif ($accionExistente === 'like') {
-    // Cambio de like a dislike: hacer dos downvotes
-    $post->downvote();
-    $post->downvote();
-    $postDAO->actualizar($post);
-    $likeDAO->actualizarVoto($idPost, $nickUsu, 'dislike');
-} else {
+if ($accionExistente === null) {
     // No había voto previo, agrego dislike
     $post->downvote();
     $postDAO->actualizar($post);
     $likeDAO->insertarVoto($idPost, $nickUsu, 'dislike');
+    exit;
+} elseif ($accionExistente === 'like') {
+    // Cambio de like a dislike: hacer dos downvotes
+    $post->Quitarupvote();
+    $post->downvote();
+    $postDAO->actualizar($post);
+    $likeDAO->actualizarVoto($idPost, $nickUsu, 'dislike');
+    exit;
 }
-
-echo "Dislike registrado correctamente.";
+// Ya le dio dislike, no hacer nada
+echo json_encode(["mensaje" => "DisLike registrado correctamente."]);

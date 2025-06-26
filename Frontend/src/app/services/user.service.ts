@@ -56,12 +56,12 @@ export class UserService {
     return this.http.post(`${this.baseUrl}/implementacion/crearPost.php`, data);
   }
 
-  darLike(postId: number) {
-    return this.http.post(`${this.baseUrl}/implementacion/darLike.php`, { postId });
+  darLike(postId: number, usuario: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/implementacion/darLike.php`, { postId, usuario });
   }
 
-  darDislike(postId: number) {
-    return this.http.post(`${this.baseUrl}/implementacion/darDislike.php`, { postId });
+  darDislike(postId: number, usuario: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/implementacion/darDislike.php`, { postId, usuario });
   }
 
 }
