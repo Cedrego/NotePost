@@ -1,11 +1,13 @@
 <div class="container-fluid mt-4">
   <div class="form-container w-100 px-4 py-4 mx-auto">
+      <!-- Popup de recordatorios -->
       <div *ngIf="showAlert" class="custom-alert mb-3">
-          <p><strong>localhost:4200 dice</strong><br>{{ alertMessage }}</p>
-          <button (click)="showAlert = false">Aceptar</button>
-        </div>
+          <p><strong>Recordatorios pendientes:</strong></p>
+          <pre>{{ alertMessage }}</pre>
+          <button class="btn btn-primary" (click)="showAlert = false">Aceptar</button>
+      </div>
 
-        <form [formGroup]="sesionForm" (ngSubmit)="onSubmit()">
+      <form [formGroup]="sesionForm" (ngSubmit)="onSubmit()">
           <div class="row">
             <div class="mb-3">
               <label class="form-label label-naranja">Nombre de usuario:</label>
