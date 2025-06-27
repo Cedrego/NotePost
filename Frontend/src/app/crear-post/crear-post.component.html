@@ -1,4 +1,4 @@
-<div class="container-fluid mt-4">
+<div class="container-fluid">
   <div class="form-container w-100 px-4 py-4 mx-auto">   
     <div *ngIf="showAlert" class="custom-alert mb-3">
       <p><strong>localhost:4200 dice</strong><br>{{ alertMessage }}</p>
@@ -80,7 +80,6 @@
         >
         <label [for]="'fondo' + color.id" style="display: flex; align-items: center; gap: 8px;">
           <img [src]="color.rutaImagen" alt="fondo" style="width: 100px; height: 100px; border-radius: 4px;">
-          Fondo {{ color.id }}
         </label>
       </div>
 
