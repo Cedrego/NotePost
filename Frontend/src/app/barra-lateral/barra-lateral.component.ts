@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { CalendarioComponent } from '../calendario/calendario.component';
 import { UserService } from '../services/user.service';
 import { SessionService } from '../services/session.service';// <-- importando servicio de sesión
-
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';// <-- Importando operadores de RxJS parra tema de barra de buscar usuarios
+import { Subject } from 'rxjs';
 @Component({
   selector: 'app-barra-lateral',
   standalone: true,
@@ -18,10 +19,27 @@ export class BarraLateralComponent implements OnInit {
   busqueda = '';
   amigos: { nick: string, rutaAvatar: string }[] = [];
   solicitudes: { solicitante: string, recibidor: string, aceptada: number }[] = [];
-
+   usuarios: { nick: string, rutaAvatar?: string }[] = [];//Usado para El buscador de usuarios
+  private busquedaSubject = new Subject<string>();
   ides: { ide: string, image: string }[] = []; // Para mostrar los IDEs con imagen
 
   ngOnInit(): void {
+   // Escuchar cambios en búsqueda con debounce
+    this.busquedaSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(texto => this.userService.buscarUsuarios(texto))
+    ).subscribe(resultados => {
+      // Resultados vienen solo con nick
+      this.usuarios = resultados;
+
+      // Para cada usuario, buscar su avatar
+      this.usuarios.forEach(u => {
+        this.userService.getRutaAvatar(u.nick).subscribe(res => {
+          u.rutaAvatar = res.ruta;
+        });
+      });
+    });
     this.recargarSolicitudes();
     // Cargar amigos y solicitudes de amistad al iniciar el componente
       this.userService.getSolicitudesDeAmistad().subscribe(res => {
@@ -37,8 +55,16 @@ export class BarraLateralComponent implements OnInit {
         });
       });
     });
-
   }
+  onBuscarCambio(texto: string) {
+    if (!texto.trim()) {
+      this.usuarios = [];
+      return;
+    }
+
+    this.busquedaSubject.next(texto);
+  }
+
   aceptarSolicitud(solicitud: any) {
     const recibidor = this.sessionService.getUsuario();
     if (!recibidor) {
@@ -56,7 +82,23 @@ export class BarraLateralComponent implements OnInit {
   }
   recargarAmigos() {
     this.userService.getAmigos().subscribe(res => {
-      this.amigos = res.amigos ?? [];
+      const nicks: string[] = res.amigos ?? [];
+      const nuevosAmigos: { nick: string, rutaAvatar: string }[] = [];
+
+      nicks.forEach(nick => {
+        this.userService.getRutaAvatar(nick).subscribe(avatarRes => {
+          nuevosAmigos.push({ nick, rutaAvatar: avatarRes.ruta });
+
+          // Solo reemplaza cuando se hayan agregado todos
+          if (nuevosAmigos.length === nicks.length) {
+            this.amigos = nuevosAmigos;
+          }
+        });
+      });
+
+      if (nicks.length === 0) {
+        this.amigos = []; // Si no hay amigos, limpia
+      }
     });
   }
   rechazarSolicitud(solicitud: any) {
@@ -80,9 +122,31 @@ export class BarraLateralComponent implements OnInit {
       this.solicitudes = res.Solicitudes ?? [];
     });
   }
-  amigosFiltrados() {
-    return this.amigos.filter(a =>
-      a.nick.toLowerCase().includes(this.busqueda.toLowerCase())
-    );
+ amigosFiltrados() {//no buscaremos amigos, solo los mostraremos
+  return this.amigos;
+}
+  enviarSolicitud(nickSolicitado: string) {
+    const usuarioActual = this.sessionService.getUsuario();
+    if (!usuarioActual) {
+      alert('Debes iniciar sesión para enviar solicitudes.');
+      return;
+    }
+
+    this.userService.enviarSolicitudAmistad({
+      solicitante: usuarioActual,
+      recibidor: nickSolicitado
+    }).subscribe({
+      next: () => {
+        alert(`Solicitud enviada a ${nickSolicitado}`);
+        this.busqueda = '';       // Limpia la búsqueda si quieres
+        this.usuarios = [];       // Limpia resultados
+        this.recargarSolicitudes(); // Recarga solicitudes para actualizar UI
+      },
+        error: (err) => {
+        // 👇 acá accedemos al mensaje de error JSON enviado por el backend
+        const mensaje = err?.error?.error || err.message || 'Error desconocido';
+        alert(`Error al enviar solicitud: ${mensaje}`);
+      }
+    });
   }
 }

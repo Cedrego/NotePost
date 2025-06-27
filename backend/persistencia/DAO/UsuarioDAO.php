@@ -158,4 +158,26 @@ class UsuarioDAO {
         $stmt->close();
         return null;
     }
+    public static function BuscadorNick($termino, $usuarioActual) {
+    $conn = Conexion::getConexion();
+    $stmt = $conn->prepare(
+        "SELECT nickname FROM usuarios WHERE nickname LIKE CONCAT('%', ?, '%') AND nickname <> ?"
+    );
+    $stmt->bind_param("ss", $termino, $usuarioActual);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    // Obtener amigos del usuario actual
+        $amigos = self::obtenerAmigos($usuarioActual);
+        // Filtrar resultados que no sean amigos
+        $usuarios = [];
+        while ($fila = $result->fetch_assoc()) {
+            if (!in_array($fila['nickname'], $amigos)) {
+                $usuarios[] = ['nick' => $fila['nickname']];
+            }
+        }
+
+        return $usuarios;
+    }
+
 }

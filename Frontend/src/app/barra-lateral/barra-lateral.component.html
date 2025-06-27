@@ -1,11 +1,20 @@
 <div class="sidebar">
   <!-- Búsqueda de amigos -->
   <div class="busqueda">
-    <input type="text" [(ngModel)]="busqueda" placeholder="Buscar amigo..." />
-  </div>
+    <h6>Buscar Usuarios</h6>
+  <input type="text" [(ngModel)]="busqueda" (ngModelChange)="onBuscarCambio($event)" placeholder="Buscar Usuario..." />
+  
+  <ul *ngIf="usuarios.length > 0">
+    <li *ngFor="let u of usuarios" (click)="enviarSolicitud(u.nick)" class="usuario-buscado">
+      <img *ngIf="u.rutaAvatar" [src]="u.rutaAvatar" alt="avatar" class="avatar-Buscador" />
+      <span>{{ u.nick }}</span>
+    </li>
+  </ul>
+</div>
 
   <!-- Lista de amigos -->
   <div class="amigos">
+    <h6>Amigos</h6>
   <div *ngFor="let amigo of amigosFiltrados()" class="amigo">
     <img [src]="amigo.rutaAvatar" alt="avatar" class="avatar-img" />
     <span>{{ amigo.nick }}</span>

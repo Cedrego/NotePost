@@ -2,7 +2,8 @@
 
 require_once __DIR__ . '/../persistencia/DAO/UsuarioDAO.php';
 require_once __DIR__ . '/../persistencia/DAO/SolicitudDAO.php';
-
+require_once '../dominio/SolicitudDeAmistad.php';
+require_once '../dominio/Usuario.php';
 // Permitir peticiones desde el frontend
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');

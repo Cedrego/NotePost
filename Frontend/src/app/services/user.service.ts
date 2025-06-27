@@ -64,4 +64,13 @@ export class UserService {
     return this.http.post(`${this.baseUrl}/implementacion/darDislike.php`, { postId, usuario });
   }
 
+  buscarUsuarios(termino: string): Observable<{ nick: string, rutaAvatar: string }[]> {
+    const nick = this.session.getUsuario() ?? '';
+    return this.http.get<{ nick: string, rutaAvatar: string }[]>(
+      `${this.baseUrl}/implementacion/buscarUsuarios.php?termino=${encodeURIComponent(termino)}&usuarioActual=${encodeURIComponent(nick)}`
+    );
+  }
+  enviarSolicitudAmistad(data: { solicitante: string; recibidor: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/implementacion/enviarSolicitud.php`, data);
+  }
 }
