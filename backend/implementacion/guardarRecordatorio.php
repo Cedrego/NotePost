@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once '../persistencia/conexion.php';
 require_once '../persistencia/DAO/RecordatorioDAO.php';
 require_once '../persistencia/DAO/PostDAO.php';
+require_once '../persistencia/DAO/UsuarioDAO.php';
 require_once '../dominio/Recordatorio.php';
 require_once '../dominio/Post.php';
 
@@ -47,9 +48,9 @@ try {
     }
    
     //crear un nuevo post
-    $post = new Post($usuario, $tituloEvento, false, 1); //por default, el post esta en privado
+    $post = new Post($usuario, $tituloEvento, true); //por default, el post esta en privado
     PostDAO::guardar($post); //guardar el post en la base de datos
-    
+    PostDAO::actualizarFondo($post->getId(),1); //actualizar el fondo del post (1 es el id del fondo por defecto)
 
     //crear el recordatorio asociado al post
     $fecha = new DateTime($fechaRecordatorio);
