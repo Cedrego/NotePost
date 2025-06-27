@@ -30,7 +30,10 @@
   <!-- Solicitudes de amistad (no muestra logo)-->
   <div class="solicitudes">
     <h6>Solicitudes</h6>
+    <!-- Mostrar mensaje si no hay solicitudes -->
+  <p *ngIf="solicitudes.length === 0" class="mensaje-vacio">No hay solicitudes pendientes.</p>
     <li *ngFor="let solicitud of solicitudes">
+       <img *ngIf="solicitud.rutaAvatar" [src]="solicitud.rutaAvatar" alt="avatar" class="solicitudes-img" />
       {{ solicitud.solicitante }}
         <button class="btn btn-success btn-sm ms-2" (click)="aceptarSolicitud(solicitud)">✔</button>
         <button class="btn btn-danger btn-sm ms-1" (click)="rechazarSolicitud(solicitud)">✖</button>

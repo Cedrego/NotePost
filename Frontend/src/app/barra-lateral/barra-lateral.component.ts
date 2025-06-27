@@ -18,7 +18,7 @@ export class BarraLateralComponent implements OnInit {
   sessionService = inject(SessionService);
   busqueda = '';
   amigos: { nick: string, rutaAvatar: string }[] = [];
-  solicitudes: { solicitante: string, recibidor: string, aceptada: number }[] = [];
+  solicitudes: { solicitante: string, recibidor: string, aceptada: number, rutaAvatar?: string }[] = [];
    usuarios: { nick: string, rutaAvatar?: string }[] = [];//Usado para El buscador de usuarios
   private busquedaSubject = new Subject<string>();
   ides: { ide: string, image: string }[] = []; // Para mostrar los IDEs con imagen
@@ -117,11 +117,37 @@ export class BarraLateralComponent implements OnInit {
     });
   }
 
-  recargarSolicitudes() {
-    this.userService.getSolicitudesDeAmistad().subscribe(res => {
-      this.solicitudes = res.Solicitudes ?? [];
+recargarSolicitudes() {
+  this.userService.getSolicitudesDeAmistad().subscribe(res => {
+    const solicitudesRaw = res.Solicitudes ?? [];
+
+    const nuevasSolicitudes: {
+      solicitante: string;
+      recibidor: string;
+      aceptada: number;
+      rutaAvatar?: string;
+    }[] = [];
+
+    solicitudesRaw.forEach((solicitud: any) => {
+      this.userService.getRutaAvatar(solicitud.solicitante).subscribe(avatarRes => {
+        nuevasSolicitudes.push({
+          ...solicitud,
+          rutaAvatar: avatarRes.ruta
+        });
+
+        // Cuando ya se agregaron todas
+        if (nuevasSolicitudes.length === solicitudesRaw.length) {
+          this.solicitudes = nuevasSolicitudes;
+        }
+      });
     });
-  }
+
+    // Si no hay solicitudes
+    if (solicitudesRaw.length === 0) {
+      this.solicitudes = [];
+    }
+  });
+}
  amigosFiltrados() {//no buscaremos amigos, solo los mostraremos
   return this.amigos;
 }

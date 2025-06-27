@@ -59,6 +59,13 @@
   .solicitudes {
     margin-top: 1rem;
   }
+  .solicitudes-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #000;
+  }
 
   .calendario {
   padding: 1rem;
