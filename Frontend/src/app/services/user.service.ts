@@ -9,10 +9,10 @@ export class UserService {
   private baseUrl = 'http://localhost/backend';
 
   constructor(private http: HttpClient, private session: SessionService) {}
-
+/*
   getIdesAvatars(): Observable<{ ide: string, image: string }[]> {
     return this.http.get<{ ide: string, image: string }[]>(`${this.baseUrl}/implementacion/crearPost.php`);
-  }
+  }*/
 
   getTodosAvatares(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/implementacion/obtenerTodosAvatares.php`);
@@ -56,6 +56,12 @@ export class UserService {
     return this.http.post(`${this.baseUrl}/implementacion/crearPost.php`, data);
   }
 
+  darLike(postId: number, usuario: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/implementacion/darLike.php`, { postId, usuario });
+  }
 
+  darDislike(postId: number, usuario: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/implementacion/darDislike.php`, { postId, usuario });
+  }
 
 }

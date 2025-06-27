@@ -64,5 +64,9 @@ class Post {
     
     public function upvote(): void { $this->likes++; }
     public function downvote(): void { $this->dislikes++; }
+    
+    public function Quitarupvote(): void { $this->likes--; }
+    public function Quitardownvote(): void { $this->dislikes--; }
+    
 }
 ?>

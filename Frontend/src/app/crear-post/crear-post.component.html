@@ -47,17 +47,27 @@
       </div>
       <br><br>
 
-      <!-- Recordatorio opcional -->
-      <label for="recordatorio">Fecha de recordatorio (opcional):</label><br>
-      <input 
-        type="datetime-local" 
-        id="recordatorio" 
-        formControlName="recordatorio"
-      >
-      <div class="alert alert-danger mt-2" *ngIf="recordatorio?.invalid && recordatorio?.touched">
-        La fecha Y hora de recordatorio es obligatoria
-      </div>
+     <!-- Checkbox para activar recordatorio -->
+      <label>
+        <input type="checkbox" formControlName="usarRecordatorio">
+        ¿Agregar recordatorio?
+      </label>
       <br><br>
+
+      <!-- Solo muestra el input si usarRecordatorio es true -->
+      <div *ngIf="postForm.get('usarRecordatorio')?.value">
+        <label for="recordatorio">Fecha de recordatorio:</label><br>
+        <input 
+          type="datetime-local" 
+          id="recordatorio" 
+          formControlName="recordatorio"
+          [required]="postForm.get('usarRecordatorio')?.value"
+        >
+        <div class="alert alert-danger mt-2" *ngIf="recordatorio?.invalid && recordatorio?.touched">
+          La fecha y hora de recordatorio es obligatoria
+        </div>
+        <br><br>
+      </div>
 
       <!-- Selección de fondo -->
       <p>Elige un fondo para tu nota:</p>

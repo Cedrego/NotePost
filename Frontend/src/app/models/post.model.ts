@@ -6,5 +6,6 @@ export interface Post {
     dislikes: number; // Número de dislikes
     fechaPost: string; // Fecha de publicación (en formato ISO o string)
     privado: boolean; // Indica si el post es privado
-    fondoId?: number; // ID del fondo (opcional si puede ser null)
+    fondoRuta: string; // ← nueva propiedad para la URL del fondo
+    tags: string[]; // Si usás nombres de tags
   }

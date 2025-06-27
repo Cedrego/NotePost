@@ -1,11 +1,30 @@
- .contenedor-derecha {
-    display: flex;
-    justify-content: flex-end;
-    border-radius: 12px; /* borde redondeado */
-    overflow: hidden; /* para que el contenido respete los bordes redondeados */
-  }
-
-  .container-fluid {
-    margin-top: 9rem;
+.container-fluid {
+  margin-top: 9rem;
+  display: flex;
+  justify-content: center; /* centra el grupo principal + barra lateral */
 }
 
+.form-container {
+  display: flex;
+  width: 100%;
+  flex-direction: row-reverse; /* <- Esto invierte el orden visual */
+  max-width: 1200px; /* límite de ancho del contenido total */
+}
+
+.contenedor-principal {
+  flex-grow: 1;
+  max-width: 800px; /* ancho del contenido principal */
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contenedor-derecha {
+  width: 250px; /* ancho de la barra lateral */
+  display: flex;
+  justify-content: flex-end;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-left: 1rem;
+}
