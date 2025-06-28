@@ -13,7 +13,12 @@ class PostMap {
             $row['autor_contrasena'] ?? ''
         );
 
-        $post = new Post($autor, $row['contenido'], (bool)$row['privado']);
+        $post = new Post(
+            $autor,
+            $row['contenido'],      // sin 'post_'
+            (bool)$row['privado'],  // sin 'post_'
+            isset($row['fondoid']) ? (int)$row['fondoid'] : null
+        );
         $post->setId((int)$row['id']);
         $post->setLikes((int)$row['likes']);
         $post->setDislikes((int)$row['dislikes']);
@@ -32,6 +37,7 @@ class PostMap {
             'dislikes' => $post->getDislikes(),
             'fechaPost' => $post->getFechaPost()->format('Y-m-d H:i:s'),
             'privado' => $post->isPrivado() ? 1 : 0,
+            'fondoid' => $post->getFondoId(),
         ];
     }
 }

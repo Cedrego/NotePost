@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class RecordatorioService {
   private guardarRecordatorioUrl = 'http://localhost/backend/implementacion/guardarRecordatorio.php';
-  private obtenerRecordatoriosUrl = 'http://localhost/backend/implementacion/obtenerRecordatoriosPendientes.php';
+  private obtenerRecordatoriosUrl = 'http://localhost/backend/implementacion/obtenerRecodatoriosPendientes.php';
   private cargarRecordatoriosUsuarioUrl = 'http://localhost/backend/implementacion/cargarRecordatoriosUsuario.php';
   constructor(private http: HttpClient) {}
 

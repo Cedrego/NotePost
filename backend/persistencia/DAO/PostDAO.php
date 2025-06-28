@@ -9,10 +9,16 @@ class PostDAO {
     public static function obtenerPorId(int $id): ?Post {
         $conn = Conexion::getConexion();
         $stmt = $conn->prepare(
-            "SELECT p.*, u.nickname AS autor_nickname, u.email AS autor_email, u.nombre AS autor_nombre, u.apellido AS autor_apellido, u.contrasena AS autor_contrasena
-             FROM posts p
-             JOIN usuarios u ON p.autor_nickname = u.nickname
-             WHERE p.id = ?"
+            "SELECT p.*, 
+                    p.fondoid AS fondoid, 
+                    u.nickname AS autor_nickname, 
+                    u.email AS autor_email, 
+                    u.nombre AS autor_nombre, 
+                    u.apellido AS autor_apellido, 
+                    u.contrasena AS autor_contrasena
+            FROM posts p
+            JOIN usuarios u ON p.autor_nickname = u.nickname
+            WHERE p.id = ?"
         );
         $stmt->bind_param("i", $id);
         $stmt->execute();
