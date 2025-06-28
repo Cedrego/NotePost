@@ -14,7 +14,14 @@ export class UserService {
   getIdesAvatars(): Observable<{ ide: string, image: string }[]> {
     return this.http.get<{ ide: string, image: string }[]>(`${this.baseUrl}/implementacion/crearPost.php`);
   }*/
-
+  getDatosUsuario(nick: string, esPropietario: boolean): Observable<any> {
+    return this.http.get(
+      `${this.baseUrl}/implementacion/obtenerDatosUsuario.php?usuario=${encodeURIComponent(nick)}&esPropietario=${esPropietario ? '1' : '0'}`
+    );
+  }
+  eliminarPost(postId: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/implementacion/eliminarPost.php?id=${postId}`);
+  }
   getTodosAvatares(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/implementacion/obtenerTodosAvatares.php`);
   }  

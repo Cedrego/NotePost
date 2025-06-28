@@ -68,4 +68,17 @@ class post_tagDAO {
         $stmt->close();
         return $tags;
     }
+    public static function eliminarTagsPorPost(int $post_id): void {
+        $conn = Conexion::getConexion();
+        $sql = "DELETE FROM post_tag WHERE post_id = ?";
+        $stmt = $conn->prepare($sql);
+        if (!$stmt) {
+            die("Error al preparar: " . $conn->error);
+        }
+        $stmt->bind_param("i", $post_id);
+        if (!$stmt->execute()) {
+            die("Error al ejecutar: " . $stmt->error);
+        }
+        $stmt->close();
+    }
 }

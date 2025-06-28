@@ -23,8 +23,8 @@ class RecordatorioDAO {
         $stmt->close();
         return $ok;
     }
-
-   public function getRecordatoriosByPostId(int $postId): array {
+/*
+   public static function getRecordatoriosByPostId(int $postId): array {
         $sql = "SELECT r.fechaRecordatorio, p.id as post_id, p.contenido, p.privado, p.likes, p.dislikes, p.fechaPost,
                     u.nickname, u.email, u.nombre, u.apellido, u.contrasena
                 FROM recordatorios r
@@ -37,35 +37,61 @@ class RecordatorioDAO {
 
         $recordatorios = [];
 
-        /** @var array $row */
+        /** @var array $row *//*
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $recordatorios[] = RecordatorioMap::mapRowToRecordatorio($row);
         }
 
         return $recordatorios;
+    }*/
+
+    public static function getRecordatoriosPorPostId(int $postId): array {
+        $conn = Conexion::getConexion();
+        $sql = "SELECT p.*, 
+                    p.autor_nickname AS autor_nickname, 
+                    u.email AS autor_email, 
+                    u.nombre AS autor_nombre, 
+                    u.apellido AS autor_apellido, 
+                    u.contrasena AS autor_contrasena, 
+                    r.fechaRecordatorio
+                FROM recordatorios r
+                JOIN posts p ON r.post_id = p.id
+                JOIN usuarios u ON p.autor_nickname = u.nickname
+                WHERE r.post_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $postId);
+        $stmt->execute();
+        $recordatorios = [];
+        $res = $stmt->get_result();
+        while ($row = $res->fetch_assoc()) {
+            $recordatorios[] = RecordatorioMap::mapRowToRecordatorio($row);
+        }
+        $stmt->close();
+        return $recordatorios;
     }
 
 
     // Eliminar un recordatorio específico
-    public function delete(Recordatorio $recordatorio): bool {
+    public static function delete(Recordatorio $recordatorio): bool {
         $conn = Conexion::getConexion();
-        $sql = "DELETE FROM recordatorios WHERE post_id = :post_id AND fechaRecordatorio = :fecha";
+        $sql = "DELETE FROM recordatorios WHERE post_id = ? AND fechaRecordatorio = ?";
         $stmt = $conn->prepare($sql);
-
         $data = RecordatorioMap::mapRecordatorioToArray($recordatorio);
-
-        return $stmt->execute([
-            ':post_id' => $data['post_id'],
-            ':fecha'   => $data['fechaRecordatorio'],
-        ]);
+        $stmt->bind_param("is", $data['post_id'], $data['fechaRecordatorio']);
+        $ok = $stmt->execute();
+        $stmt->close();
+        return $ok;
     }
 
     // Eliminar todos los recordatorios de un post
-    public function deleteByPostId(int $postId): bool {
+    public static function deleteByPostId(int $postId): bool {
         $conn = Conexion::getConexion();
-        $sql = "DELETE FROM recordatorios WHERE post_id = :post_id";
+        $sql = "DELETE FROM recordatorios WHERE post_id = ?";
         $stmt = $conn->prepare($sql);
-        return $stmt->execute([':post_id' => $postId]);
+        $stmt->bind_param("i", $postId);
+        $ok = $stmt->execute();
+        $stmt->close();
+        return $ok;
     }
 
     public static function obtenerRecordatoriosPorUsuario(string $nickname): array {

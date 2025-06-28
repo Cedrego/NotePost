@@ -14,11 +14,14 @@
 
   <!-- Lista de amigos -->
   <div class="amigos">
-    <h6>Amigos</h6>
-  <div *ngFor="let amigo of amigosFiltrados()" class="amigo">
+  <h6>Amigos</h6>
+  <a *ngFor="let amigo of amigosFiltrados()"
+     class="amigo"
+     (click)="verPerfilAmigo(amigo.nick)"
+     style="cursor:pointer; display: flex; align-items: center; text-decoration: none; color: inherit;">
     <img [src]="amigo.rutaAvatar" alt="avatar" class="avatar-img" />
     <span>{{ amigo.nick }}</span>
-  </div>
+  </a>
 </div>
 
   <!-- ide.component.html -->

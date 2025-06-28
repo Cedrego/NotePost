@@ -6,6 +6,7 @@ import { UserService } from '../services/user.service';
 import { SessionService } from '../services/session.service';// <-- importando servicio de sesión
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';// <-- Importando operadores de RxJS parra tema de barra de buscar usuarios
 import { Subject } from 'rxjs';
+import { Router } from '@angular/router'; // <-- Importando Router para navegación
 @Component({
   selector: 'app-barra-lateral',
   standalone: true,
@@ -15,6 +16,7 @@ import { Subject } from 'rxjs';
 })
 export class BarraLateralComponent implements OnInit {
   private userService = inject(UserService); // ✅ usando inject()
+  private router = inject(Router);
   sessionService = inject(SessionService);
   busqueda = '';
   amigos: { nick: string, rutaAvatar: string }[] = [];
@@ -174,5 +176,8 @@ recargarSolicitudes() {
         alert(`Error al enviar solicitud: ${mensaje}`);
       }
     });
+  }
+  verPerfilAmigo(nick: string) {
+    this.router.navigate(['/ver-usuario'], { queryParams: { nick } });
   }
 }

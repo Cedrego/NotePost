@@ -62,9 +62,10 @@ export class MenuUsuarioComponent {
   }
 
   goToVerPerfil(): void {
-    this.router.navigate(['/ver-usuario']);
-    this.menuAbierto = false;
-  }
+  const nick = this.sessionService.getUsuario();
+  this.router.navigate(['/ver-usuario'], { queryParams: { nick } });
+  this.menuAbierto = false;
+}
 
   @HostListener('document:click', ['$event.target'])
   public onClickFuera(targetElement: any): void {

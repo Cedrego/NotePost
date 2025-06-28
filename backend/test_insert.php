@@ -122,6 +122,8 @@ try {
     //Gardar Like
     $like = new Like($post->getId(), $usuario, 'like');
     LikeDAO::guardar($like);
+    $post->upvote(); // Incrementar el contador de likes del post
+    PostDAO::actualizar($post); // Actualizar el post con el nuevo contador de likes
     echo "Like insertado correctamente<br>";
 
     UsuarioDAO::actualizarAvatar($usuario->getNickname(), 1);

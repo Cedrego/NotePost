@@ -70,20 +70,20 @@ class PostDAO {
         $stmt->execute();
     }
 
-    public static function eliminar(int $id, RecordatorioDAO $recordatorioDAO): void {
+    public static function eliminar(int $id): bool {
         $conn = Conexion::getConexion();
         $post = PostDAO::obtenerPorId($id);
-        if (!$post) return;
+        if (!$post) return false;
 
-        $recordatorioDAO->deleteByPostId($id);
-        
-        $autor = $post->getAutor();
-        $autor->olvidarPost($id);
+        // $autor = $post->getAutor();
+        // $autor->olvidarPost($id);
 
-        $stmt =$conn->prepare("DELETE FROM posts WHERE id = ?");
+        $stmt = $conn->prepare("DELETE FROM posts WHERE id = ?");
         $stmt->bind_param("i", $id);
-        $stmt->execute();
-    }
+        $ok = $stmt->execute();
+        $stmt->close();
+        return $ok;
+        }
 
 
     // Get Ranking (top 10)
@@ -192,4 +192,101 @@ class PostDAO {
 
         return $posts;
     }
+    public static function obtenerPostsPorUsuario(string $nick): array {
+    $conn = Conexion::getConexion();
+    $sql = "SELECT p.id AS post_id, 
+                   p.contenido AS post_contenido, 
+                   p.likes AS post_likes, 
+                   p.dislikes AS post_dislikes, 
+                   p.fechaPost AS post_fechaPost, 
+                   p.privado AS post_privado, 
+                   p.fondoid AS post_fondoId, 
+                   u.nickname AS autor_nickname,
+                   u.email AS autor_email,
+                   u.nombre AS autor_nombre,
+                   u.apellido AS autor_apellido,
+                   u.contrasena AS autor_contrasena
+            FROM posts p
+            JOIN usuarios u ON p.autor_nickname = u.nickname
+            WHERE p.autor_nickname = ?
+            ORDER BY p.fechaPost DESC";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $nick);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $posts = [];
+    while ($row = $result->fetch_assoc()) {
+        $usuario = new Usuario(
+            $row['autor_nickname'],
+            $row['autor_email'],
+            $row['autor_nombre'],
+            $row['autor_apellido'],
+            $row['autor_contrasena']
+        );
+        $post = new Post(
+            $usuario,
+            $row['post_contenido'],
+            (bool) $row['post_privado'],
+            $row['post_fondoId'] ? (int) $row['post_fondoId'] : null
+        );
+        $post->setId((int) $row['post_id']);
+        $post->setLikes((int) $row['post_likes']);
+        $post->setDislikes((int) $row['post_dislikes']);
+        $post->setFechaPost(new DateTime($row['post_fechaPost']));
+
+        $posts[] = $post;
+    }
+
+    return $posts;
+}
+
+public static function obtenerPostsPublicosPorUsuario(string $nick): array {
+    $conn = Conexion::getConexion();
+    $sql = "SELECT p.id AS post_id, 
+                   p.contenido AS post_contenido, 
+                   p.likes AS post_likes, 
+                   p.dislikes AS post_dislikes, 
+                   p.fechaPost AS post_fechaPost, 
+                   p.privado AS post_privado, 
+                   p.fondoid AS post_fondoId, 
+                   u.nickname AS autor_nickname,
+                   u.email AS autor_email,
+                   u.nombre AS autor_nombre,
+                   u.apellido AS autor_apellido,
+                   u.contrasena AS autor_contrasena
+            FROM posts p
+            JOIN usuarios u ON p.autor_nickname = u.nickname
+            WHERE p.autor_nickname = ? AND p.privado = 0
+            ORDER BY p.fechaPost DESC";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $nick);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $posts = [];
+    while ($row = $result->fetch_assoc()) {
+        $usuario = new Usuario(
+            $row['autor_nickname'],
+            $row['autor_email'],
+            $row['autor_nombre'],
+            $row['autor_apellido'],
+            $row['autor_contrasena']
+        );
+        $post = new Post(
+            $usuario,
+            $row['post_contenido'],
+            (bool) $row['post_privado'],
+            $row['post_fondoId'] ? (int) $row['post_fondoId'] : null
+        );
+        $post->setId((int) $row['post_id']);
+        $post->setLikes((int) $row['post_likes']);
+        $post->setDislikes((int) $row['post_dislikes']);
+        $post->setFechaPost(new DateTime($row['post_fechaPost']));
+
+        $posts[] = $post;
+    }
+
+    return $posts;
+}
 }

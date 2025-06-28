@@ -1,8 +1,56 @@
 <div class="container-fluid">
   <div class="form-container">   
-      <div class="form-container-fluid">
-        <div class="contenedor-principal">
+    <div class="form-container-fluid">
+      <div class="contenedor-principal">
+
+        <!-- Mostrar datos del usuario -->
+        <div *ngIf="datosUsuario">
+          <div class="perfil-usuario">
+            <img *ngIf="datosUsuario.usuario.avatarRuta" [src]="datosUsuario.usuario.avatarRuta" alt="avatar" class="avatar-img" />
+            <h2>{{ datosUsuario.usuario.nick }}</h2>
+            <p><strong>Nombre:</strong> {{ datosUsuario.usuario.nombre }}</p>
+            <p><strong>Apellido:</strong> {{ datosUsuario.usuario.apellido }}</p>
+            <p><strong>Email:</strong> {{ datosUsuario.usuario.email }}</p>
+          </div>
+
+          <hr>
+
+          <!-- Mostrar posts del usuario -->
+          <div *ngIf="datosUsuario.posts.length > 0; else sinPosts">
+            <div *ngFor="let post of datosUsuario.posts"
+                class="post-wrapper"
+                [ngStyle]="{ 'background-image': 'url(' + post.fondoRuta + ')' }">
+              <div class="post-content">
+                <h2>{{ post.autor }}</h2>
+                <p>{{ post.contenido }}</p>
+                <p class="meta">
+                  <strong>{{ post.fechaPost | date:'short' }}</strong> —
+                  <button class="btn btn-outline-success btn-sm me-1"
+                          (click)="darLike(post.id)">👍</button> {{ post.likes }}
+                  <button class="btn btn-outline-danger btn-sm ms-2"
+                          (click)="darDislike(post.id)">👎</button> {{ post.dislikes }}
+                  <ng-container *ngIf="datosUsuario.usuario.nick === sessionService.getUsuario()">
+                    <button class="btn btn-outline-primary btn-sm ms-2"
+                            (click)="editarPost(post.id)">✏️ Editar</button>
+                    <button class="btn btn-outline-danger btn-sm ms-2"
+                            (click)="eliminarPost(post.id)">🗑️ Eliminar</button>
+                  </ng-container>
+                </p>
+                <div class="tags">
+                  <span class="tag" *ngFor="let tag of post.tags">{{ tag }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <ng-template #sinPosts>
+            <p>Este usuario no tiene posts.</p>
+          </ng-template>
+        </div>
+        <div *ngIf="!datosUsuario">
+          <p>Cargando...</p>
+        </div>
 
       </div>
+    </div>
   </div>
 </div>
