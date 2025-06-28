@@ -1,0 +1,30 @@
+.contenedor-principal {
+  margin-right: 15px;
+  margin-left: 15px;
+  flex: 1;
+  background: white;
+  box-sizing: border-box;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+.container-fluid{//No lo uso de momento
+  margin-top: 8rem;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.form-container{//No lo uso de momento
+  padding: 0px;
+  margin-left: 0;
+  margin-right: 0;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+.form-container-fluid {
+  display: flex;
+  margin: 20px auto 0 auto;
+  padding: 0;
+  gap: 0; /* 👈 evita separación entre los contenedores */
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}

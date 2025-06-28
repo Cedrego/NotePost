@@ -61,8 +61,8 @@ export class MenuUsuarioComponent {
     this.menuAbierto = false;
   }
 
-  goToCambiarPrivacidad(): void {
-    this.router.navigate(['/cambiar-privacidad']);
+  goToVerPerfil(): void {
+    this.router.navigate(['/ver-usuario']);
     this.menuAbierto = false;
   }
 
