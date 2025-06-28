@@ -1,9 +1,11 @@
 <div class="container-fluid mt-4">
   <div class="form-container w-100 px-4 py-4 mx-auto">
+      <!-- Popup de recordatorios -->
       <div *ngIf="showAlert" class="custom-alert mb-3">
-          <p><strong>localhost:4200 dice</strong><br>{{ alertMessage }}</p>
-          <button (click)="showAlert = false">Aceptar</button>
-        </div>
+          <p><strong>Recordatorios pendientes:</strong></p>
+          <pre>{{ alertMessage }}</pre>
+          <button class="btn btn-primary" (click)="showAlert = false">Aceptar</button>
+      </div>
 
         <h1 class="text-center mb-4 titulo-principal">Iniciar Sesión</h1>
 

@@ -7,6 +7,8 @@ import { CambiarAvatarComponent } from './cambiar-avatar/cambiar-avatar.componen
 import { CambiarPrivacidadComponent } from './cambiar-privacidad/cambiar-privacidad.component';
 import { MenuUsuarioComponent } from './menu-usuario/menu-usuario.component';
 import { VerUsuarioComponent } from './ver-usuario/ver-usuario.component';
+import { FilteredPostListComponent } from './filtered-post-list/filtered-post-list.component';
+
 export const routes: Routes = [
   { path: '',pathMatch: 'full',redirectTo: 'home' },
   { path: 'create-user', component: CreateUserComponent },
@@ -16,5 +18,6 @@ export const routes: Routes = [
   { path: 'cambiar-avatar', component: CambiarAvatarComponent },
   { path: 'cambiar-privacidad', component: CambiarPrivacidadComponent },
   { path: 'menu-usuario', component: MenuUsuarioComponent }, // nueva ruta para el menú de usuario
-  { path: 'ver-usuario', component: VerUsuarioComponent }
+  { path: 'ver-usuario', component: VerUsuarioComponent },
+  { path: 'filtered-posts', component: FilteredPostListComponent }, // nueva ruta para los posts filtrados
 ];

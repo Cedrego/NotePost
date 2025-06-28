@@ -9,16 +9,24 @@
         <button class="navbar-brand button" (click)="goToHome()">NotePost</button>
       </a>
 
+      <!-- Barra de búsqueda -->
+      <div class="ms-auto me-3">
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Buscar por tag..." 
+          [(ngModel)]="searchTag"
+          (keyup.enter)="searchPostsByTag()"
+        />
+      </div>
+
       <!-- Botones + menú usuario alineados a la derecha -->
-      <div class="d-flex ms-auto align-items-center">
-        <!-- Si NO está logueado -->
+      <div class="d-flex align-items-center">
         <ng-container *ngIf="!isLoggedIn; else usuarioMenu">
           <button class="btn btn-outline-light fw-bold me-2" (click)="goToCreateUser()">CREAR USUARIO</button>
           <button class="btn btn-outline-light fw-bold me-2" (click)="goToIniciarSesion()">INICIAR SESIÓN</button>
         </ng-container>
-        <!-- Si está logueado -->
         <ng-template #usuarioMenu>
-            <!-- Foto de usuario y nombre -->
           <app-menu-usuario></app-menu-usuario>
         </ng-template>
       </div>

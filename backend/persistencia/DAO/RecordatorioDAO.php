@@ -67,4 +67,33 @@ class RecordatorioDAO {
         $stmt = $conn->prepare($sql);
         return $stmt->execute([':post_id' => $postId]);
     }
+
+    public static function obtenerRecordatoriosPorUsuario(string $nickname): array {
+        $conn = Conexion::getConexion();
+        $sql = "SELECT r.fechaRecordatorio, p.id AS post_id, p.contenido, p.privado, p.likes, p.dislikes, p.fechaPost
+                FROM recordatorios r
+                JOIN posts p ON r.post_id = p.id
+                WHERE p.autor_nickname = ?
+                ORDER BY r.fechaRecordatorio ASC";
+    
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $nickname);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        $recordatorios = [];
+        while ($row = $result->fetch_assoc()) {
+            $recordatorios[] = [
+                'postId' => $row['post_id'],
+                'contenido' => $row['contenido'],
+                'fechaRecordatorio' => $row['fechaRecordatorio'],
+                'privado' => (bool) $row['privado'],
+                'likes' => $row['likes'],
+                'dislikes' => $row['dislikes'],
+                'fechaPost' => $row['fechaPost']
+            ];
+        }
+    
+        return $recordatorios;
+    }
 }
