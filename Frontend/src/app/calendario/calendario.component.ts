@@ -49,4 +49,29 @@ export class CalendarioComponent {
       }
     }
   };
+
+  ngOnInit(): void {
+    const usuario = localStorage.getItem('usuario'); // Obtener el usuario logueado
+    if (!usuario) {
+      alert('Debes iniciar sesión para ver tus recordatorios.');
+      return;
+    }
+  
+    this.recordatorioService.cargarRecordatoriosUsuario(usuario).subscribe(
+      (recordatorios) => {
+        //recrear los eventos en el calendario
+        const eventos = recordatorios.map((recordatorio) => ({
+          id: recordatorio.postId,
+          title: recordatorio.contenido, 
+          start: recordatorio.fechaRecordatorio, 
+          end: recordatorio.fechaRecordatorio, 
+          allDay: true
+        }));
+        this.calendarOptions.events = eventos; //asignar los eventos al calendario
+      },
+      (error) => {
+        console.error('Error al obtener los recordatorios:', error);
+      }
+    );
+  }
 }
