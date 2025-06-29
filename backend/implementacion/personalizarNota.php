@@ -1,46 +1,62 @@
 <?php
-session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+header('Access-Control-Allow-Origin: *'); // Permite todas las fuentes (solo para pruebas)
+header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
+header('Content-Type: application/json; charset=utf-8');
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+require_once '../persistencia/conexion.php';
 require_once '../dominio/Usuario.php';
 require_once '../dominio/Post.php';
-require_once '../persistencia/conexion.php';
+require_once '../dominio/Recordatorio.php';
+require_once '../persistencia/DAO/RecordatorioDAO.php';
+require_once '../persistencia/DAO/UsuarioDAO.php';
+require_once '../persistencia/DAO/PostDAO.php';
+require_once '../persistencia/DAO/LikeDAO.php';
 
-// Verifica la conexión a la base de datos
-if ($conn->connect_error) die("Conexión fallida: " . $conn->connect_error);
-
-// El usuario debe estar loggeado
-$nickUsu = $_SESSION['usuario'];
-
-// Obtener datos del formulario
-$idPost = isset($_POST['idPost']) ? (int)$_POST['idPost'] : null;
-$nuevoFondoId = isset($_POST['nuevoFondoId']) ? (int)$_POST['nuevoFondoId'] : null;
-
-if (!$idPost || !$nuevoFondoId) {
-    echo "Error: datos incompletos.";
+$conn = Conexion::getConexion();
+if ($conn->connect_error) {
+    http_response_code(500);
+    ob_end_clean();
+    echo json_encode(['error' => 'Error de conexión']);
     exit;
 }
+$data = json_decode(file_get_contents('php://input'), true);
 
-// Obtener el usuario desde la base de datos
-$usuario = Usuario::obtenerPorNickname($conn, $nickUsu);
-if (!$usuario) {
-    echo "Error: usuario no encontrado.";
+if (!$data) {
+    http_response_code(400);
+    ob_end_clean();
+    echo json_encode(['error' => 'Datos inválidos']);
     exit;
 }
+$id = $data['id'];
+$contenido = $data['contenido'];
+$fecha = $data['fecha'];
+$privado = $data['privado'];
 
-// Cambiar el fondo del post en la colección del usuario
-$cambio = $usuario->cambiarFondoPost($idPost, $nuevoFondoId);
-
-if ($cambio) {
-    // Reflejar el cambio en la base de datos
-    $stmt = $conn->prepare("UPDATE post SET fondoId = ? WHERE id = ? AND autor = ?");
-    $stmt->bind_param("iis", $nuevoFondoId, $idPost, $nickUsu);
-    $stmt->execute();
-
-    if ($stmt->affected_rows > 0) {
-        echo "Fondo actualizado correctamente.";
-    } else {
-        echo "No se pudo actualizar el fondo en la base de datos.";
-    }
-} else {
-    echo "No tienes permisos para modificar este post o el post no existe.";
+$post = PostDAO::obtenerPorId($id);
+//Esto por si el post no existe 
+if (!$post) {
+    http_response_code(404);
+    echo json_encode(['error' => 'Post no encontrado']);
+    exit;
 }
-?>
+//Setear los datos del post
+$post->setContenido($contenido);
+$post->setFechaPost($fecha);
+$post->setPrivado($privado);
+//Seteo también los likes y dislikes a 0, ya que al editar un post no se deberían conservar los likes y dislikes previos
+$post->setLikes(0);
+$post->setDislikes(0);
+LikeDAO::eliminarPorIdPost($id); // Eliminar likes y dislikes previos
+RecordatorioDAO::actualizarFechaRecordatorioPorPostId($id, $fecha); // Actualizar recordatorio si existe
+// Actualizar el post en la base de datos
+PostDAO::actualizar($post);
+
+echo json_encode(['mensaje' => 'Post actualizado con éxito']);

@@ -22,20 +22,50 @@
                 [ngStyle]="{ 'background-image': 'url(' + post.fondoRuta + ')' }">
               <div class="post-content">
                 <h2>{{ post.autor }}</h2>
-                <p>{{ post.contenido }}</p>
-                <p class="meta">
-                  <strong>{{ post.fechaPost | date:'short' }}</strong> —
+                <div *ngIf="postEnEdicion === post.id; else mostrarContenido">
+                    <textarea [(ngModel)]="contenidoEditado"
+                                class="form-control mb-2"
+                                rows="3"
+                                placeholder="Editar contenido..."></textarea>
+
+                    <input type="datetime-local"
+                            class="form-control mb-2"
+                            [(ngModel)]="fechaEditada" />
+                    
+                    <label for="estado" class="form-label">Visibilidad</label>
+                      <select id="estado" class="form-select mb-2" [(ngModel)]="estadoEditado">
+                        <option [ngValue]="false">Público</option>
+                        <option [ngValue]="true">Privado</option>
+                      </select>
+                    <button class="btn btn-success btn-sm me-2" (click)="guardarEdicion(post.id)">💾 Guardar</button>
+                    <button class="btn btn-secondary btn-sm" (click)="cancelarEdicion()">Cancelar</button>
+                </div>
+
+                    <ng-template #mostrarContenido>
+                    <p>{{ post.contenido }}</p>
+                   <p class="meta"><strong>Publicado:</strong> {{ post.fechaPost | date:'short' }}</p>
+                    </ng-template> —
                   <button class="btn btn-outline-success btn-sm me-1"
                           (click)="darLike(post.id)">👍</button> {{ post.likes }}
                   <button class="btn btn-outline-danger btn-sm ms-2"
                           (click)="darDislike(post.id)">👎</button> {{ post.dislikes }}
                   <ng-container *ngIf="datosUsuario.usuario.nick === sessionService.getUsuario()">
-                    <button class="btn btn-outline-primary btn-sm ms-2"
-                            (click)="editarPost(post.id)">✏️ Editar</button>
+                    <p class="text-muted small">
+                        Estado: {{ post.privado ? 'Privado 🔒' : 'Público 🌍' }}
+                    </p>
+                   <div *ngIf="post.fechaRecordatorio; else sinRecordatorio">
+                      <p class="meta"><strong>Recordatorio:</strong> {{ post.fechaRecordatorio | date:'short' }}</p>
+                   </div>
+                    <ng-template #sinRecordatorio>
+                      <p class="meta text-muted"><em>Este post no contiene recordatorio.</em></p>
+                    </ng-template>
+                   <button *ngIf="postEnEdicion !== post.id"
+                        class="btn btn-outline-primary btn-sm ms-2"
+                        (click)="editarPost(post)">✏️ Editar</button>
                     <button class="btn btn-outline-danger btn-sm ms-2"
                             (click)="eliminarPost(post.id)">🗑️ Eliminar</button>
                   </ng-container>
-                </p>
+                
                 <div class="tags">
                   <span class="tag" *ngFor="let tag of post.tags">{{ tag }}</span>
                 </div>

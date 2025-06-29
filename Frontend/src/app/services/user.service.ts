@@ -19,6 +19,14 @@ export class UserService {
       `${this.baseUrl}/implementacion/obtenerDatosUsuario.php?usuario=${encodeURIComponent(nick)}&esPropietario=${esPropietario ? '1' : '0'}`
     );
   }
+  editarPost(id: number, data: { contenido: string; fecha: string; privado: boolean }) {
+    return this.http.post(`${this.baseUrl}/implementacion/personalizarNota.php`, {
+      id,
+      contenido: data.contenido,
+      fecha: data.fecha,
+      privado: data.privado
+    });
+  }
   eliminarPost(postId: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/implementacion/eliminarPost.php?id=${postId}`);
   }

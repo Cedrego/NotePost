@@ -18,7 +18,9 @@ require_once '../persistencia/DAO/AvatarDAO.php';
 require_once '../dominio/Usuario.php';
 require_once '../dominio/Post.php';
 require_once '../dominio/Avatar.php';
+require_once '../dominio/Recordatorio.php';
 require_once '../persistencia/DAO/FondoDAO.php'; 
+require_once '../persistencia/DAO/RecordatorioDAO.php'; 
 require_once '../persistencia/DAO/post_tagDAO.php';
 $conn = Conexion::getConexion();
 if ($conn->connect_error) {
@@ -63,6 +65,9 @@ if ($esPropietario) {
 $data = [];
 
     foreach ($posts as $post) {
+        $recordatorios = RecordatorioDAO::getRecordatoriosPorPostId($post->getId());
+        $fechaRecordatorio = count($recordatorios) > 0 ? $recordatorios[0]->getFechaRecordatorio()->format('Y-m-d H:i:s') : null;
+
         $data[] = [
             'id'         => $post->getId(),
             'autor'      => $post->getAutor()->getNickname(),
@@ -73,6 +78,7 @@ $data = [];
             'privado'    => $post->isPrivado(),
             'fondoRuta'  => FondoDAO::obtenerRutaPorId($post->getFondoId()),
             'tags'       => post_tagDAO::obtenerTagsPorPost($post->getId()),
+            'fechaRecordatorio' => $fechaRecordatorio,
         ];
     }
 // Devuelve los datos del usuario y sus posts

@@ -74,6 +74,14 @@ class LikeDAO {
         $stmt->execute();
         $stmt->close();
     }
+    public static function eliminarPorIdPost($IdPost): void {
+        $conn = Conexion::getConexion();
+        $sql = "DELETE FROM likes WHERE id_post = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $IdPost);
+        $stmt->execute();
+        $stmt->close();
+    }
 
      public function obtenerAccion(int $idPost, string $usuario): ?string {
         $conn = Conexion::getConexion();

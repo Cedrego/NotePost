@@ -122,4 +122,19 @@ class RecordatorioDAO {
     
         return $recordatorios;
     }
+
+    public static function actualizarFechaRecordatorioPorPostId($postId, $nuevaFecha): void {
+        $conn = Conexion::getConexion();
+        $sql = "UPDATE recordatorios SET fechaRecordatorio = ? WHERE post_id = ?";
+        $stmt = $conn->prepare($sql);
+
+        if (!$stmt) {
+            die("Error al preparar la consulta: " . $conn->error);
+        }
+
+        $stmt->bind_param("si", $nuevaFecha, $postId);
+        $stmt->execute();
+        $stmt->close();
+    }
+
 }
