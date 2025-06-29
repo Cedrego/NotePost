@@ -1,0 +1,52 @@
+.post-wrapper {
+    position: relative;
+    min-height: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1rem 0;
+  
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  
+    display: flex;
+    align-items: stretch;
+    color: white;
+  
+    .post-content {
+      position: relative;
+      z-index: 2;
+      background: transparent; /* sin fondo oscuro */
+      padding: 1.5rem;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 800px;
+      margin: auto;
+      color: black; /* texto negro para contraste en fondo claro */
+      text-align: center; /* opcional: centra también el texto */
+  }
+  
+    .meta {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      opacity: 0.85;
+    }
+  
+    .tags {
+      margin-top: 1rem;
+  
+      .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      margin-right: 6px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      
+      color: #555; /* texto gris oscuro */
+      border: 1.5px solid #aaa; /* borde gris claro */
+      background: rgba(200, 200, 200, 0.2); /* fondo muy tenue gris */
+      user-select: none; /* opcional: evitar selección */
+    }
+    }
+  }
+  

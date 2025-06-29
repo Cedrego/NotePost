@@ -2,7 +2,7 @@
   <div class="form-container">   
     <!-- Si NO está logueado -->
     <ng-container *ngIf="!isLoggedIn; else usuarioMenu">
-      <!-- Mostraría los Post sin poder interactuar -->
+      <app-ranking></app-ranking>
     </ng-container>
 
     <!-- Si está logueado -->
