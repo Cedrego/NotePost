@@ -8,6 +8,7 @@ import { CambiarPrivacidadComponent } from './cambiar-privacidad/cambiar-privaci
 import { MenuUsuarioComponent } from './menu-usuario/menu-usuario.component';
 import { VerUsuarioComponent } from './ver-usuario/ver-usuario.component';
 import { FilteredPostListComponent } from './filtered-post-list/filtered-post-list.component';
+import { RankingComponent } from './ranking/ranking.component'; // importa el componente de ranking
 
 export const routes: Routes = [
   { path: '',pathMatch: 'full',redirectTo: 'home' },
@@ -20,4 +21,5 @@ export const routes: Routes = [
   { path: 'menu-usuario', component: MenuUsuarioComponent }, // nueva ruta para el menú de usuario
   { path: 'ver-usuario', component: VerUsuarioComponent },
   { path: 'filtered-posts', component: FilteredPostListComponent }, // nueva ruta para los posts filtrados
+  {path: 'ranking', component: RankingComponent}, // nueva ruta para el ranking
 ];

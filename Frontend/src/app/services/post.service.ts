@@ -20,4 +20,9 @@ export class PostService {
     const url = `${this.filterApiUrl}?tag=${encodeURIComponent(tag)}`;
     return this.http.get<Post[]>(url); // Realiza la solicitud al endpoint de filtrado
   }
+
+  getRanking(): Observable<Post[]> {
+    const url = 'http://localhost/backend/implementacion/getRanking.php';
+    return this.http.get<Post[]>(url); //realiza la solicitud al backend
+  }
 }

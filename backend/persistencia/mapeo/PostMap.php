@@ -17,7 +17,7 @@ class PostMap {
             $autor,
             $row['contenido'],      // sin 'post_'
             (bool)$row['privado'],  // sin 'post_'
-            isset($row['fondoid']) ? (int)$row['fondoid'] : null
+            isset($row['fondoId']) ? (int)$row['fondoId'] : null
         );
         $post->setId((int)$row['id']);
         $post->setLikes((int)$row['likes']);

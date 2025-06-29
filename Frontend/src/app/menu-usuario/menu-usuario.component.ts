@@ -67,6 +67,12 @@ export class MenuUsuarioComponent {
   this.menuAbierto = false;
 }
 
+  goToRanking(): void {
+    const nick = this.sessionService.getUsuario();
+    this.router.navigate(['/ranking'], { queryParams: { nick } });
+    this.menuAbierto = false;
+  }
+
   @HostListener('document:click', ['$event.target'])
   public onClickFuera(targetElement: any): void {
     const clickedInside = this.elRef.nativeElement.contains(targetElement);
