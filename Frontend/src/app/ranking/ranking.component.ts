@@ -3,7 +3,7 @@ import { PostService } from '../services/post.service';
 import { Post } from '../models/post.model';
 import { CommonModule } from '@angular/common';
 import { SessionService } from '../services/session.service';
-
+import { UserService } from '../services/user.service';
 @Component({
   selector: 'app-ranking',
   standalone: true,
@@ -15,7 +15,7 @@ export class RankingComponent implements OnInit {
   posts: Post[] = [];
   sessionService = inject(SessionService);
   isLoggedIn = this.sessionService.isLoggedIn();
-
+  private userService = inject(UserService);
   constructor(private postService: PostService) {}
 
   ngOnInit(): void {
@@ -28,4 +28,25 @@ export class RankingComponent implements OnInit {
       }
     );
   }
+   darLike(postId: number) {
+    const usuario = this.sessionService.getUsuario();
+     if (usuario) {
+      this.userService.darLike(postId, usuario).subscribe(() => {
+        this.ngOnInit();
+      });
+    } else {
+      console.error("No hay usuario logueado para dar like");
+    }
+  }
+
+  darDislike(postId: number) {
+    const usuario = this.sessionService.getUsuario();
+      if (usuario) {
+        this.userService.darDislike(postId, usuario).subscribe(() => {
+          this.ngOnInit();
+        });
+      } else {
+        console.error("No hay usuario logueado para dar like");
+      }
+    }
 }

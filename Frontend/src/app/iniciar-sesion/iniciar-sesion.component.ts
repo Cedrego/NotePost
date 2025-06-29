@@ -23,7 +23,7 @@ export class IniciarSesionComponent implements OnInit {
   showAlert = false;
   alertMessage = '';
   id = 10;
-
+  esRecordatorio = false;
   constructor() {
     this.sesionForm = this.fb.group({
       nick: ['', [Validators.required]],
@@ -44,43 +44,48 @@ export class IniciarSesionComponent implements OnInit {
     const formData = this.sesionForm.value;
 
     this.userService.enviarIniciarSesion(formData).subscribe({
-      next: (respuesta) => {
-        this.sessionService.setUsuario(formData.nick); // <-- Guardar usuario en sesión
-        this.alertMessage = '¡Enviado correctamente!';
-        this.showAlert = true;
-        console.log('Respuesta del servidor:', respuesta);
+    next: (respuesta) => {
+      this.sessionService.setUsuario(formData.nick);
 
-        // Obtener recordatorios pendientes
-        this.recordatorioService.obtenerRecordatoriosPorUsuario(formData.nick).subscribe(
-          (recordatorios) => {
-            if (recordatorios.length > 0) {
-              const recordatoriosPendientes = recordatorios.map(r => `- ${r.contenido} (${r.fechaRecordatorio})`).join('\n');
-              alert(`Recordatorios pendientes:\n${recordatoriosPendientes}`);
-            } else {
-              console.log('No hay recordatorios pendientes.');
-            }
-          },
-          (error) => {
-            console.error('Error al obtener los recordatorios:', error);
+      // Obtener recordatorios pendientes
+      this.recordatorioService.obtenerRecordatoriosPorUsuario(formData.nick).subscribe(
+        (recordatorios) => {
+          if (recordatorios.length > 0) {
+            const recordatoriosPendientes = recordatorios
+              .map(r => `- ${r.contenido} (${r.fechaRecordatorio})`)
+              .join('\n');
+            this.esRecordatorio = true;
+            this.alertMessage = `Recordatorios pendientes:\n${recordatoriosPendientes}`;
+          } else {
+            this.esRecordatorio = true;
+            this.alertMessage = '¡Enviado correctamente! No hay recordatorios pendientes.';
           }
-        );
 
-        setTimeout(() => {
-          this.router.navigate(['/home']); // Redirigir a la página de inicio después de iniciar sesión
-        }, 1000); // Espera 1 segundo antes de redirigir (opcional)
-      },
-      error: (error: any) => {
-        if (error.status === 401 && error.error && error.error.error) {
-          this.alertMessage = error.error.error; // Mensaje del backend
-        } else {
-          this.alertMessage = 'Error al enviar';
+          this.showAlert = true;
+        },
+        (error) => {
+          console.error('Error al obtener los recordatorios:', error);
         }
-        this.showAlert = true;
-        console.error('Error:', error);
+      );
+    },
+    error: (error: any) => {
+      if (error.status === 401 && error.error?.error) {
+        this.alertMessage = error.error.error;
+      } else {
+        this.alertMessage = 'Error al enviar';
       }
-    });
+      this.showAlert = true;
+      console.error('Error:', error);
+    }
+  });
   }
-
+  aceptarAlerta(): void {
+    this.showAlert = false;
+    this.router.navigate(['/home']);
+  }
+  cerrarAlerta(): void {
+    this.showAlert = false;
+  }
   // Getters para los campos
   get nick() { return this.sesionForm.get('nick'); }
   get pass() { return this.sesionForm.get('pass'); }

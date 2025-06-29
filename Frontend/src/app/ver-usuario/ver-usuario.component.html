@@ -28,9 +28,22 @@
                                 rows="3"
                                 placeholder="Editar contenido..."></textarea>
 
-                    <input type="datetime-local"
-                            class="form-control mb-2"
-                            [(ngModel)]="fechaEditada" />
+                    <!-- Checkbox -->
+                      <label>
+                        <input type="checkbox" [(ngModel)]="usarRecordatorio" class="form-check-input" />
+                        ¿Desea Agregar o editar recordatorio?
+                      </label>
+
+                      <!-- Input solo si se activa -->
+                      <div *ngIf="usarRecordatorio">
+                        <label for="recordatorio">Fecha de recordatorio:</label>
+                        <input 
+                          type="datetime-local" 
+                          class="form-control mb-2" 
+                          id="recordatorio" 
+                          [(ngModel)]="fechaEditada"
+                          [required]="usarRecordatorio" />
+                      </div>
                     
                     <label for="estado" class="form-label">Visibilidad</label>
                       <select id="estado" class="form-select mb-2" [(ngModel)]="estadoEditado">

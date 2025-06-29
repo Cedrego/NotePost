@@ -1,7 +1,6 @@
 import { Component, inject, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { MenuHamburguesaComponent } from '../menu-hamburguesa/menu-hamburguesa.component';
 import { MenuUsuarioComponent } from "../menu-usuario/menu-usuario.component";
 import { SessionService } from '../services/session.service';
 import { CommonModule } from '@angular/common';
@@ -10,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [MenuHamburguesaComponent, MenuUsuarioComponent, CommonModule, FormsModule],
+  imports: [ MenuUsuarioComponent, CommonModule, FormsModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })

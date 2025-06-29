@@ -33,10 +33,11 @@
   }
 
   .custom-alert {
-    background-color: rgba(20, 20, 20);
-    color: white;
-    border-radius: 6px;
-    padding: 1rem;
+    background-color: #d3ffcd;
+    color: #000;
+    border-left: 5px solid #f7941d;
+    padding: 10px;
+    border-radius: 8px;
     text-align: center;
 
     p {

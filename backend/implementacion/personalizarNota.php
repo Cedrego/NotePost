@@ -49,13 +49,31 @@ if (!$post) {
 }
 //Setear los datos del post
 $post->setContenido($contenido);
-$post->setFechaPost($fecha);
 $post->setPrivado($privado);
 //Seteo también los likes y dislikes a 0, ya que al editar un post no se deberían conservar los likes y dislikes previos
 $post->setLikes(0);
 $post->setDislikes(0);
 LikeDAO::eliminarPorIdPost($id); // Eliminar likes y dislikes previos
-RecordatorioDAO::actualizarFechaRecordatorioPorPostId($id, $fecha); // Actualizar recordatorio si existe
+//Chequear si el post tiene recordatorio
+
+$recordatorios = RecordatorioDAO::getRecordatoriosPorPostId($post->getId());
+$fechaRecordatorio = count($recordatorios) > 0 ? $recordatorios[0]->getFechaRecordatorio()->format('Y-m-d H:i:s') : null;
+if($fecha!== null){
+    if($fechaRecordatorio === null) {
+        try {
+            $fechaObj = new DateTime($fecha);
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Formato de fecha inválido']);
+            exit;
+        }
+        // Si no hay recordatorio, crear uno nuevo
+        $recordatorio = new Recordatorio($post, $fechaObj);
+        RecordatorioDAO::insert($recordatorio);
+    } else {    
+        RecordatorioDAO::actualizarFechaRecordatorioPorPostId($id, $fecha); // Actualizar recordatorio si existe
+    }
+}
 // Actualizar el post en la base de datos
 PostDAO::actualizar($post);
 

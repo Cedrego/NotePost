@@ -13,8 +13,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-   sessionService = inject(SessionService);
-  get isLoggedIn(): boolean {
+    sessionService = inject(SessionService);
+    get isLoggedIn(): boolean {
     return this.sessionService.isLoggedIn();
   }
   

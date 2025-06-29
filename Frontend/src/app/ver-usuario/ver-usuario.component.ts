@@ -23,7 +23,7 @@ export class VerUsuarioComponent {
   contenidoEditado: string = '';
   fechaEditada: string = ''; // formato yyyy-MM-ddTHH:mm para datetime-local
   estadoEditado: boolean = false;
-  
+  usarRecordatorio: boolean = false; 
   ngOnInit(): void {
     this.route.queryParamMap.subscribe(params => {
       this.nick = params.get('nick');
@@ -69,6 +69,7 @@ export class VerUsuarioComponent {
       this.fechaEditada = '';
     }
     this.estadoEditado = post.privado;
+    this.usarRecordatorio = !!post.fechaRecordatorio;
   }
 
   cancelarEdicion() {
@@ -78,21 +79,25 @@ export class VerUsuarioComponent {
   }
 
   guardarEdicion(postId: number) {
-    if (!this.contenidoEditado.trim() || !this.fechaEditada) {
-      alert('El contenido y la fecha son obligatorios.');
+    if (!this.contenidoEditado.trim()) {
+      alert('El contenido es obligatorios.');
       return;
     }
 
     this.userService.editarPost(postId, {
       contenido: this.contenidoEditado,
-      fecha: this.fechaEditada,
+      fecha: this.usarRecordatorio ? this.fechaEditada : null,
       privado: this.estadoEditado
     }).subscribe({
       next: () => {
        const post = this.datosUsuario.posts.find((p: any) => p.id === postId);
         if (post) {
           post.contenido = this.contenidoEditado;
-          post.fechaPost = this.fechaEditada;
+          post.fechaRecordatorio = this.usarRecordatorio ? this.fechaEditada : null;
+          post.privado = this.estadoEditado;
+          // Setear likes y dislikes visualmente también
+          post.likes = 0;
+          post.dislikes = 0;
         }
 
         this.cancelarEdicion();

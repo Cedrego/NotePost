@@ -1,24 +1,13 @@
 <div class="container-fluid">
   <nav class="navbar navbar-expand-lg fixed-top w-100">
     <div class="container-fluid align-items-center">
-      <!-- Botón de menú hamburguesa -->
-      <app-menu-hamburguesa></app-menu-hamburguesa>
-
+     
       <!-- Nombre de la app -->
       <a class="navbar-brand" routerLink="/">
         <button class="navbar-brand button" (click)="goToHome()">NotePost</button>
       </a>
 
-      <!-- Barra de búsqueda -->
-      <div class="ms-auto me-3">
-        <input 
-          type="text" 
-          class="form-control" 
-          placeholder="Buscar por tag..." 
-          [(ngModel)]="searchTag"
-          (keyup.enter)="searchPostsByTag()"
-        />
-      </div>
+      
 
       <!-- Botones + menú usuario alineados a la derecha -->
       <div class="d-flex align-items-center">
@@ -27,6 +16,16 @@
           <button class="btn btn-outline-light fw-bold me-2" (click)="goToIniciarSesion()">INICIAR SESIÓN</button>
         </ng-container>
         <ng-template #usuarioMenu>
+          <!-- Barra de búsqueda -->
+          <div class="ms-auto me-3">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Buscar por tag..." 
+              [(ngModel)]="searchTag"
+              (keyup.enter)="searchPostsByTag()"
+            />
+          </div>
           <app-menu-usuario></app-menu-usuario>
         </ng-template>
       </div>
