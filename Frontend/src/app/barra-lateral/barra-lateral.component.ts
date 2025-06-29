@@ -7,6 +7,9 @@ import { SessionService } from '../services/session.service';// <-- importando s
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';// <-- Importando operadores de RxJS parra tema de barra de buscar usuarios
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router'; // <-- Importando Router para navegación
+import { ChangeDetectorRef } from '@angular/core';
+import { NgZone } from '@angular/core';
+
 @Component({
   selector: 'app-barra-lateral',
   standalone: true,
@@ -17,6 +20,8 @@ import { Router } from '@angular/router'; // <-- Importando Router para navegaci
 export class BarraLateralComponent implements OnInit {
   private userService = inject(UserService); // ✅ usando inject()
   private router = inject(Router);
+  private cd = inject(ChangeDetectorRef);
+  private zone = inject(NgZone);
   sessionService = inject(SessionService);
   busqueda = '';
   amigos: { nick: string, rutaAvatar: string }[] = [];
@@ -140,6 +145,7 @@ recargarSolicitudes() {
         // Cuando ya se agregaron todas
         if (nuevasSolicitudes.length === solicitudesRaw.length) {
           this.solicitudes = nuevasSolicitudes;
+          this.cd.detectChanges(); // 👈 fuerza la actualización de la vista
         }
       });
     });
@@ -147,6 +153,7 @@ recargarSolicitudes() {
     // Si no hay solicitudes
     if (solicitudesRaw.length === 0) {
       this.solicitudes = [];
+      this.cd.detectChanges(); // 👈
     }
   });
 }
